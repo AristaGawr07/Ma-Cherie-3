@@ -1,0 +1,91 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #fff0f5;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    position: relative;
+}
+
+#heartCanvas {
+    display: block;
+    margin: 0 auto;
+    background-color: transparent;
+}
+
+.button-container {
+    margin-top: 30px;
+    position: relative;
+    z-index: 10;
+}
+
+.heart-button {
+    position: relative;
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #ff6b8b, #ff8e53);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 107, 139, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.heart-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 107, 139, 0.6);
+    background: linear-gradient(45deg, #ff5252, #ff7b53);
+}
+
+.heart-button:active {
+    transform: translateY(1px);
+}
+
+/* Efecto de brillo al hacer hover */
+.heart-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.heart-button:hover::before {
+    left: 100%;
+}
+
+/* Corazones flotantes */
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
