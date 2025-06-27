@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para la Más Bella</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            touch-action: manipulation;
+            font-family: Arial, sans-serif;
+        }
+        #galaxyCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        #loveRain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .title-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            perspective: 500px;
+            width: 90%;
+            cursor: pointer;
+        }
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8em;
+            color: #ff55ff;
+            text-shadow: 
+                2px 2px 0 #ff00ff,
+                3px 3px 0 #aa00aa,
+                4px 4px 0 #550055;
+            transform: rotateX(10deg) rotateY(-5deg);
+            animation: heartbeat 1.5s infinite, float 3s ease-in-out infinite;
+            display: inline-block;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 3px solid #ff55ff;
+            box-shadow: 
+                0 0 10px #ff00ff,
+                inset 0 0 10px #ff00ff;
+            word-wrap: break-word;
+        }
+        @keyframes heartbeat {
+            0% { transform: rotateX(10deg) rotateY(-5deg) scale(1); }
+            50% { transform: rotateX(10deg) rotateY(-5deg) scale(1.05); }
+            100% { transform: rotateX(10deg) rotateY(-5deg) scale(1); }
+        }
+        @keyframes float {
+            0%, 100% { transform: rotateX(10deg) rotateY(-5deg) translateY(0); }
+            50% { transform: rotateX(10deg) rotateY(-5deg) translateY(-5px); }
+        }
+        .pixel-corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff55ff;
+            z-index: 3;
+        }
+        .pixel-corner:nth-child(1) {
+            top: 0;
+            left: 0;
+        }
+        .pixel-corner:nth-child(2) {
+            top: 0;
+            right: 0;
+        }
+        .pixel-corner:nth-child(3) {
+            bottom: 0;
+            left: 0;
+        }
+        .pixel-corner:nth-child(4) {
+            bottom: 0;
+            right: 0;
+        }
+        
+        /* Estilos para los elogios explosivos */
+        .burst-text {
+            position: absolute;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            color: #ff55ff;
+            text-shadow: 0 0 5px #ff00ff;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            animation: burst-anim 2s forwards;
+            font-size: 24px;
+        }
+        
+        @keyframes burst-anim {
+            0% {
+                transform: scale(0.1) translate(0, 0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+        
+        /* Estilos para la propuesta */
+        .proposal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        
+        .proposal-box {
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff55ff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #ff00ff;
+        }
+        
+        .proposal-text {
+            color: #ff55ff;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .proposal-question {
+            color: #ff55ff;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+        
+        .answer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .answer-btn {
+            padding: 10px 30px;
+            border: 2px solid #ff55ff;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ff55ff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+        
+        .answer-btn:hover {
+            background-color: #ff55ff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        
+        #btnNo {
+            position: relative;
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .celebration-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 3em;
+            color: #ff55ff;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 30px #ff00ff;
+            animation: pulse 1s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px;
+            animation: firework-anim 2s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes firework-anim {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+                width: 5px;
+                height: 5px;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+                width: 2px;
+                height: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="galaxyCanvas"></canvas>
+    <div class="title-container">
+        <div class="pixel-corner"></div>
+        <div class="pixel-corner"></div>
+        <div class="pixel-corner"></div>
+        <div class="pixel-corner"></div>
+        <h1 class="title">Ma Cherie ♥</h1>
+    </div>
+    <canvas id="loveRain"></canvas>
+    
+    <!-- Propuesta romántica -->
+    <div class="proposal-container" id="proposalContainer">
+        <div class="proposal-box">
+            <div class="proposal-text">
+                Sé que no he cumplido muy bien tus expectativas y te he fallado muchas veces, pero créeme cuando te digo que te entrego mi vida entera para pasarla junto a ti y disfrutar a cada instante de todo lo que venga, estando juntos para defendernos uno al otro y nunca estar solos. Por eso, este día y cada nuevo mes te pregunto:
+            </div>
+            <div class="proposal-question">¿Quieres seguir siendo mi novia?</div>
+            <div class="answer-buttons">
+                <button class="answer-btn" id="btnYes">Sí</button>
+                <button class="answer-btn" id="btnNo">No</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Celebración -->
+    <div class="celebration" id="celebration">
+        <div class="celebration-text">TE AMOOOOO</div>
+    </div>
+
+    <script>
+        // Configuración del canvas de galaxia
+        const galaxyCanvas = document.getElementById('galaxyCanvas');
+        const galaxyCtx = galaxyCanvas.getContext('2d');
+        
+        // Configuración del canvas de partículas
+        const loveCanvas = document.getElementById('loveRain');
+        const loveCtx = loveCanvas.getContext('2d');
+
+        function resizeCanvases() {
+            galaxyCanvas.width = loveCanvas.width = window.innerWidth;
+            galaxyCanvas.height = loveCanvas.height = window.innerHeight;
+        }
+        resizeCanvases();
+
+        // Galaxia y estrellas (sin nebulosa central)
+        class Star {
+            constructor() {
+                this.x = Math.random() * galaxyCanvas.width;
+                this.y = Math.random() * galaxyCanvas.height;
+                this.size = Math.random() * 1.2;
+                this.brightness = 0.1 + Math.random() * 0.9;
+                this.speed = 0.1 + Math.random() * 0.3;
+                this.opacity = 0;
+                this.targetOpacity = this.brightness;
+                this.twinkleSpeed = 0.01 + Math.random() * 0.05;
+            }
+            
+            update() {
+                this.y += this.speed;
+                if (this.y > galaxyCanvas.height) {
+                    this.y = 0;
+                    this.x = Math.random() * galaxyCanvas.width;
+                }
+                
+                // Efecto de parpadeo más sutil
+                if (Math.random() < 0.005) {
+                    this.targetOpacity = Math.random() * this.brightness;
+                }
+                
+                if (this.opacity < this.targetOpacity) {
+                    this.opacity += this.twinkleSpeed;
+                } else if (this.opacity > this.targetOpacity) {
+                    this.opacity -= this.twinkleSpeed;
+                }
+            }
+            
+            draw() {
+                galaxyCtx.beginPath();
+                galaxyCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                galaxyCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                galaxyCtx.fill();
+            }
+        }
+
+        // Crear galaxia uniforme
+        const stars = [];
+        for (let i = 0; i < 400; i++) {
+            stars.push(new Star());
+        }
+
+        // Animación de galaxia sin nebulosa
+        function animateGalaxy() {
+            galaxyCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            galaxyCtx.fillRect(0, 0, galaxyCanvas.width, galaxyCanvas.height);
+            
+            if (Math.random() < 0.02) {
+                galaxyCtx.beginPath();
+                galaxyCtx.arc(
+                    Math.random() * galaxyCanvas.width,
+                    Math.random() * galaxyCanvas.height,
+                    1 + Math.random() * 0.8,
+                    0, Math.PI * 2
+                );
+                galaxyCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                galaxyCtx.fill();
+            }
+            
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            
+            requestAnimationFrame(animateGalaxy);
+        }
+        animateGalaxy();
+
+        // Partículas de amor adaptadas para móvil
+        const compliments = [
+            "Tus ojos brillan", "Sonrisa perfecta", "Eres angelical", 
+            "Belleza única", "Piel de seda", "Labios de miel",
+            "Mirada cautivante", "Eres un sueño", "Figura divina",
+            "Eres luz", "Cabello hermoso", "Elegante y bella",
+            "Radiante", "Eres magia", "Belleza sin igual",
+            "De otro mundo", "Eres arte", "Diosa terrenal",
+            "Hermosa por siempre", "Lo más bello", "Perfecta en todo",
+            "Eres la mejor", "Belleza pura", "Me vuelves loco",
+            "Eres increíble", "Me fascinas", "Todo en ti es perfecto",
+            "Eres especial", "Mi razón", "Mi inspiración"
+        ];
+
+        const symbols = ["❤", "💖", "💘", "💝", "🌹", "✨", "🥰", "💕"];
+        const colors = [
+            "#ff55ff", "#ff77ff", "#ff99ff", "#ffbbff",
+            "#ff00ff", "#cc00cc", "#aa00aa", "#ff66aa",
+            "#ff0088", "#ff3377", "#ff5599", "#ff0099"
+        ];
+
+        const particles = [];
+        const particleCount = 40;
+
+        for (let i = 0; i < particleCount; i++) {
+            const isText = Math.random() > 0.4;
+            particles.push({
+                x: Math.random() * loveCanvas.width,
+                y: Math.random() * -loveCanvas.height,
+                speed: 0.5 + Math.random() * 1.5,
+                size: isText ? 14 + Math.random() * 8 : 20 + Math.random() * 15,
+                content: isText ? 
+                    compliments[Math.floor(Math.random() * compliments.length)] : 
+                    symbols[Math.floor(Math.random() * symbols.length)],
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: 0,
+                opacity: 0.9,
+                sway: Math.random() * 1 - 0.5,
+                swaySpeed: 0.01 + Math.random() * 0.02,
+                isText: isText
+            });
+        }
+
+        function animateLove() {
+            loveCtx.clearRect(0, 0, loveCanvas.width, loveCanvas.height);
+            
+            particles.forEach(particle => {
+                loveCtx.save();
+                loveCtx.translate(particle.x, particle.y);
+                loveCtx.globalAlpha = particle.opacity;
+                
+                if (!particle.isText) {
+                    loveCtx.font = `${particle.size}px serif`;
+                    loveCtx.fillStyle = particle.color;
+                    loveCtx.textAlign = 'center';
+                    loveCtx.textBaseline = 'middle';
+                    loveCtx.fillText(particle.content, 0, 0);
+                } else {
+                    loveCtx.font = `bold ${particle.size}px 'Arial', sans-serif`;
+                    loveCtx.fillStyle = particle.color;
+                    loveCtx.textAlign = 'center';
+                    loveCtx.textBaseline = 'middle';
+                    
+                    const words = particle.content.split(' ');
+                    if (words.length > 2 && particle.content.length > 12) {
+                        const middle = Math.floor(words.length / 2);
+                        const line1 = words.slice(0, middle).join(' ');
+                        const line2 = words.slice(middle).join(' ');
+                        loveCtx.fillText(line1, 0, -particle.size/2);
+                        loveCtx.fillText(line2, 0, particle.size/2);
+                    } else {
+                        loveCtx.fillText(particle.content, 0, 0);
+                    }
+                }
+                
+                loveCtx.restore();
+
+                particle.y += particle.speed;
+                particle.x += particle.sway * Math.sin(particle.y * particle.swaySpeed);
+
+                if (particle.y > loveCanvas.height + 50) {
+                    particle.y = -20;
+                    particle.x = Math.random() * loveCanvas.width;
+                    const isText = Math.random() > 0.4;
+                    particle.content = isText ? 
+                        compliments[Math.floor(Math.random() * compliments.length)] : 
+                        symbols[Math.floor(Math.random() * symbols.length)];
+                    particle.color = colors[Math.floor(Math.random() * colors.length)];
+                    particle.size = isText ? 14 + Math.random() * 8 : 20 + Math.random() * 15;
+                    particle.isText = isText;
+                }
+            });
+
+            requestAnimationFrame(animateLove);
+        }
+        animateLove();
+
+        // Función para crear explosión de elogios
+        function createComplimentBurst(x, y) {
+            const burstCount = 10 + Math.floor(Math.random() * 10);
+            const burstCompliments = [
+                "Hermosa", "Divina", "Radiante", "Maravillosa", 
+                "Perfecta", "Increíble", "Única", "Especial", 
+                "Fantástica", "Sensacional", "Deslumbrante", "Magnífica"
+            ];
+            
+            for (let i = 0; i < burstCount; i++) {
+                const elogio = document.createElement('div');
+                elogio.className = 'burst-text';
+                elogio.textContent = burstCompliments[Math.floor(Math.random() * burstCompliments.length)];
+                
+                elogio.style.left = `${x}px`;
+                elogio.style.top = `${y}px`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                const size = 20 + Math.random() * 25;
+                elogio.style.fontSize = `${size}px`;
+                
+                elogio.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                elogio.style.setProperty('--tx', `${tx}px`);
+                elogio.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(elogio);
+                
+                setTimeout(() => {
+                    elogio.remove();
+                }, 2000);
+            }
+        }
+
+        // Mostrar propuesta después de 45 segundos
+        setTimeout(() => {
+            document.getElementById('proposalContainer').style.display = 'flex';
+        }, 45000);
+
+        // Manejar botones de respuesta
+        const btnYes = document.getElementById('btnYes');
+        const btnNo = document.getElementById('btnNo');
+        const proposalContainer = document.getElementById('proposalContainer');
+        const celebration = document.getElementById('celebration');
+        
+        btnYes.addEventListener('click', () => {
+            proposalContainer.style.display = 'none';
+            celebration.style.display = 'flex';
+            createFireworks();
+        });
+        
+        btnNo.addEventListener('click', (e) => {
+            // Mover el botón No a una posición aleatoria
+            const container = proposalContainer.getBoundingClientRect();
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+            
+            const maxX = container.width - btnWidth;
+            const maxY = container.height - btnHeight;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            btnNo.style.position = 'absolute';
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        });
+        
+        // Función para crear fuegos artificiales
+        function createFireworks() {
+            const colors = ['#ff55ff', '#ff00ff', '#aa00aa', '#ff66aa', '#ff0088'];
+            
+            setInterval(() => {
+                for (let i = 0; i < 5; i++) {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    firework.style.left = `${x}px`;
+                    firework.style.top = `${y}px`;
+                    firework.style.color = color;
+                    firework.style.setProperty('--tx', `${Math.random() * 200 - 100}px`);
+                    firework.style.setProperty('--ty', `${Math.random() * 200 - 100}px`);
+                    
+                    document.body.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 2000);
+                }
+            }, 300);
+        }
+
+        // Eventos para interactividad
+        document.addEventListener('click', (e) => {
+            createComplimentBurst(e.clientX, e.clientY);
+        });
+        
+        document.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            createComplimentBurst(touch.clientX, touch.clientY);
+        });
+
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+        });
+
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // Hacer el título clickeable para más interacción
+        document.querySelector('.title-container').addEventListener('click', (e) => {
+            createComplimentBurst(e.clientX, e.clientY);
+        });
+    </script>
+</body>
+</html>

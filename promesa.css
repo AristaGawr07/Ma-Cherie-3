@@ -1,0 +1,176 @@
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: url('assets/promise-bg.jpg') no-repeat center center;
+    background-size: cover;
+    font-family: 'Montserrat', sans-serif;
+    color: #5d4037;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: 0;
+}
+
+.promise-container {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 40px;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    color: #d32f2f;
+    margin-bottom: 40px;
+    position: relative;
+    display: inline-block;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #ff758c, #ff7eb3);
+}
+
+.promise-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border: 1px solid #ffcdd2;
+}
+
+.promise-content::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px dashed #ff9a9e;
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.promise-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.promise-text p {
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.promise-text p::before {
+    content: '❤';
+    position: absolute;
+    left: 0;
+    color: #ff6b6b;
+}
+
+.signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    color: #d32f2f;
+    margin-top: 40px;
+}
+
+.signature .name {
+    font-size: 2.2rem;
+    text-decoration: underline;
+    text-decoration-color: #ffcdd2;
+    text-decoration-thickness: 3px;
+}
+
+/* Botón flotante decorado */
+.floating-promise-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 105, 140, 0.3);
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.floating-promise-btn::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px dashed white;
+    border-radius: 35px;
+    animation: pulseBorder 2s infinite;
+    pointer-events: none;
+}
+
+.floating-promise-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 105, 140, 0.4);
+}
+
+.floating-promise-btn span {
+    margin-left: 8px;
+}
+
+@keyframes pulseBorder {
+    0% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.05); }
+    100% { opacity: 0.7; transform: scale(1); }
+}
+
+/* Efectos de confeti */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #f00;
+    opacity: 0;
+    z-index: -1;
+    animation: confettiFall 5s linear infinite;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}

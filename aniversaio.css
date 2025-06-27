@@ -1,0 +1,226 @@
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #fff5f5;
+    background-image: url('assets/flower-bg.png');
+    background-size: 40%;
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Montserrat', sans-serif;
+    color: #5d4037;
+    overflow-x: hidden;
+}
+
+/* Botón flotante decorado */
+.floating-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.anniversary-btn {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 105, 140, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.anniversary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 105, 140, 0.4);
+    background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+}
+
+.heart-icon {
+    margin-right: 8px;
+    font-size: 1.2em;
+    animation: pulse 1.5s infinite;
+}
+
+.btn-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3em;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 900px;
+    margin: 80px auto 40px;
+    padding: 20px;
+    text-align: center;
+}
+
+.title {
+    font-family: 'Dancing Script', cursive;
+    color: #d32f2f;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Grid de botones */
+.buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+/* Tarjetas de aniversario */
+.anniversary-card, .coming-soon-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.anniversary-card {
+    border: 2px solid #ffcdd2;
+}
+
+.anniversary-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(255, 105, 140, 0.2);
+    border-color: #ff9a9e;
+}
+
+.coming-soon-card {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    border: 2px dashed #bdbdbd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.date {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #d32f2f;
+    font-family: 'Dancing Script', cursive;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.label {
+    font-size: 1.1rem;
+    color: #5d4037;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.flowers {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.soon-text {
+    font-size: 1.5rem;
+    color: #757575;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.heart-emoji {
+    font-size: 2rem;
+    opacity: 0.7;
+}
+
+/* Corazones flotantes */
+.floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-hearts::before {
+    content: '❤️';
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    font-size: 20px;
+    animation: float 8s linear infinite;
+    opacity: 0.5;
+}
+
+.floating-hearts::after {
+    content: '❤️';
+    position: absolute;
+    top: 25%;
+    right: 20%;
+    font-size: 30px;
+    animation: float 10s linear infinite reverse;
+    opacity: 0.4;
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        margin-top: 70px;
+    }
+    
+    .buttons-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .title {
+        font-size: 2rem;
+    }
+    
+    .date {
+        font-size: 3rem;
+    }
+    /* Añade esto al CSS existente */
+.anniversary-card {
+    display: block; /* Cambia a block para que todo el área sea clickeable */
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.anniversary-card:hover .date {
+    transform: scale(1.1);
+}
+
+.date {
+    transition: transform 0.3s ease;
+}
+}

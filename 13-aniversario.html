@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 Meses Juntos</title>
+    <link rel="stylesheet" href="aniversaios.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos específicos para esta página */
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        
+        .text-memory {
+            border: 8px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="%23ff6b6b" stroke-width="5" stroke-dasharray="10,5"/><circle cx="50" cy="20" r="3" fill="%23ff6b6b"/><circle cx="80" cy="50" r="3" fill="%23ff6b6b"/><circle cx="50" cy="80" r="3" fill="%23ff6b6b"/><circle cx="20" cy="50" r="3" fill="%23ff6b6b"/></svg>') 20 stretch;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: #5d4037;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .image-memory {
+            border: 15px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="10" fill="none" stroke="%23ff9a9e" stroke-width="8" stroke-dasharray="15,10"/><path d="M30,30 L70,30 L70,70 L30,70 Z" fill="none" stroke="%23ffcdd2" stroke-width="3"/></svg>') 30 stretch;
+            padding: 5px;
+            background-color: white;
+        }
+        
+        .memory-image {
+            width: 100%;
+            border-radius: 5px;
+            display: block;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 15px 30px rgba(255, 105, 140, 0.2);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 15s linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(20px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+    <!-- Este botón llevará de vuelta a la página principal de aniversarios -->
+    <a href="index.html" class="anniversary-btn">
+        <span class="heart-icon">❤️</span>
+        <span class="btn-text">Anivermeses</span>
+    </a>
+</div>
+
+    <div class="container">
+        <h1 class="title">13 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 -->
+            <div class="memory-item text-memory">
+                "No son solo 13 meses, son 13 oportunidades que la vida me dio para descubrir nuevas razones para amarte cada día más."
+            </div>
+            
+            <!-- Imagen 1 -->
+            <div class="memory-item image-memory">
+                <img src="assets/memories/photo1.jpg" alt="Nuestro recuerdo" class="memory-image">
+            </div>
+            
+            <!-- Mensaje 2 -->
+            <div class="memory-item text-memory">
+                "Eres esa persona que convierte los días ordinarios en aventuras extraordinarias y los momentos simples en recuerdos inolvidables."
+            </div>
+            
+            <!-- Imagen 2 -->
+            <div class="memory-item image-memory">
+                <img src="assets/memories/photo2.jpg" alt="Nuestro recuerdo" class="memory-image">
+            </div>
+            
+            <!-- Mensaje 3 -->
+            <div class="memory-item text-memory">
+                "Trece lunas llenas hemos visto juntos, y cada una me ha enseñado que tu amor brilla más que cualquier otra luz en mi cielo."
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <script>
+        // Crear corazones flotantes
+        const heartsContainer = document.getElementById('heartsContainer');
+        const colors = ['#ff6b6b', '#ff8e8e', '#ffb3b3', '#ffd8d8'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            
+            // Posición aleatoria
+            const startX = Math.random() * 100;
+            const duration = 10 + Math.random() * 20;
+            const delay = Math.random() * 15;
+            const size = 20 + Math.random() * 30;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            heartsContainer.appendChild(heart);
+            
+            // Eliminar después de la animación
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        // Crear corazones continuamente
+        setInterval(createHeart, 800);
+        
+        // Crear algunos corazones iniciales
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+    </script>
+</body>
+</html>
