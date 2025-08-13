@@ -188,7 +188,7 @@ const niveles = [
       },
       {
         pregunta: "¿Qué parte de tu cuerpo beso más?",
-        opciones: ["Los labios", "La frente", "Las manos", "La nariz"],
+        opciones: ["Las manos", "La frente", "Los labios", "Tus cachetes"],
         respuesta: 2,
         mensajeRomantico: "Tocarte es mi forma de reconectar contigo"
       },
