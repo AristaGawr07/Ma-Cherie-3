@@ -1,0 +1,114 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.contenedor-juego {
+  width: 100%;
+  max-width: 600px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-juego {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #d23369;
+  font-weight: bold;
+}
+
+.pregunta-container {
+  background-color: #fff9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ffb6c1;
+}
+
+.opciones-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-opcion {
+  background: white;
+  border: 2px solid #ffb6c1;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 15px;
+  min-height: 50px; /* Asegura que todos los botones tengan misma altura */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+}
+
+.btn-opcion:hover {
+  background: #fff0f5;
+  transform: translateY(-2px);
+}
+
+.correcto {
+  color: #28a745;
+  font-style: italic;
+  margin-top: 10px;
+  animation: fadeIn 0.5s;
+}
+
+.incorrecto {
+  color: #dc3545;
+  font-weight: bold;
+  animation: fadeIn 0.5s;
+}
+
+.intento {
+  color: #ffc107;
+  animation: fadeIn 0.5s;
+}
+
+.mensaje-final {
+  text-align: center;
+  padding: 20px;
+  animation: fadeIn 1s;
+}
+
+.poema {
+  font-family: 'Georgia', serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #d23369;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Agrega esto al final */
+@media (max-width: 500px) {
+  .opciones-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .contenedor-juego {
+    padding: 15px;
+  }
+}

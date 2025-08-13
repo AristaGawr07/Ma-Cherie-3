@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corazones Entrelazados</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body onload="iniciarJuego()">
+  <div class="contenedor-juego">
+    <div class="info-juego">
+      <div class="temporizador">Tiempo: <span id="tiempo">03:00</span></div>
+      <div class="nivel">Nivel <span id="nivel">1</span></div>
+      <div class="puntos">❤️ <span id="corazones">0</span></div>
+    </div>
+    
+    <div id="pregunta-container" class="pregunta-container"></div>
+    <div id="opciones-container" class="opciones-container"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
