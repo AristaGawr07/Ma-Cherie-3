@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17 Meses Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos base idénticos a los anteriores */
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        
+        .text-memory {
+            border: 8px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="%23ff6b6b" stroke-width="5" stroke-dasharray="10,5"/><circle cx="50" cy="20" r="3" fill="%23ff6b6b"/><circle cx="80" cy="50" r="3" fill="%23ff6b6b"/><circle cx="50" cy="80" r="3" fill="%23ff6b6b"/><circle cx="20" cy="50" r="3" fill="%23ff6b6b"/></svg>') 20 stretch;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: #5d4037;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .flower-memory {
+            border: 15px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="10" fill="none" stroke="%23ff9a9e" stroke-width="8" stroke-dasharray="15,10"/><path d="M30,30 L70,30 L70,70 L30,70 Z" fill="none" stroke="%23ffcdd2" stroke-width="3"/></svg>') 30 stretch;
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .flower-canvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 15px 30px rgba(255, 105, 140, 0.2);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 15s linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(20px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Flor CSS corregida */
+        .css-flower {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .petal {
+            position: absolute;
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: center 100px;
+            top: 10px;
+            left: 80px;
+            animation: petalBloom 4s ease-in-out infinite;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .center {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #ffd700, #ffa500);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: centerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes petalBloom {
+            0%, 100% { 
+                transform: rotate(var(--rotate)) scale(0.9);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: rotate(var(--rotate)) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes centerPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Tallo para la flor CSS */
+        .stem {
+            position: absolute;
+            width: 8px;
+            height: 120px;
+            background: linear-gradient(to bottom, #2e7d32, #4caf50);
+            top: 180px;
+            left: 96px;
+            border-radius: 4px;
+            z-index: -1;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .leaf-1 {
+            top: 220px;
+            left: 110px;
+            transform: rotate(45deg);
+        }
+
+        .leaf-2 {
+            top: 240px;
+            left: 80px;
+            transform: rotate(-30deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">❤️</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">17 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 -->
+            <div class="memory-item text-memory">
+                "17 meses y cada día aprendemos que el amor verdadero no es perfecto, pero sí perseverante. Gracias por no soltar mi mano cuando el camino se pone difícil."
+            </div>
+            
+            <!-- Flor 1 - Canvas -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower1" class="flower-canvas"></canvas>
+            </div>
+            
+            <!-- Mensaje 2 -->
+            <div class="memory-item text-memory">
+                "Más de 500 días construyendo algo que vale la pena proteger. Nuestro amor es como esta flor: necesita cuidado, pero florece con belleza única."
+            </div>
+            
+            <!-- Flor 2 - CSS Corregida -->
+            <div class="memory-item flower-memory">
+                <div class="css-flower" id="cssFlower">
+                    <!-- Los pétalos y elementos se generan con JS -->
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 -->
+            <div class="memory-item text-memory">
+                "Nuestra relación ha aprendido a bailar bajo la lluvia y a encontrar luz en la oscuridad. Eso es lo que nos hace invencibles."
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <script>
+        // Corazones flotantes (mismo código que antes)
+        const heartsContainer = document.getElementById('heartsContainer');
+        const colors = ['#ff6b6b', '#ff8e8e', '#ffb3b3', '#ffd8d8'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            
+            const startX = Math.random() * 100;
+            const duration = 10 + Math.random() * 20;
+            const delay = Math.random() * 15;
+            const size = 20 + Math.random() * 30;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        setInterval(createHeart, 800);
+        
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+
+        // Flor 1 - Canvas Animation
+        const canvas1 = document.getElementById('flower1');
+        const ctx1 = canvas1.getContext('2d');
+        
+        // Ajustar tamaño del canvas
+        canvas1.width = canvas1.offsetWidth;
+        canvas1.height = canvas1.offsetHeight;
+        
+        function drawFlower1() {
+            const centerX = canvas1.width / 2;
+            const centerY = canvas1.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Tallo
+            ctx1.strokeStyle = '#2e7d32';
+            ctx1.lineWidth = 8;
+            ctx1.beginPath();
+            ctx1.moveTo(centerX, centerY + 100);
+            ctx1.lineTo(centerX, centerY - 20);
+            ctx1.stroke();
+            
+            // Hojas
+            ctx1.fillStyle = '#4caf50';
+            ctx1.beginPath();
+            ctx1.ellipse(centerX + 30, centerY + 20, 25, 15, Math.PI / 4, 0, Math.PI * 2);
+            ctx1.fill();
+            ctx1.beginPath();
+            ctx1.ellipse(centerX - 30, centerY, 25, 15, -Math.PI / 4, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Pétalos animados
+            const petalCount = 8;
+            const baseRadius = 50;
+            const pulse = Math.sin(time * 2) * 5;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time;
+                const x = centerX + Math.cos(angle) * (baseRadius + pulse);
+                const y = centerY + Math.sin(angle) * (baseRadius + pulse);
+                
+                ctx1.fillStyle = `hsl(${330 + Math.sin(time + i) * 30}, 70%, 65%)`;
+                ctx1.beginPath();
+                ctx1.ellipse(x, y, 25 + pulse * 0.5, 35 + pulse * 0.5, angle, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            // Centro de la flor
+            ctx1.fillStyle = `hsl(${60}, 80%, 60%)`;
+            ctx1.beginPath();
+            ctx1.arc(centerX, centerY, 20 + Math.sin(time * 3) * 3, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            requestAnimationFrame(drawFlower1);
+        }
+        
+        // Flor 2 - CSS Animation Corregida
+        const cssFlower = document.getElementById('cssFlower');
+        const petalCount = 8;
+        
+        // Crear pétalos
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            const rotation = (360 / petalCount) * i;
+            petal.style.setProperty('--rotate', `${rotation}deg`);
+            petal.style.animationDelay = `${i * 0.1}s`;
+            cssFlower.appendChild(petal);
+        }
+        
+        // Crear centro
+        const center = document.createElement('div');
+        center.className = 'center';
+        cssFlower.appendChild(center);
+        
+        // Crear tallo
+        const stem = document.createElement('div');
+        stem.className = 'stem';
+        cssFlower.appendChild(stem);
+        
+        // Crear hojas
+        const leaf1 = document.createElement('div');
+        leaf1.className = 'leaf leaf-1';
+        cssFlower.appendChild(leaf1);
+        
+        const leaf2 = document.createElement('div');
+        leaf2.className = 'leaf leaf-2';
+        cssFlower.appendChild(leaf2);
+        
+        // Iniciar animación de la flor canvas
+        drawFlower1();
+    </script>
+</body>
+</html>
