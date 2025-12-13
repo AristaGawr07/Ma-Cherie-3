@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 Meses Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Fondo suave y esperanzador */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #5d4037;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 45px;
+            padding: 40px 20px;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 620px;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .text-memory {
+            background: linear-gradient(135deg, rgba(255, 245, 245, 0.9), rgba(255, 240, 245, 0.9));
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #6d4c41;
+            line-height: 1.8;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid #f48fb1;
+            border-right: 4px solid #f48fb1;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: gentleAppear 1.2s ease forwards;
+        }
+        
+        .flower-memory {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            border: 1px solid rgba(244, 143, 177, 0.3);
+            min-height: 320px;
+            box-shadow: 0 4px 20px rgba(244, 143, 177, 0.1);
+        }
+        
+        .flower-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(244, 143, 177, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .title {
+            color: #e91e63;
+            text-shadow: 0 0 20px rgba(233, 30, 99, 0.2);
+            font-size: 3.3rem;
+            margin-bottom: 35px;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+            display: inline-block;
+        }
+
+        .title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f48fb1, transparent);
+        }
+
+        @keyframes gentleAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: gentleFloat 18s linear infinite;
+            opacity: 0.3;
+            color: #f48fb1;
+        }
+        
+        @keyframes gentleFloat {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Flores suaves rosadas */
+        .flower-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .css-flower {
+            width: 160px;
+            height: 160px;
+            position: relative;
+            filter: drop-shadow(0 0 15px rgba(244, 143, 177, 0.3));
+        }
+
+        .css-flower.small {
+            width: 130px;
+            height: 130px;
+        }
+
+        .petal {
+            position: absolute;
+            width: 32px;
+            height: 65px;
+            background: linear-gradient(135deg, #f8bbd0, #f48fb1, #f06292);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: center 80px;
+            top: 15px;
+            left: 64px;
+            animation: gentleBloom 8s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(244, 143, 177, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .small .petal {
+            transform-origin: center 65px;
+            left: 49px;
+            width: 28px;
+            height: 55px;
+        }
+
+        .center {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle, #ffccd5, #f48fb1, #e91e63);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(255, 204, 213, 0.5);
+            animation: gentlePulse 6s ease-in-out infinite;
+        }
+
+        @keyframes gentleBloom {
+            0%, 100% { 
+                transform: rotate(var(--rotate)) scale(0.9);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: rotate(var(--rotate)) scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Tallos y hojas suaves */
+        .stem {
+            position: absolute;
+            width: 5px;
+            height: 90px;
+            background: linear-gradient(to bottom, #81c784, #66bb6a, #4caf50);
+            top: 140px;
+            left: 78px;
+            border-radius: 3px;
+            z-index: -1;
+            box-shadow: 0 0 10px rgba(129, 199, 132, 0.3);
+        }
+
+        .small .stem {
+            height: 75px;
+            top: 115px;
+            left: 63px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 22px;
+            height: 14px;
+            background: #66bb6a;
+            border-radius: 50%;
+            z-index: -1;
+            box-shadow: 0 0 8px rgba(102, 187, 106, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .leaf-1 {
+            top: 160px;
+            left: 85px;
+            transform: rotate(45deg);
+        }
+
+        .leaf-2 {
+            top: 175px;
+            left: 65px;
+            transform: rotate(-30deg);
+        }
+
+        .small .leaf-1 {
+            top: 130px;
+            left: 70px;
+        }
+
+        .small .leaf-2 {
+            top: 145px;
+            left: 55px;
+        }
+
+        .memory-divider {
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f8bbd0, transparent);
+            margin: 25px 0;
+            opacity: 0.5;
+        }
+
+        .past-marker {
+            font-style: italic;
+            color: #9e9e9e;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .present-marker {
+            font-style: italic;
+            color: #4caf50;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .flower-type-2 .petal {
+            background: linear-gradient(135deg, #e1bee7, #ce93d8, #ba68c8);
+            box-shadow: 0 0 15px rgba(225, 190, 231, 0.3);
+        }
+
+        .flower-type-3 .petal {
+            background: linear-gradient(135deg, #ffcdd2, #ef9a9a, #e57373);
+            box-shadow: 0 0 15px rgba(255, 205, 210, 0.3);
+        }
+
+        .floating-button .anniversary-btn {
+            background: linear-gradient(135deg, #f8bbd0, #f48fb1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">💖</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">19 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 - Suave y tierno -->
+            <div class="memory-item text-memory" style="animation-delay: 0.2s">
+                "Hoy miro atrás y veo cómo las tormentas nos enseñaron a bailar bajo la lluvia, y cómo cada dificultad nos hizo más fuertes, más unidos."
+                <div class="past-marker">El pasado nos enseñó...</div>
+            </div>
+            
+            <!-- Flor 1 - Canvas Suave -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower1" class="flower-canvas"></canvas>
+            </div>
+            
+            <!-- Mensaje 2 - Reconociendo el presente -->
+            <div class="memory-item text-memory" style="animation-delay: 0.4s">
+                "En este mes 19, siento una calma nueva, como el amanecer después de una noche larga. Tu mano en la mía ya no tiembla, descansa."
+                <div class="present-marker">Hoy estamos bien...</div>
+            </div>
+            
+            <!-- Flores Múltiples CSS - Suaves -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower" id="cssFlower1"></div>
+                    <div class="css-flower small flower-type-2" id="cssFlower2"></div>
+                    <div class="css-flower small flower-type-3" id="cssFlower3"></div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 - Recordando con amor -->
+            <div class="memory-item text-memory" style="animation-delay: 0.6s">
+                "Recuerdo los días difíciles no con dolor, sino con gratitud por todo lo que aprendimos y por no habernos soltado cuando todo pedía que lo hiciéramos."
+            </div>
+
+            <!-- Flor 2 - Canvas Secundaria -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower2" class="flower-canvas"></canvas>
+            </div>
+
+            <!-- Mensaje 4 - Renacimiento -->
+            <div class="memory-item text-memory" style="animation-delay: 0.8s">
+                "Como una flor que renace en primavera, nuestro amor ha aprendido a florecer de nuevo, más sabio, más paciente, más verdadero."
+                <div class="present-marker">Renaciendo juntos...</div>
+            </div>
+
+            <div class="memory-divider"></div>
+
+            <!-- Mensaje 5 - Esperanza suave -->
+            <div class="memory-item text-memory" style="animation-delay: 1s">
+                "Ya no somos esos dos que temían el mañana. Ahora somos quienes construyen hoy con las lecciones de ayer y la esperanza de siempre."
+            </div>
+            
+            <!-- Flores Múltiples 2 -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower small flower-type-2" id="cssFlower4"></div>
+                    <div class="css-flower flower-type-3" id="cssFlower5"></div>
+                    <div class="css-flower small" id="cssFlower6"></div>
+                </div>
+            </div>
+
+            <!-- Mensaje 6 - Agradecimiento tierno -->
+            <div class="memory-item text-memory" style="animation-delay: 1.2s">
+                "Gracias por quedarte cuando era fácil irse. Gracias por creer en nosotros cuando yo dudaba. Gracias por esta paz que hoy respiramos."
+            </div>
+
+            <!-- Mensaje Final - Futuro esperanzador -->
+            <div class="memory-item text-memory" style="animation-delay: 1.4s">
+                "El camino sigue, pero ahora caminamos más ligeros, con las manos entrelazadas y el corazón lleno de historias que nos hicieron quienes somos."
+                <div class="present-marker">Continuamos con amor...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <script>
+        // Corazones flotantes suaves
+        const heartsContainer = document.getElementById('heartsContainer');
+        const colors = ['#f8bbd0', '#f48fb1', '#f06292', '#e91e63', '#ffccd5'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💖';
+            
+            const startX = Math.random() * 100;
+            const duration = 12 + Math.random() * 25;
+            const delay = Math.random() * 20;
+            const size = 18 + Math.random() * 35;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        setInterval(createHeart, 1000);
+        
+        for (let i = 0; i < 15; i++) {
+            setTimeout(createHeart, i * 400);
+        }
+
+        // Flor 1 - Canvas Suave y Tierna
+        const canvas1 = document.getElementById('flower1');
+        const ctx1 = canvas1.getContext('2d');
+        
+        canvas1.width = canvas1.offsetWidth;
+        canvas1.height = canvas1.offsetHeight;
+        
+        function drawFlower1() {
+            const centerX = canvas1.width / 2;
+            const centerY = canvas1.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Fondo suave
+            ctx1.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Tallo suave
+            ctx1.strokeStyle = '#81c784';
+            ctx1.lineWidth = 8;
+            ctx1.shadowColor = '#81c784';
+            ctx1.shadowBlur = 15;
+            ctx1.beginPath();
+            ctx1.moveTo(centerX, centerY + 140);
+            ctx1.bezierCurveTo(
+                centerX - 5, centerY + 90,
+                centerX + 8, centerY + 40,
+                centerX, centerY - 5
+            );
+            ctx1.stroke();
+            
+            // Hojas suaves
+            ctx1.fillStyle = '#66bb6a';
+            ctx1.shadowColor = '#66bb6a';
+            ctx1.shadowBlur = 10;
+            
+            // Hoja 1
+            ctx1.beginPath();
+            ctx1.ellipse(centerX + 35, centerY + 50, 30, 18, Math.PI / 4, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Hoja 2
+            ctx1.beginPath();
+            ctx1.ellipse(centerX - 30, centerY + 20, 28, 16, -Math.PI / 6, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.shadowBlur = 0;
+            
+            // Pétalos suaves y tiernos
+            const petalCount = 10;
+            const baseRadius = 55;
+            const pulse = Math.sin(time * 0.8) * 5;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.3;
+                const x = centerX + Math.cos(angle) * (baseRadius + pulse);
+                const y = centerY + Math.sin(angle) * (baseRadius + pulse);
+                
+                const gradient = ctx1.createRadialGradient(x, y, 5, x, y, 30);
+                gradient.addColorStop(0, '#ffcdd2');
+                gradient.addColorStop(0.5, '#f48fb1');
+                gradient.addColorStop(1, '#e91e63');
+                
+                ctx1.fillStyle = gradient;
+                ctx1.shadowColor = '#f48fb1';
+                ctx1.shadowBlur = 20;
+                
+                ctx1.beginPath();
+                ctx1.ellipse(x, y, 25, 35, angle, 0, Math.PI * 2);
+                ctx1.fill();
+                
+                // Capa de pétalos internos más claros
+                ctx1.fillStyle = `rgba(255, 255, 255, 0.2)`;
+                ctx1.beginPath();
+                ctx1.ellipse(x, y, 18, 25, angle, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            ctx1.shadowBlur = 0;
+            
+            // Centro suave de la flor
+            const centerGradient = ctx1.createRadialGradient(centerX, centerY, 5, centerX, centerY, 25);
+            centerGradient.addColorStop(0, '#ffccd5');
+            centerGradient.addColorStop(0.5, '#f48fb1');
+            centerGradient.addColorStop(1, '#e91e63');
+            
+            ctx1.fillStyle = centerGradient;
+            ctx1.shadowColor = '#ffccd5';
+            ctx1.shadowBlur = 30;
+            ctx1.beginPath();
+            ctx1.arc(centerX, centerY, 22 + Math.sin(time * 1.5) * 3, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Detalles del centro
+            ctx1.fillStyle = '#ad1457';
+            ctx1.shadowBlur = 10;
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2 + time;
+                const x = centerX + Math.cos(angle) * 12;
+                const y = centerY + Math.sin(angle) * 12;
+                ctx1.beginPath();
+                ctx1.arc(x, y, 2 + Math.sin(time * 2 + i) * 1.5, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            ctx1.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower1);
+        }
+
+        // Flor 2 - Canvas Secundaria (más simple)
+        const canvas2 = document.getElementById('flower2');
+        const ctx2 = canvas2.getContext('2d');
+        
+        canvas2.width = canvas2.offsetWidth;
+        canvas2.height = canvas2.offsetHeight;
+        
+        function drawFlower2() {
+            const centerX = canvas2.width / 2;
+            const centerY = canvas2.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+            
+            // Flor simple y tierna
+            const petalCount = 8;
+            const baseRadius = 45;
+            const pulse = Math.sin(time * 0.6) * 4;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.2;
+                const x = centerX + Math.cos(angle) * (baseRadius + pulse);
+                const y = centerY + Math.sin(angle) * (baseRadius + pulse);
+                
+                const gradient = ctx2.createRadialGradient(x, y, 5, x, y, 25);
+                gradient.addColorStop(0, '#e1bee7');
+                gradient.addColorStop(1, '#ba68c8');
+                
+                ctx2.fillStyle = gradient;
+                ctx2.shadowColor = '#e1bee7';
+                ctx2.shadowBlur = 15;
+                ctx2.beginPath();
+                ctx2.ellipse(x, y, 20, 30, angle, 0, Math.PI * 2);
+                ctx2.fill();
+            }
+            
+            ctx2.shadowBlur = 0;
+            
+            // Centro
+            const centerGradient = ctx2.createRadialGradient(centerX, centerY, 5, centerX, centerY, 18);
+            centerGradient.addColorStop(0, '#f3e5f5');
+            centerGradient.addColorStop(1, '#ba68c8');
+            
+            ctx2.fillStyle = centerGradient;
+            ctx2.shadowColor = '#f3e5f5';
+            ctx2.shadowBlur = 20;
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 15 + Math.sin(time * 1.2) * 2, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower2);
+        }
+        
+        // Función para crear flores CSS suaves
+        function createCSSFlower(containerId, petalCount, isSmall = false, type = 1) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Añadir clase de tipo si es necesario
+            if (type === 2) container.classList.add('flower-type-2');
+            if (type === 3) container.classList.add('flower-type-3');
+            if (isSmall) container.classList.add('small');
+            
+            // Crear pétalos
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const rotation = (360 / petalCount) * i;
+                petal.style.setProperty('--rotate', `${rotation}deg`);
+                petal.style.animationDelay = `${i * 0.25}s`;
+                container.appendChild(petal);
+            }
+            
+            // Crear centro
+            const center = document.createElement('div');
+            center.className = 'center';
+            container.appendChild(center);
+            
+            // Crear tallo
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            container.appendChild(stem);
+            
+            // Crear hojas
+            const leaf1 = document.createElement('div');
+            leaf1.className = 'leaf leaf-1';
+            container.appendChild(leaf1);
+            
+            const leaf2 = document.createElement('div');
+            leaf2.className = 'leaf leaf-2';
+            container.appendChild(leaf2);
+        }
+        
+        // Crear todas las flores CSS suaves
+        createCSSFlower('cssFlower1', 10, false, 1);
+        createCSSFlower('cssFlower2', 8, true, 2);
+        createCSSFlower('cssFlower3', 6, true, 3);
+        createCSSFlower('cssFlower4', 7, true, 2);
+        createCSSFlower('cssFlower5', 12, false, 3);
+        createCSSFlower('cssFlower6', 5, true, 1);
+        
+        // Iniciar animaciones de canvas
+        drawFlower1();
+        drawFlower2();
+
+        // Efecto de aparición escalonada suave
+        const textElements = document.querySelectorAll('.text-memory');
+        textElements.forEach((element, index) => {
+            element.style.animationDelay = `${0.2 + index * 0.2}s`;
+        });
+    </script>
+</body>
+</html>
