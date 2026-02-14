@@ -1059,3 +1059,314 @@ body {
 .corazon3d-minimal .izquierda {
     transform: rotateY(-90deg) translateZ(85px);
 }
+/* BOTÓN TEAMO COMO ENLACE */
+.teamo-link {
+    position: fixed;
+    top: 20px;
+    left: calc(50% + 100px);
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: #ff1744;
+    clip-path: path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z');
+    animation: cambioColores 3s infinite alternate;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* Quita subrayado del enlace */
+}
+
+/* Para el texto dentro del enlace */
+.teamo-link span,
+.teamo-link::after {
+    content: '❤️';
+    color: white;
+    font-size: 24px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Si quieres texto personalizado en lugar de emoji */
+.teamo-link span {
+    font-family: 'Dancing Script', cursive;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    display: block;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* HOVER DEL ENLACE */
+.teamo-link:hover {
+    transform: translateX(-50%) scale(1.2);
+    animation: cambioColores 1s infinite alternate;
+}
+
+/* ESTADO ACTIVE (cuando se hace clic) */
+.teamo-link:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+/* ANIMACIÓN DE CAMBIO DE COLORES */
+@keyframes cambioColores {
+    0% {
+        background: #ff1744;
+        box-shadow: 0 0 15px #ff1744;
+    }
+    20% {
+        background: #f50057;
+        box-shadow: 0 0 15px #f50057;
+    }
+    40% {
+        background: #d5006a;
+        box-shadow: 0 0 15px #d5006a;
+    }
+    60% {
+        background: #aa00ff;
+        box-shadow: 0 0 15px #aa00ff;
+    }
+    80% {
+        background: #6200ea;
+        box-shadow: 0 0 15px #6200ea;
+    }
+    100% {
+        background: #304ffe;
+        box-shadow: 0 0 20px #304ffe;
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .teamo-link {
+        left: calc(50% + 60px);
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .teamo-link {
+        left: calc(50% + 40px);
+        width: 40px;
+        height: 40px;
+        top: 15px;
+    }
+    
+    .teamo-link::after {
+        font-size: 18px;
+    }
+}
+/* BOTÓN MENSAJE OCULTO - NUEVA UBICACIÓN (Superior Izquierda) */
+.mensajeocult {
+    position: fixed;
+    top: 20px;
+    left: 20px; /* Misma posición que floating-promise-btn pero más arriba */
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #9c27b0, #673ab7, #3f51b5);
+    clip-path: path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z');
+    cursor: pointer;
+    z-index: 300; /* Más alto que floating-promise-btn */
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: aparecerDesaparecer 4s infinite;
+}
+
+/* ANIMACIÓN DE APARECER Y DESAPARECER */
+@keyframes aparecerDesaparecer {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    80% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+/* ICONO DE SOBRE MISTERIOSO */
+.mensajeocult::after {
+    content: '💌';
+    position: absolute;
+    font-size: 28px;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+    animation: flotar 2s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* TEXTO OCULTO QUE APARECE AL HOVER */
+.mensajeocult::before {
+    content: 'Mensaje Oculto';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.mensajeocult:hover::before {
+    opacity: 1;
+}
+
+/* EFECTO HOVER */
+.mensajeocult:hover {
+    animation: none;
+    opacity: 1 !important;
+    transform: scale(1.2);
+    box-shadow: 0 0 30px rgba(156, 39, 176, 0.8);
+    z-index: 301;
+}
+
+/* PARTÍCULAS MISTERIOSAS ALREDEDOR */
+.mensajeocult-particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #9c27b0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 299;
+    animation: misterioParticle 3s linear infinite;
+}
+
+@keyframes misterioParticle {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(
+            calc(var(--tx) * 50px),
+            calc(var(--ty) * 50px)
+        ) scale(0);
+        opacity: 0;
+    }
+}
+
+/* VERSIÓN CON TEXTO DENTRO (opcional) */
+.mensajeocult-texto {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: auto;
+    min-width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #9c27b0, #673ab7);
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 300;
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    animation: aparecerDesaparecer 4s infinite;
+    padding: 0 15px;
+}
+
+.mensajeocult-texto span {
+    color: white;
+    font-family: 'Dancing Script', cursive;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* PARA QUE NO SE AMONTONE CON floating-promise-btn */
+.floating-promise-btn {
+    top: 100px; /* Mover el botón de promesa más abajo */
+}
+
+/* O puedes mantener floating-promise-btn en su lugar y este va arriba */
+/* La posición actual es: 
+   - mensajeocult: top 20px, left 20px
+   - floating-promise-btn: top 20px, left 20px (pero con z-index menor)
+*/
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .mensajeocult {
+        top: 15px;
+        left: 15px;
+        width: 55px;
+        height: 55px;
+    }
+    
+    .mensajeocult::after {
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mensajeocult {
+        top: 10px;
+        left: 10px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .mensajeocult::after {
+        font-size: 22px;
+    }
+    
+    .floating-promise-btn {
+        top: 80px; /* Ajustado para móvil */
+    }
+}
+
+@media (max-width: 480px) {
+    .mensajeocult {
+        top: 5px;
+        left: 5px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .mensajeocult::after {
+        font-size: 18px;
+    }
+}
