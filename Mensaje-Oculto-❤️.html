@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mensaje Oculto 🌌</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            touch-action: none; 
+            -webkit-user-select: none; 
+            user-select: none; 
+        }
+        
+        body { 
+            background: #000; 
+            overflow: hidden; 
+            height: 100vh; 
+            width: 100vw;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Arial Black', sans-serif;
+        }
+        
+        #pantalla-inicio {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, #2a001a 0%, #000 100%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        #pantalla-inicio h2 {
+            color: #fff;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .btn-iniciar {
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            background: transparent;
+            color: #ffb6e0;
+            border: 2px solid #ffb6e0;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            z-index: 11;
+        }
+
+        #mensaje-oculto {
+            position: absolute;
+            z-index: 1;
+            text-align: center;
+            width: 90%;
+            pointer-events: none;
+        }
+
+        h1 { 
+            font-size: clamp(3rem, 15vw, 9rem); 
+            line-height: 0.85;
+            background: linear-gradient(to bottom, #ffffff, #ff0077);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 119, 0.5));
+            margin-bottom: 20px;
+        }
+
+        p#subtexto { 
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(1rem, 4vw, 1.8rem); 
+            color: #fff; 
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        #canvas1 { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 2; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-inicio">
+        <h2>BUSCA EL MENSAJE OCULTO</h2>
+        <button class="btn-iniciar" onclick="event.stopPropagation(); comenzar()">Iniciar</button>
+    </div>
+
+    <div id="mensaje-oculto">
+        <h1>TE AMO MUCHO</h1>
+        <p id="subtexto">Eres mi universo entero ✨</p>
+    </div>
+
+    <canvas id="canvas1"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas1');
+        const ctx = canvas.getContext('2d');
+        const inicio = document.getElementById('pantalla-inicio');
+        
+        let particlesArray = [];
+        let interactuando = false; 
+        let juegoActivo = false; // Nueva bandera para ignorar toques accidentales
+        const numberOfParticles = 2500; 
+        const mouse = { x: -2000, y: -2000, radius: 110 };
+
+        function comenzar() {
+            inicio.style.opacity = '0';
+            // Reset manual de posición al dar click
+            mouse.x = -2000;
+            mouse.y = -2000;
+            
+            setTimeout(() => {
+                inicio.style.display = 'none';
+                juegoActivo = true; // Solo ahora el canvas responderá
+            }, 800);
+            
+            init();
+            animate();
+        }
+
+        function updateCoords(e) {
+            if (!juegoActivo) return; // Si no ha iniciado, no hacemos nada
+            
+            interactuando = true; 
+            if (e.touches) {
+                mouse.x = e.touches[0].clientX;
+                mouse.y = e.touches[0].clientY;
+            } else {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            }
+        }
+
+        // Listeners globales
+        window.addEventListener('mousemove', updateCoords);
+        window.addEventListener('mousedown', updateCoords); // Detecta el primer clic
+        window.addEventListener('touchstart', updateCoords, {passive: false});
+        window.addEventListener('touchmove', (e) => {
+            updateCoords(e);
+            if(juegoActivo) e.preventDefault();
+        }, {passive: false});
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.size = Math.random() * 1.8 + 0.4;
+                this.density = (Math.random() * 10) + 2;
+                this.color = Math.random() > 0.4 ? '#ffb6e0' : '#ffffff';
+            }
+            update() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    let force = (mouse.radius - distance) / mouse.radius;
+                    this.x -= (dx / distance) * force * this.density;
+                    this.y -= (dy / distance) * force * this.density;
+                } else {
+                    this.x -= (this.x - this.baseX) / 15;
+                    this.y -= (this.y - this.baseY) / 15;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.98)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height); 
+ 
+            // SOLO perforamos si hay interacción REAL después de iniciar
+            if (juegoActivo && interactuando) {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            init();
+        });
+    </script>
+</body>
+</html>
