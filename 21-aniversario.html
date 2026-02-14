@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 Meses Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Fondo profundamente melancólico */
+        body {
+            background: linear-gradient(135deg, #263238 0%, #37474F 50%, #455A64 100%);
+            color: #f5f5f5;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            background: rgba(38, 50, 56, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .text-memory {
+            background: linear-gradient(135deg, rgba(38, 50, 56, 0.8), rgba(55, 71, 79, 0.8));
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: #e0e0e0;
+            line-height: 1.75;
+            text-align: center;
+            padding: 28px;
+            border-radius: 12px;
+            border-left: 3px solid #78909C;
+            border-right: 3px solid #78909C;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: heavyAppear 2s ease forwards;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-memory:before {
+            content: '"';
+            position: absolute;
+            top: 5px;
+            left: 15px;
+            font-size: 3rem;
+            color: #90A4AE;
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        .text-memory:after {
+            content: '"';
+            position: absolute;
+            bottom: 5px;
+            right: 15px;
+            font-size: 3rem;
+            color: #90A4AE;
+            opacity: 0.2;
+            font-family: serif;
+        }
+        
+        .flower-memory {
+            background: rgba(38, 50, 56, 0.6);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            border: 1px solid rgba(144, 164, 174, 0.2);
+            min-height: 280px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .flower-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            background: rgba(38, 50, 56, 0.8);
+            border-color: rgba(144, 164, 174, 0.3);
+        }
+        
+        .title {
+            color: #B0BEC5;
+            text-shadow: 0 0 10px rgba(144, 164, 174, 0.2);
+            font-size: 3.2rem;
+            margin-bottom: 30px;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .title:after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #78909C, transparent);
+        }
+
+        @keyframes heavyAppear {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 16px;
+            animation: heavyFloat 25s linear infinite;
+            opacity: 0.15;
+            color: #607D8B;
+        }
+        
+        @keyframes heavyFloat {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-100px) translateX(30px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Flores profundamente melancólicas */
+        .flower-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .css-flower {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            filter: drop-shadow(0 0 8px rgba(144, 164, 174, 0.1));
+            opacity: 0.7;
+        }
+
+        .css-flower.small {
+            width: 110px;
+            height: 110px;
+        }
+
+        .petal {
+            position: absolute;
+            width: 28px;
+            height: 55px;
+            background: linear-gradient(135deg, #607D8B, #546E7A, #455A64);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: center 70px;
+            top: 15px;
+            left: 56px;
+            animation: heavyBloom 12s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .small .petal {
+            transform-origin: center 55px;
+            left: 41px;
+            width: 24px;
+            height: 45px;
+        }
+
+        .center {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, #B0BEC5, #78909C, #546E7A);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+            animation: heavyPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes heavyBloom {
+            0%, 100% { 
+                transform: rotate(var(--rotate)) scale(0.8);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: rotate(var(--rotate)) scale(0.95);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes heavyPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(0.9); }
+            50% { transform: translate(-50%, -50%) scale(1.0); }
+        }
+
+        /* Tallos y hojas oscuros */
+        .stem {
+            position: absolute;
+            width: 4px;
+            height: 75px;
+            background: linear-gradient(to bottom, #546E7A, #455A64, #37474F);
+            top: 125px;
+            left: 68px;
+            border-radius: 2px;
+            z-index: -1;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .small .stem {
+            height: 65px;
+            top: 100px;
+            left: 53px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 18px;
+            height: 10px;
+            background: #455A64;
+            border-radius: 50%;
+            z-index: -1;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .leaf-1 {
+            top: 140px;
+            left: 75px;
+            transform: rotate(45deg);
+        }
+
+        .leaf-2 {
+            top: 155px;
+            left: 55px;
+            transform: rotate(-30deg);
+        }
+
+        .small .leaf-1 {
+            top: 115px;
+            left: 60px;
+        }
+
+        .small .leaf-2 {
+            top: 130px;
+            left: 45px;
+        }
+
+        .memory-divider {
+            width: 40%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #78909C, #455A64, #78909C, transparent);
+            margin: 30px 0;
+            opacity: 0.3;
+        }
+
+        .mood-marker {
+            font-style: italic;
+            color: #90A4AE;
+            font-size: 0.8rem;
+            margin-top: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .floating-button .anniversary-btn {
+            background: linear-gradient(135deg, #455A64, #37474F);
+            color: #CFD8DC;
+            border: 1px solid #607D8B;
+        }
+
+        .apology-marker {
+            color: #B0BEC5;
+            font-size: 0.9rem;
+            font-weight: 300;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+            border-top: 1px dashed #78909C;
+            padding-top: 10px;
+            opacity: 0.6;
+        }
+
+        .heavy {
+            font-weight: 500;
+            color: #E0E0E0;
+        }
+
+        .broken {
+            text-decoration: line-through;
+            text-decoration-color: #607D8B;
+            opacity: 0.5;
+        }
+
+        .weight {
+            font-size: 0.9rem;
+            color: #78909C;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .wilted-flower .petal {
+            background: linear-gradient(135deg, #455A64, #37474F, #263238);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .wilted-flower .center {
+            background: radial-gradient(circle, #78909C, #455A64, #263238);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">🩶</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">21 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 - Aceptación de culpa -->
+            <div class="memory-item text-memory" style="animation-delay: 0.3s">
+                "Hoy puedo decir sin excusas: la mayoría de nuestras heridas llevan mi nombre. No busco justificarme, solo reconocerlo con el peso que merece."
+                <div class="apology-marker">lo reconozco</div>
+            </div>
+            
+            <!-- Flor 1 - Canvas Melancólica Pesada -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower1" class="flower-canvas"></canvas>
+            </div>
+            
+            <!-- Mensaje 2 - Culpa asumida -->
+            <div class="memory-item text-memory" style="animation-delay: 0.5s">
+                "Mis manos, que debían ser refugio, tantas veces fueron tormenta. Mis silencios, que debían ser paz, tantas veces fueron abandono. Lo sé ahora con claridad."
+                <div class="weight">el peso de mis errores</div>
+            </div>
+            
+            <!-- Flores Múltiples CSS - Marchitas -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower wilted-flower" id="cssFlower1"></div>
+                    <div class="css-flower small wilted-flower" id="cssFlower2"></div>
+                    <div class="css-flower small wilted-flower" id="cssFlower3"></div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 - Sin excusas -->
+            <div class="memory-item text-memory" style="animation-delay: 0.7s">
+                "Ya no digo 'sin querer'. Ya no busco culpables afuera. Fui yo. Mis miedos, mis silencios, mis torpezas. Duele decirlo, pero duele más callarlo."
+            </div>
+
+            <!-- Flor 2 - Canvas aún más pesada -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower2" class="flower-canvas"></canvas>
+            </div>
+
+            <!-- Mensaje 4 - El daño hecho -->
+            <div class="memory-item text-memory" style="animation-delay: 0.9s">
+                "Miro tus ojos y veo el cansancio que yo provoqué. Miro tu sonrisa y sé que hay días que luchó por salir. Ese es mi legado hasta ahora."
+                <div class="apology-marker">y lo lamento</div>
+            </div>
+
+            <div class="memory-divider"></div>
+
+            <!-- Mensaje 5 - Sin redención fácil -->
+            <div class="memory-item text-memory" style="animation-delay: 1.1s">
+                "No busco perdón rápido ni redención barata. Solo quiero que sepas que lo sé. Que cargo con esto. Que ya no huyo de la verdad."
+            </div>
+            
+            <!-- Flores Múltiples 2 - Más marchitas -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower small wilted-flower" id="cssFlower4"></div>
+                    <div class="css-flower wilted-flower" id="cssFlower5"></div>
+                    <div class="css-flower small wilted-flower" id="cssFlower6"></div>
+                </div>
+            </div>
+
+            <!-- Mensaje 6 - Aceptación sin excusas -->
+            <div class="memory-item text-memory" style="animation-delay: 1.3s">
+                "Podría decir 'no fue mi intención'. Podría buscar razones. Pero la verdad es más simple: fallé. Y esa verdad me acompaña cada día."
+            </div>
+
+            <!-- Mensaje Final - Melancolía pura -->
+            <div class="memory-item text-memory" style="animation-delay: 1.5s">
+                "Veintiún meses después, entiendo que el amor también es aceptar el daño que causamos. Y aquí estoy, <span class="heavy">con las manos vacías de excusas</span> y el corazón lleno de conciencia."
+                <div class="mood-marker">sabiendo que fui yo</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <script>
+        // Corazones flotantes grises y pesados
+        const heartsContainer = document.getElementById('heartsContainer');
+        const colors = ['#607D8B', '#546E7A', '#455A64', '#37474F', '#263238'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '🩶';
+            
+            const startX = Math.random() * 100;
+            const duration = 18 + Math.random() * 35;
+            const delay = Math.random() * 30;
+            const size = 14 + Math.random() * 28;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        setInterval(createHeart, 1500);
+        
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createHeart, i * 600);
+        }
+
+        // Flor 1 - Canvas Melancólica Pesada
+        const canvas1 = document.getElementById('flower1');
+        const ctx1 = canvas1.getContext('2d');
+        
+        canvas1.width = canvas1.offsetWidth;
+        canvas1.height = canvas1.offsetHeight;
+        
+        function drawFlower1() {
+            const centerX = canvas1.width / 2;
+            const centerY = canvas1.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Fondo oscuro
+            ctx1.fillStyle = 'rgba(38, 50, 56, 0.2)';
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Tallo quebrado
+            ctx1.strokeStyle = '#455A64';
+            ctx1.lineWidth = 5;
+            ctx1.setLineDash([5, 3]);
+            ctx1.lineCap = 'round';
+            ctx1.shadowColor = '#000000';
+            ctx1.shadowBlur = 8;
+            ctx1.beginPath();
+            ctx1.moveTo(centerX, centerY + 120);
+            ctx1.lineTo(centerX - 5, centerY + 80);
+            ctx1.lineTo(centerX + 3, centerY + 40);
+            ctx1.lineTo(centerX - 2, centerY);
+            ctx1.stroke();
+            
+            ctx1.setLineDash([]);
+            
+            // Hojas caídas
+            ctx1.fillStyle = '#37474F';
+            ctx1.shadowColor = '#000000';
+            ctx1.shadowBlur = 5;
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX + 20, centerY + 60, 20, 10, Math.PI / 6, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX - 18, centerY + 25, 18, 9, -Math.PI / 8, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.shadowBlur = 0;
+            
+            // Pétalos pesados y caídos
+            const petalCount = 7;
+            const baseRadius = 45;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.1;
+                // Pétalos más caídos hacia abajo
+                const x = centerX + Math.cos(angle) * (baseRadius - 10);
+                const y = centerY + Math.sin(angle) * (baseRadius) + 5;
+                
+                const gradient = ctx1.createRadialGradient(x, y, 5, x, y, 25);
+                gradient.addColorStop(0, '#607D8B');
+                gradient.addColorStop(0.7, '#455A64');
+                gradient.addColorStop(1, '#263238');
+                
+                ctx1.fillStyle = gradient;
+                ctx1.shadowColor = '#000000';
+                ctx1.shadowBlur = 12;
+                
+                // Pétalos caídos y marchitos
+                ctx1.beginPath();
+                ctx1.ellipse(x, y, 18, 28, angle + 0.2, 0, Math.PI * 2);
+                ctx1.fill();
+                
+                // Sombra interior
+                ctx1.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx1.beginPath();
+                ctx1.ellipse(x - 2, y + 2, 15, 23, angle + 0.2, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            ctx1.shadowBlur = 0;
+            
+            // Centro pesado y oscuro
+            const centerGradient = ctx1.createRadialGradient(centerX, centerY, 5, centerX, centerY, 22);
+            centerGradient.addColorStop(0, '#78909C');
+            centerGradient.addColorStop(0.5, '#455A64');
+            centerGradient.addColorStop(1, '#263238');
+            
+            ctx1.fillStyle = centerGradient;
+            ctx1.shadowColor = '#000000';
+            ctx1.shadowBlur = 15;
+            ctx1.beginPath();
+            ctx1.arc(centerX, centerY, 18, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Grietas en el centro
+            ctx1.strokeStyle = '#000000';
+            ctx1.lineWidth = 1;
+            ctx1.setLineDash([2, 2]);
+            ctx1.beginPath();
+            ctx1.moveTo(centerX - 5, centerY - 5);
+            ctx1.lineTo(centerX + 5, centerY + 5);
+            ctx1.stroke();
+            ctx1.beginPath();
+            ctx1.moveTo(centerX + 5, centerY - 5);
+            ctx1.lineTo(centerX - 5, centerY + 5);
+            ctx1.stroke();
+            
+            ctx1.setLineDash([]);
+            ctx1.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower1);
+        }
+
+        // Flor 2 - Canvas aún más pesada
+        const canvas2 = document.getElementById('flower2');
+        const ctx2 = canvas2.getContext('2d');
+        
+        canvas2.width = canvas2.offsetWidth;
+        canvas2.height = canvas2.offsetHeight;
+        
+        function drawFlower2() {
+            const centerX = canvas2.width / 2;
+            const centerY = canvas2.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+            
+            // Flor casi marchita
+            const petalCount = 5;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.05;
+                const x = centerX + Math.cos(angle) * 35;
+                const y = centerY + Math.sin(angle) * 35;
+                
+                const gradient = ctx2.createRadialGradient(x, y, 5, x, y, 22);
+                gradient.addColorStop(0, '#546E7A');
+                gradient.addColorStop(1, '#263238');
+                
+                ctx2.fillStyle = gradient;
+                ctx2.shadowColor = '#000000';
+                ctx2.shadowBlur = 10;
+                
+                ctx2.beginPath();
+                ctx2.ellipse(x, y, 16, 24, angle, 0, Math.PI * 2);
+                ctx2.fill();
+            }
+            
+            // Centro roto
+            ctx2.fillStyle = '#37474F';
+            ctx2.shadowBlur = 8;
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 14, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.fillStyle = '#263238';
+            ctx2.beginPath();
+            ctx2.arc(centerX - 2, centerY - 2, 6, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower2);
+        }
+        
+        // Función para crear flores CSS marchitas
+        function createWiltedFlower(containerId, petalCount, isSmall = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.classList.add('wilted-flower');
+            if (isSmall) container.classList.add('small');
+            
+            // Crear pétalos
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const rotation = (360 / petalCount) * i;
+                petal.style.setProperty('--rotate', `${rotation}deg`);
+                petal.style.animationDelay = `${i * 0.4}s`;
+                container.appendChild(petal);
+            }
+            
+            // Crear centro
+            const center = document.createElement('div');
+            center.className = 'center';
+            container.appendChild(center);
+            
+            // Crear tallo
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            container.appendChild(stem);
+            
+            // Crear hojas
+            const leaf1 = document.createElement('div');
+            leaf1.className = 'leaf leaf-1';
+            container.appendChild(leaf1);
+            
+            const leaf2 = document.createElement('div');
+            leaf2.className = 'leaf leaf-2';
+            container.appendChild(leaf2);
+        }
+        
+        // Crear todas las flores CSS marchitas
+        createWiltedFlower('cssFlower1', 8, false);
+        createWiltedFlower('cssFlower2', 5, true);
+        createWiltedFlower('cssFlower3', 4, true);
+        createWiltedFlower('cssFlower4', 3, true);
+        createWiltedFlower('cssFlower5', 7, false);
+        createWiltedFlower('cssFlower6', 6, true);
+        
+        // Iniciar animaciones de canvas
+        drawFlower1();
+        drawFlower2();
+
+        // Efecto de aparición más lento y pesado
+        const textElements = document.querySelectorAll('.text-memory');
+        textElements.forEach((element, index) => {
+            element.style.animationDelay = `${0.3 + index * 0.25}s`;
+        });
+    </script>
+</body>
+</html>
