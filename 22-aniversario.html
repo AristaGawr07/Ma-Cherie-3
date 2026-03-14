@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22 Meses Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Fondo romántico rosa */
+        body {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
+            color: #881337;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 45px;
+            padding: 40px 20px;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 620px;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(251, 113, 133, 0.2);
+            transition: all 0.6s ease;
+            border: 1px solid rgba(251, 113, 133, 0.2);
+        }
+        
+        .text-memory {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 241, 242, 0.9));
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            color: #9f1239;
+            line-height: 1.8;
+            text-align: center;
+            padding: 35px;
+            border-radius: 25px;
+            border: 2px solid #fda4af;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: romanticAppear 1.2s ease forwards;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(253, 164, 175, 0.3);
+        }
+
+        .text-memory:before {
+            content: '🌸';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 5px #f9a8d4);
+        }
+
+        .text-memory:after {
+            content: '🌸';
+            position: absolute;
+            bottom: -15px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0.6;
+            filter: drop-shadow(0 0 5px #f9a8d4);
+        }
+        
+        .flower-memory {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 25px;
+            border: 1px solid #fbcfe8;
+            min-height: 320px;
+            box-shadow: 0 8px 30px rgba(244, 114, 182, 0.15);
+        }
+        
+        .flower-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(244, 114, 182, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #f9a8d4;
+        }
+        
+        .title {
+            color: #be185d;
+            text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);
+            font-size: 3.8rem;
+            margin-bottom: 35px;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(244, 114, 182, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(244, 114, 182, 0.8); }
+        }
+
+        .title:before {
+            content: '✨';
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            font-size: 2rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .title:after {
+            content: '✨';
+            position: absolute;
+            right: -40px;
+            top: 20px;
+            font-size: 2rem;
+            animation: sparkle 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes romanticAppear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 22px;
+            animation: romanticFloat 15s linear infinite;
+            opacity: 0.4;
+            color: #f9a8d4;
+            filter: drop-shadow(0 0 5px #f472b6);
+        }
+        
+        @keyframes romanticFloat {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Flores hermosas en tonos rosa */
+        .flower-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .css-flower {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            filter: drop-shadow(0 0 15px rgba(244, 114, 182, 0.4));
+            animation: flowerFloat 6s ease-in-out infinite;
+        }
+
+        .css-flower.small {
+            width: 140px;
+            height: 140px;
+        }
+
+        .css-flower.large {
+            width: 200px;
+            height: 200px;
+        }
+
+        @keyframes flowerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .petal {
+            position: absolute;
+            width: 40px;
+            height: 70px;
+            background: linear-gradient(135deg, #fbcfe8, #f9a8d4, #f472b6);
+            border-radius: 50% 50% 50% 50%;
+            transform-origin: center 85px;
+            top: 20px;
+            left: 70px;
+            animation: romanticBloom 5s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(244, 114, 182, 0.3);
+            border: 1px solid #ffffff;
+        }
+
+        .small .petal {
+            transform-origin: center 70px;
+            left: 50px;
+            width: 35px;
+            height: 60px;
+        }
+
+        .large .petal {
+            transform-origin: center 95px;
+            left: 80px;
+            width: 45px;
+            height: 80px;
+        }
+
+        .center {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #ffebf0, #fbcfe8, #f9a8d4);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 25px rgba(244, 114, 182, 0.5);
+            animation: centerGlow 4s ease-in-out infinite;
+            border: 2px solid #ffffff;
+        }
+
+        .small .center {
+            width: 28px;
+            height: 28px;
+        }
+
+        .large .center {
+            width: 40px;
+            height: 40px;
+        }
+
+        @keyframes romanticBloom {
+            0%, 100% { 
+                transform: rotate(var(--rotate)) scale(1);
+                opacity: 0.9;
+            }
+            50% { 
+                transform: rotate(var(--rotate)) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes centerGlow {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 25px rgba(244, 114, 182, 0.5);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 35px rgba(244, 114, 182, 0.8);
+            }
+        }
+
+        /* Tallos y hojas decorativos */
+        .stem {
+            position: absolute;
+            width: 6px;
+            height: 90px;
+            background: linear-gradient(to bottom, #86efac, #4ade80);
+            top: 145px;
+            left: 87px;
+            border-radius: 3px;
+            z-index: -1;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .small .stem {
+            height: 75px;
+            top: 120px;
+            left: 67px;
+        }
+
+        .large .stem {
+            height: 100px;
+            top: 160px;
+            left: 97px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 25px;
+            height: 15px;
+            background: #86efac;
+            border-radius: 50%;
+            z-index: -1;
+            box-shadow: 0 0 8px rgba(134, 239, 172, 0.3);
+            border: 1px solid #ffffff;
+        }
+
+        .leaf-1 {
+            top: 165px;
+            left: 95px;
+            transform: rotate(45deg);
+        }
+
+        .leaf-2 {
+            top: 180px;
+            left: 75px;
+            transform: rotate(-30deg);
+        }
+
+        .small .leaf-1 {
+            top: 135px;
+            left: 75px;
+        }
+
+        .small .leaf-2 {
+            top: 150px;
+            left: 60px;
+        }
+
+        .large .leaf-1 {
+            top: 180px;
+            left: 105px;
+        }
+
+        .large .leaf-2 {
+            top: 195px;
+            left: 85px;
+        }
+
+        .memory-divider {
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f9a8d4, #f472b6, #f9a8d4, transparent);
+            margin: 35px 0;
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        .romantic-marker {
+            font-style: italic;
+            color: #be185d;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.5);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+
+        .floating-button .anniversary-btn {
+            background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+            color: #9f1239;
+            border: 1px solid #f472b6;
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.3);
+        }
+
+        .flower-type-2 .petal {
+            background: linear-gradient(135deg, #fecdd3, #fda4af, #fb7185);
+        }
+
+        .flower-type-3 .petal {
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3, #fda4af);
+        }
+
+        .flower-type-4 .petal {
+            background: linear-gradient(135deg, #fbcfe8, #f5d0fe, #e9a4fe);
+        }
+
+        .bud {
+            position: absolute;
+            width: 25px;
+            height: 40px;
+            background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+            border-radius: 50%;
+            bottom: 10px;
+            left: 10px;
+            animation: budPulse 4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(244, 114, 182, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">🌸</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">22 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 - Romántico -->
+            <div class="memory-item text-memory" style="animation-delay: 0.2s">
+                "Veintidós meses después, sigo encontrando en tu mirada esa misma luz que me enamoró, ahora más cálida, más nuestra, más hogar."
+                <div class="romantic-marker">siempre tú</div>
+            </div>
+            
+            <!-- Flor 1 - Canvas Romántica -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower1" class="flower-canvas"></canvas>
+            </div>
+            
+            <!-- Mensaje 2 - Amor que perdura -->
+            <div class="memory-item text-memory" style="animation-delay: 0.4s">
+                "Tu risa sigue siendo mi canción favorita, tu mano el lugar más seguro, tu corazón el único hogar que quiero habitar."
+                <div class="romantic-marker">mi lugar en el mundo</div>
+            </div>
+            
+            <!-- Flores Múltiples CSS - Hermosas -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower" id="cssFlower1"></div>
+                    <div class="css-flower small flower-type-2" id="cssFlower2"></div>
+                    <div class="css-flower flower-type-3" id="cssFlower3"></div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 - Gratitud romántica -->
+            <div class="memory-item text-memory" style="animation-delay: 0.6s">
+                "Gracias por cada amanecer compartido, por cada noche de paz, por cada instante en que tu amor me recuerda lo bonito que es vivir."
+            </div>
+
+            <!-- Flor 2 - Canvas Romántica -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower2" class="flower-canvas"></canvas>
+            </div>
+
+            <!-- Mensaje 4 - Belleza del amor -->
+            <div class="memory-item text-memory" style="animation-delay: 0.8s">
+                "Nuestro amor es como estas flores: delicado pero fuerte, hermoso pero real, y cada día florece de nuevas formas."
+                <div class="romantic-marker">floreciendo juntos</div>
+            </div>
+
+            <div class="memory-divider"></div>
+
+            <!-- Mensaje 5 - Promesa romántica -->
+            <div class="memory-item text-memory" style="animation-delay: 1.0s">
+                "Hoy más que ayer, menos que mañana. Porque contigo aprendí que el amor verdadero no se gasta, se multiplica."
+            </div>
+            
+            <!-- Flores Múltiples 2 - Más variedad -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower large flower-type-4" id="cssFlower4"></div>
+                    <div class="css-flower small flower-type-2" id="cssFlower5"></div>
+                    <div class="css-flower flower-type-3" id="cssFlower6"></div>
+                </div>
+            </div>
+
+            <!-- Mensaje 6 - Sueños compartidos -->
+            <div class="memory-item text-memory" style="animation-delay: 1.2s">
+                "Contigo el futuro es un lugar hermoso. Porque sé que pase lo que pase, mientras estés tú, estaré en casa."
+            </div>
+
+            <!-- Mensaje Final - Amor eterno -->
+            <div class="memory-item text-memory" style="animation-delay: 1.4s">
+                "Veintidós meses y aún me faltan mil vidas para amarte como mereces. Pero mientras tanto, <span style="color:#be185d; font-weight:bold;">seguiré eligiéndote cada día</span>."
+                <div class="romantic-marker">por siempre tú, por siempre nosotros</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <script>
+        // Corazones flotantes rosas
+        const heartsContainer = document.getElementById('heartsContainer');
+        const colors = ['#fbcfe8', '#f9a8d4', '#f472b6', '#f43f5e', '#fb7185'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['🌸', '💗', '🌸', '💖', '🌸'][Math.floor(Math.random() * 5)];
+            
+            const startX = Math.random() * 100;
+            const duration = 12 + Math.random() * 20;
+            const delay = Math.random() * 15;
+            const size = 20 + Math.random() * 35;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        setInterval(createHeart, 800);
+        
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+
+        // Flor 1 - Canvas Romántica y Hermosa
+        const canvas1 = document.getElementById('flower1');
+        const ctx1 = canvas1.getContext('2d');
+        
+        canvas1.width = canvas1.offsetWidth;
+        canvas1.height = canvas1.offsetHeight;
+        
+        function drawFlower1() {
+            const centerX = canvas1.width / 2;
+            const centerY = canvas1.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Fondo rosado suave
+            ctx1.fillStyle = 'rgba(255, 241, 242, 0.3)';
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Tallo decorativo
+            ctx1.strokeStyle = '#86efac';
+            ctx1.lineWidth = 6;
+            ctx1.shadowColor = '#4ade80';
+            ctx1.shadowBlur = 15;
+            ctx1.beginPath();
+            ctx1.moveTo(centerX, centerY + 130);
+            ctx1.quadraticCurveTo(centerX - 15, centerY + 60, centerX, centerY - 10);
+            ctx1.stroke();
+            
+            // Hojas decorativas
+            ctx1.fillStyle = '#86efac';
+            ctx1.shadowColor = '#4ade80';
+            ctx1.shadowBlur = 10;
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX + 35, centerY + 50, 25, 15, Math.PI / 4, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX - 30, centerY + 25, 22, 13, -Math.PI / 6, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.shadowBlur = 0;
+            
+            // Pétalos principales (muchos y hermosos)
+            const petalLayers = [
+                { count: 12, radius: 60, size: 30, speed: 0.3 },
+                { count: 16, radius: 75, size: 25, speed: 0.5 },
+                { count: 8, radius: 45, size: 35, speed: 0.2 }
+            ];
+            
+            petalLayers.forEach(layer => {
+                const pulse = Math.sin(time * layer.speed) * 4;
+                
+                for (let i = 0; i < layer.count; i++) {
+                    const angle = (i / layer.count) * Math.PI * 2 + time * layer.speed;
+                    const x = centerX + Math.cos(angle) * (layer.radius + pulse);
+                    const y = centerY + Math.sin(angle) * (layer.radius + pulse);
+                    
+                    const gradient = ctx1.createRadialGradient(x, y, 5, x, y, layer.size);
+                    gradient.addColorStop(0, '#fbcfe8');
+                    gradient.addColorStop(0.4, '#f9a8d4');
+                    gradient.addColorStop(0.8, '#f472b6');
+                    gradient.addColorStop(1, '#fb7185');
+                    
+                    ctx1.fillStyle = gradient;
+                    ctx1.shadowColor = '#f9a8d4';
+                    ctx1.shadowBlur = 20;
+                    
+                    ctx1.beginPath();
+                    ctx1.ellipse(x, y, layer.size * 0.8, layer.size, angle, 0, Math.PI * 2);
+                    ctx1.fill();
+                }
+            });
+            
+            // Centro hermoso y brillante
+            const centerGradient = ctx1.createRadialGradient(centerX, centerY, 5, centerX, centerY, 35);
+            centerGradient.addColorStop(0, '#ffffff');
+            centerGradient.addColorStop(0.3, '#fbcfe8');
+            centerGradient.addColorStop(0.6, '#f9a8d4');
+            centerGradient.addColorStop(1, '#f472b6');
+            
+            ctx1.fillStyle = centerGradient;
+            ctx1.shadowColor = '#f472b6';
+            ctx1.shadowBlur = 30;
+            ctx1.beginPath();
+            ctx1.arc(centerX, centerY, 30 + Math.sin(time * 2) * 3, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Detalles brillantes del centro
+            ctx1.fillStyle = '#ffffff';
+            ctx1.shadowBlur = 15;
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2 + time;
+                const x = centerX + Math.cos(angle) * 15;
+                const y = centerY + Math.sin(angle) * 15;
+                ctx1.beginPath();
+                ctx1.arc(x, y, 2 + Math.sin(time * 3 + i) * 1.5, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            ctx1.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower1);
+        }
+
+        // Flor 2 - Canvas Romántica (segunda)
+        const canvas2 = document.getElementById('flower2');
+        const ctx2 = canvas2.getContext('2d');
+        
+        canvas2.width = canvas2.offsetWidth;
+        canvas2.height = canvas2.offsetHeight;
+        
+        function drawFlower2() {
+            const centerX = canvas2.width / 2;
+            const centerY = canvas2.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+            
+            // Flor más delicada
+            const petalCount = 10;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.2;
+                const x = centerX + Math.cos(angle) * 45;
+                const y = centerY + Math.sin(angle) * 45;
+                
+                const gradient = ctx2.createRadialGradient(x, y, 5, x, y, 28);
+                gradient.addColorStop(0, '#fecdd3');
+                gradient.addColorStop(0.6, '#fda4af');
+                gradient.addColorStop(1, '#fb7185');
+                
+                ctx2.fillStyle = gradient;
+                ctx2.shadowColor = '#fda4af';
+                ctx2.shadowBlur = 18;
+                
+                ctx2.beginPath();
+                ctx2.ellipse(x, y, 20, 32, angle, 0, Math.PI * 2);
+                ctx2.fill();
+            }
+            
+            // Centro
+            ctx2.fillStyle = '#ffffff';
+            ctx2.shadowBlur = 25;
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 22 + Math.sin(time * 1.5) * 2, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.fillStyle = '#f472b6';
+            ctx2.shadowBlur = 15;
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 12, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower2);
+        }
+        
+        // Función para crear flores CSS hermosas
+        function createBeautifulFlower(containerId, petalCount, isSmall = false, type = 1, isLarge = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            if (type === 2) container.classList.add('flower-type-2');
+            if (type === 3) container.classList.add('flower-type-3');
+            if (type === 4) container.classList.add('flower-type-4');
+            if (isSmall) container.classList.add('small');
+            if (isLarge) container.classList.add('large');
+            
+            // Crear pétalos
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const rotation = (360 / petalCount) * i;
+                petal.style.setProperty('--rotate', `${rotation}deg`);
+                petal.style.animationDelay = `${i * 0.15}s`;
+                container.appendChild(petal);
+            }
+            
+            // Crear centro
+            const center = document.createElement('div');
+            center.className = 'center';
+            container.appendChild(center);
+            
+            // Crear tallo
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            container.appendChild(stem);
+            
+            // Crear hojas
+            const leaf1 = document.createElement('div');
+            leaf1.className = 'leaf leaf-1';
+            container.appendChild(leaf1);
+            
+            const leaf2 = document.createElement('div');
+            leaf2.className = 'leaf leaf-2';
+            container.appendChild(leaf2);
+            
+            // Añadir algunos brotes decorativos
+            if (Math.random() > 0.5) {
+                const bud = document.createElement('div');
+                bud.className = 'bud';
+                container.appendChild(bud);
+            }
+        }
+        
+        // Crear todas las flores CSS hermosas
+        createBeautifulFlower('cssFlower1', 12, false, 1);
+        createBeautifulFlower('cssFlower2', 8, true, 2);
+        createBeautifulFlower('cssFlower3', 10, false, 3);
+        createBeautifulFlower('cssFlower4', 14, false, 4, true);
+        createBeautifulFlower('cssFlower5', 6, true, 2);
+        createBeautifulFlower('cssFlower6', 9, false, 3);
+        
+        // Iniciar animaciones de canvas
+        drawFlower1();
+        drawFlower2();
+
+        // Efecto de aparición escalonada
+        const textElements = document.querySelectorAll('.text-memory');
+        textElements.forEach((element, index) => {
+            element.style.animationDelay = `${0.2 + index * 0.2}s`;
+        });
+    </script>
+</body>
+</html>
