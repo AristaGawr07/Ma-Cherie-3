@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>23 Meses Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Fondo colorido y vibrante */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            color: #1e1b4b;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            padding: 50px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 650px;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: floatIn 0.8s ease-out;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .text-memory {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.95));
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.65rem;
+            color: #2d1b69;
+            line-height: 1.85;
+            text-align: center;
+            padding: 35px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            animation: textGlow 3s ease-in-out infinite;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes textGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+            50% { box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3); }
+        }
+
+        .text-memory:before {
+            content: '🌈';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 1.8rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .text-memory:after {
+            content: '⭐';
+            position: absolute;
+            bottom: -20px;
+            right: 20px;
+            font-size: 1.8rem;
+            animation: bounce 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .flower-memory {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            min-height: 350px;
+            backdrop-filter: blur(5px);
+            transition: all 0.5s ease;
+        }
+        
+        .flower-memory:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .flower-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.92);
+        }
+        
+        .title {
+            background: linear-gradient(135deg, #fff, #ffe6f0, #ffd6e8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            font-size: 4rem;
+            margin-bottom: 40px;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: 3px;
+            animation: titleRainbow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleRainbow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 255, 255, 1)); }
+        }
+
+        .title:before {
+            content: '✨';
+            position: absolute;
+            left: -50px;
+            top: 20px;
+            font-size: 2.5rem;
+            animation: spin 3s linear infinite;
+        }
+
+        .title:after {
+            content: '✨';
+            position: absolute;
+            right: -50px;
+            top: 20px;
+            font-size: 2.5rem;
+            animation: spin 3s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            font-size: 24px;
+            animation: colorfulFloat 20s linear infinite;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+        
+        @keyframes colorfulFloat {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-100px) translateX(80px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Flores espectaculares */
+        .flower-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 35px;
+            width: 100%;
+        }
+
+        .css-flower {
+            width: 190px;
+            height: 190px;
+            position: relative;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+            animation: flowerWave 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .css-flower:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
+        }
+
+        @keyframes flowerWave {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(2deg); }
+            75% { transform: translateY(5px) rotate(-2deg); }
+        }
+
+        .css-flower.small {
+            width: 150px;
+            height: 150px;
+        }
+
+        .css-flower.large {
+            width: 220px;
+            height: 220px;
+        }
+
+        .petal {
+            position: absolute;
+            width: 45px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 200% 200%;
+            animation: petalGradient 4s ease infinite;
+            border-radius: 50% 50% 50% 50%;
+            transform-origin: center 95px;
+            top: 20px;
+            left: 72px;
+            animation: romanticBloom 4s ease-in-out infinite;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes petalGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .small .petal {
+            transform-origin: center 75px;
+            left: 52px;
+            width: 38px;
+            height: 68px;
+        }
+
+        .large .petal {
+            transform-origin: center 110px;
+            left: 88px;
+            width: 52px;
+            height: 92px;
+        }
+
+        .center {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #fff, #ffd700, #ff6b6b);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            animation: centerGlow 3s ease-in-out infinite;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .small .center {
+            width: 32px;
+            height: 32px;
+        }
+
+        .large .center {
+            width: 48px;
+            height: 48px;
+        }
+
+        @keyframes romanticBloom {
+            0%, 100% { 
+                transform: rotate(var(--rotate)) scale(0.9);
+                opacity: 0.85;
+            }
+            50% { 
+                transform: rotate(var(--rotate)) scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        @keyframes centerGlow {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.9);
+            }
+        }
+
+        /* Tallos decorativos */
+        .stem {
+            position: absolute;
+            width: 7px;
+            height: 100px;
+            background: linear-gradient(to bottom, #11998e, #38ef7d);
+            top: 155px;
+            left: 92px;
+            border-radius: 5px;
+            z-index: -1;
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.4);
+            animation: stemWave 3s ease-in-out infinite;
+        }
+
+        @keyframes stemWave {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .small .stem {
+            height: 80px;
+            top: 125px;
+            left: 72px;
+        }
+
+        .large .stem {
+            height: 115px;
+            top: 175px;
+            left: 107px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 28px;
+            height: 18px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border-radius: 50%;
+            z-index: -1;
+            box-shadow: 0 0 10px rgba(56, 239, 125, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: leafFlutter 4s ease-in-out infinite;
+        }
+
+        @keyframes leafFlutter {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .leaf-1 {
+            top: 175px;
+            left: 105px;
+            transform: rotate(45deg);
+        }
+
+        .leaf-2 {
+            top: 195px;
+            left: 80px;
+            transform: rotate(-35deg);
+        }
+
+        .small .leaf-1 {
+            top: 140px;
+            left: 85px;
+        }
+
+        .small .leaf-2 {
+            top: 155px;
+            left: 65px;
+        }
+
+        .large .leaf-1 {
+            top: 195px;
+            left: 120px;
+        }
+
+        .large .leaf-2 {
+            top: 215px;
+            left: 95px;
+        }
+
+        .memory-divider {
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, #feca57, #48dbfb, #ff9ff3, transparent);
+            margin: 40px 0;
+            opacity: 0.8;
+            border-radius: 3px;
+            animation: dividerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dividerPulse {
+            0%, 100% { opacity: 0.6; width: 60%; }
+            50% { opacity: 1; width: 70%; }
+        }
+
+        .colorful-marker {
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-top: 18px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(72, 219, 251, 0.2));
+            animation: markerGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes markerGlow {
+            0%, 100% { background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(72, 219, 251, 0.2)); }
+            50% { background: linear-gradient(135deg, rgba(255, 107, 107, 0.4), rgba(72, 219, 251, 0.4)); }
+        }
+
+        .floating-button .anniversary-btn {
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 200% 200%;
+            animation: btnGradient 3s ease infinite;
+            color: white;
+            border: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes btnGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Diferentes tipos de flores */
+        .rainbow-flower .petal {
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #a8e6cf);
+            background-size: 300% 300%;
+        }
+
+        .sunset-flower .petal {
+            background: linear-gradient(135deg, #ff6b6b, #ff9ff3, #feca57);
+            background-size: 200% 200%;
+        }
+
+        .ocean-flower .petal {
+            background: linear-gradient(135deg, #48dbfb, #0abde3, #54a0ff);
+            background-size: 200% 200%;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">🌈</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">23 Meses Juntos</h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 - Colorido y alegre -->
+            <div class="memory-item text-memory">
+                "23 colores tiene el arcoíris, y cada uno es como los días contigo: vibrante, único y lleno de magia. ¡Gracias por pintar mi mundo!"
+                <div class="colorful-marker">🌈 un arcoíris de amor</div>
+            </div>
+            
+            <!-- Flor 1 - Canvas Espectacular -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower1" class="flower-canvas"></canvas>
+            </div>
+            
+            <!-- Mensaje 2 - Celebración -->
+            <div class="memory-item text-memory">
+                "Cada mes a tu lado es como una fiesta de colores, donde las risas son la música y tu sonrisa la luz que todo lo ilumina."
+                <div class="colorful-marker">🎉 celebrando 23 meses</div>
+            </div>
+            
+            <!-- Flores Múltiples CSS - Coloridas -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower rainbow-flower" id="cssFlower1"></div>
+                    <div class="css-flower small sunset-flower" id="cssFlower2"></div>
+                    <div class="css-flower ocean-flower" id="cssFlower3"></div>
+                </div>
+            </div>
+            
+            <!-- Mensaje 3 - Aventura -->
+            <div class="memory-item text-memory">
+                "Contigo cada día es una aventura nueva. No importa a dónde vayamos, lo importante es que vamos juntos, riendo y soñando en color."
+            </div>
+
+            <!-- Flor 2 - Canvas Vibrante -->
+            <div class="memory-item flower-memory">
+                <canvas id="flower2" class="flower-canvas"></canvas>
+            </div>
+
+            <!-- Mensaje 4 - Agradecimiento colorido -->
+            <div class="memory-item text-memory">
+                "Gracias por ser la persona que hace que hasta los días grises tengan destellos de color. Eres mi persona favorita en todo el universo."
+                <div class="colorful-marker">✨ mi universo favorito</div>
+            </div>
+
+            <div class="memory-divider"></div>
+
+            <!-- Mensaje 5 - Futuro brillante -->
+            <div class="memory-item text-memory">
+                "Si el futuro se pinta de los colores que hemos vivido, entonces será un cuadro hermoso lleno de momentos inolvidables a tu lado."
+            </div>
+            
+            <!-- Flores Múltiples 2 - Más variedad -->
+            <div class="memory-item flower-memory">
+                <div class="flower-container">
+                    <div class="css-flower large sunset-flower" id="cssFlower4"></div>
+                    <div class="css-flower small ocean-flower" id="cssFlower5"></div>
+                    <div class="css-flower rainbow-flower" id="cssFlower6"></div>
+                </div>
+            </div>
+
+            <!-- Mensaje 6 - Magia -->
+            <div class="memory-item text-memory">
+                "Tu amor tiene la magia de transformar lo ordinario en extraordinario, lo simple en especial, y cada día en una celebración."
+            </div>
+
+            <!-- Mensaje Final - Color y amor -->
+            <div class="memory-item text-memory">
+                "23 meses, 23 razones para sonreír, 23 colores en mi corazón. Gracias por ser el arcoíris después de cada tormenta. <span style="color:#ff6b6b; font-weight:bold;">Te amo con todo el arcoíris de mi alma</span>."
+                <div class="colorful-marker">💖 23 meses de puro color</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-hearts" id="floatingContainer"></div>
+
+    <script>
+        // Elementos flotantes coloridos
+        const floatingContainer = document.getElementById('floatingContainer');
+        const elements = ['🌸', '🌺', '🌼', '🌻', '🦋', '✨', '⭐', '🌈', '💗', '💖', '🌸'];
+        const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#a8e6cf', '#ffd3b6'];
+        
+        function createFloatingElement() {
+            const el = document.createElement('div');
+            el.className = 'floating-element';
+            el.innerHTML = elements[Math.floor(Math.random() * elements.length)];
+            
+            const startX = Math.random() * 100;
+            const duration = 15 + Math.random() * 25;
+            const delay = Math.random() * 20;
+            const size = 20 + Math.random() * 40;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            el.style.left = `${startX}%`;
+            el.style.bottom = `-50px`;
+            el.style.fontSize = `${size}px`;
+            el.style.color = color;
+            el.style.animationDuration = `${duration}s`;
+            el.style.animationDelay = `${delay}s`;
+            
+            floatingContainer.appendChild(el);
+            
+            setTimeout(() => {
+                el.remove();
+            }, duration * 1000);
+        }
+        
+        setInterval(createFloatingElement, 600);
+        
+        for (let i = 0; i < 25; i++) {
+            setTimeout(createFloatingElement, i * 250);
+        }
+
+        // Flor 1 - Canvas Espectacular y Colorida
+        const canvas1 = document.getElementById('flower1');
+        const ctx1 = canvas1.getContext('2d');
+        
+        canvas1.width = canvas1.offsetWidth;
+        canvas1.height = canvas1.offsetHeight;
+        
+        function drawFlower1() {
+            const centerX = canvas1.width / 2;
+            const centerY = canvas1.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Fondo brillante
+            ctx1.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx1.fillRect(0, 0, canvas1.width, canvas1.height);
+            
+            // Tallo decorativo con gradiente
+            const stemGradient = ctx1.createLinearGradient(centerX, centerY + 140, centerX, centerY - 10);
+            stemGradient.addColorStop(0, '#11998e');
+            stemGradient.addColorStop(1, '#38ef7d');
+            ctx1.strokeStyle = stemGradient;
+            ctx1.lineWidth = 8;
+            ctx1.shadowColor = '#38ef7d';
+            ctx1.shadowBlur = 15;
+            ctx1.beginPath();
+            ctx1.moveTo(centerX, centerY + 140);
+            ctx1.quadraticCurveTo(centerX - 20, centerY + 70, centerX, centerY - 15);
+            ctx1.stroke();
+            
+            // Hojas decorativas
+            const leafGradient = ctx1.createLinearGradient(centerX + 30, centerY + 50, centerX + 50, centerY + 70);
+            leafGradient.addColorStop(0, '#11998e');
+            leafGradient.addColorStop(1, '#38ef7d');
+            ctx1.fillStyle = leafGradient;
+            ctx1.shadowBlur = 10;
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX + 40, centerY + 55, 28, 16, Math.PI / 4, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.beginPath();
+            ctx1.ellipse(centerX - 35, centerY + 25, 25, 14, -Math.PI / 6, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            ctx1.shadowBlur = 0;
+            
+            // Múltiples capas de pétalos coloridos
+            const layers = [
+                { count: 6, radius: 70, size: 38, speed: 0.4, colors: ['#ff6b6b', '#feca57'] },
+                { count: 10, radius: 85, size: 32, speed: 0.6, colors: ['#48dbfb', '#ff9ff3'] },
+                { count: 14, radius: 100, size: 28, speed: 0.8, colors: ['#a8e6cf', '#ffd3b6'] },
+                { count: 18, radius: 55, size: 22, speed: 0.3, colors: ['#ff9ff3', '#feca57'] }
+            ];
+            
+            layers.forEach(layer => {
+                const pulse = Math.sin(time * layer.speed) * 6;
+                
+                for (let i = 0; i < layer.count; i++) {
+                    const angle = (i / layer.count) * Math.PI * 2 + time * layer.speed;
+                    const x = centerX + Math.cos(angle) * (layer.radius + pulse);
+                    const y = centerY + Math.sin(angle) * (layer.radius + pulse);
+                    
+                    const gradient = ctx1.createRadialGradient(x, y, 5, x, y, layer.size);
+                    gradient.addColorStop(0, layer.colors[0]);
+                    gradient.addColorStop(0.7, layer.colors[1]);
+                    gradient.addColorStop(1, '#ffffff');
+                    
+                    ctx1.fillStyle = gradient;
+                    ctx1.shadowColor = layer.colors[0];
+                    ctx1.shadowBlur = 20;
+                    
+                    ctx1.beginPath();
+                    ctx1.ellipse(x, y, layer.size * 0.8, layer.size, angle, 0, Math.PI * 2);
+                    ctx1.fill();
+                    
+                    // Detalle interior
+                    ctx1.fillStyle = `rgba(255, 255, 255, 0.3)`;
+                    ctx1.beginPath();
+                    ctx1.ellipse(x - 2, y - 2, layer.size * 0.4, layer.size * 0.6, angle, 0, Math.PI * 2);
+                    ctx1.fill();
+                }
+            });
+            
+            ctx1.shadowBlur = 0;
+            
+            // Centro espectacular
+            const centerGradient = ctx1.createRadialGradient(centerX, centerY, 5, centerX, centerY, 45);
+            centerGradient.addColorStop(0, '#ffffff');
+            centerGradient.addColorStop(0.2, '#ffd700');
+            centerGradient.addColorStop(0.5, '#ff6b6b');
+            centerGradient.addColorStop(0.8, '#ff9ff3');
+            centerGradient.addColorStop(1, '#48dbfb');
+            
+            ctx1.fillStyle = centerGradient;
+            ctx1.shadowColor = '#ffd700';
+            ctx1.shadowBlur = 30;
+            ctx1.beginPath();
+            ctx1.arc(centerX, centerY, 35 + Math.sin(time * 2) * 4, 0, Math.PI * 2);
+            ctx1.fill();
+            
+            // Detalles brillantes del centro
+            for (let i = 0; i < 16; i++) {
+                const angle = (i / 16) * Math.PI * 2 + time * 2;
+                const x = centerX + Math.cos(angle) * 22;
+                const y = centerY + Math.sin(angle) * 22;
+                
+                ctx1.fillStyle = `hsl(${360 * Math.sin(time + i)}, 100%, 70%)`;
+                ctx1.shadowBlur = 15;
+                ctx1.beginPath();
+                ctx1.arc(x, y, 3 + Math.sin(time * 3 + i) * 1.5, 0, Math.PI * 2);
+                ctx1.fill();
+            }
+            
+            ctx1.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower1);
+        }
+
+        // Flor 2 - Canvas Vibrante (segunda)
+        const canvas2 = document.getElementById('flower2');
+        const ctx2 = canvas2.getContext('2d');
+        
+        canvas2.width = canvas2.offsetWidth;
+        canvas2.height = canvas2.offsetHeight;
+        
+        function drawFlower2() {
+            const centerX = canvas2.width / 2;
+            const centerY = canvas2.height / 2;
+            const time = Date.now() * 0.001;
+            
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+            
+            // Flor tipo girasol colorido
+            const petalCount = 16;
+            const baseRadius = 55;
+            const pulse = Math.sin(time * 0.8) * 5;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2 + time * 0.25;
+                const x = centerX + Math.cos(angle) * (baseRadius + pulse);
+                const y = centerY + Math.sin(angle) * (baseRadius + pulse);
+                
+                const gradient = ctx2.createRadialGradient(x, y, 5, x, y, 30);
+                gradient.addColorStop(0, `hsl(${360 * Math.sin(time + i)}, 80%, 65%)`);
+                gradient.addColorStop(0.7, `hsl(${360 * Math.cos(time + i)}, 70%, 50%)`);
+                gradient.addColorStop(1, '#ffffff');
+                
+                ctx2.fillStyle = gradient;
+                ctx2.shadowColor = `hsl(${360 * Math.sin(time + i)}, 80%, 65%)`;
+                ctx2.shadowBlur = 18;
+                
+                ctx2.beginPath();
+                ctx2.ellipse(x, y, 22, 35, angle, 0, Math.PI * 2);
+                ctx2.fill();
+            }
+            
+            // Centro
+            ctx2.fillStyle = '#ffd700';
+            ctx2.shadowBlur = 25;
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 25 + Math.sin(time * 1.5) * 3, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.fillStyle = '#ff8c00';
+            ctx2.beginPath();
+            ctx2.arc(centerX, centerY, 15, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.shadowBlur = 0;
+            
+            requestAnimationFrame(drawFlower2);
+        }
+        
+        // Función para crear flores CSS espectaculares
+        function createSpectacularFlower(containerId, petalCount, isSmall = false, isLarge = false, type = 'rainbow') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            if (type === 'rainbow') container.classList.add('rainbow-flower');
+            if (type === 'sunset') container.classList.add('sunset-flower');
+            if (type === 'ocean') container.classList.add('ocean-flower');
+            if (isSmall) container.classList.add('small');
+            if (isLarge) container.classList.add('large');
+            
+            // Crear pétalos
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const rotation = (360 / petalCount) * i;
+                petal.style.setProperty('--rotate', `${rotation}deg`);
+                petal.style.animationDelay = `${i * 0.1}s`;
+                container.appendChild(petal);
+            }
+            
+            // Crear centro
+            const center = document.createElement('div');
+            center.className = 'center';
+            container.appendChild(center);
+            
+            // Crear tallo
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            container.appendChild(stem);
+            
+            // Crear hojas
+            const leaf1 = document.createElement('div');
+            leaf1.className = 'leaf leaf-1';
+            container.appendChild(leaf1);
+            
+            const leaf2 = document.createElement('div');
+            leaf2.className = 'leaf leaf-2';
+            container.appendChild(leaf2);
+            
+            // Añadir partículas de brillo
+            for (let i = 0; i < 6; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(sparkle);
+            }
+        }
+        
+        // Crear todas las flores CSS espectaculares
+        createSpectacularFlower('cssFlower1', 12, false, false, 'rainbow');
+        createSpectacularFlower('cssFlower2', 8, true, false, 'sunset');
+        createSpectacularFlower('cssFlower3', 10, false, false, 'ocean');
+        createSpectacularFlower('cssFlower4', 14, false, true, 'sunset');
+        createSpectacularFlower('cssFlower5', 6, true, false, 'ocean');
+        createSpectacularFlower('cssFlower6', 12, false, false, 'rainbow');
+        
+        // Iniciar animaciones de canvas
+        drawFlower1();
+        drawFlower2();
+
+        // Efecto de aparición con animaciones fluidas
+        const items = document.querySelectorAll('.memory-item');
+        items.forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.15}s`;
+        });
+    </script>
+</body>
+</html>
