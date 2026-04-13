@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARTEMIS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&display=swap');
+
+        body { 
+            margin: 0; background: #000; overflow: hidden; 
+            font-family: 'JetBrains Mono', monospace; color: #a0f0ff;
+            user-select: none;
+        }
+        
+        canvas { display: block; touch-action: none; transition: filter 2s ease-in; }
+
+        /* Pantalla de Inicio Dinámica */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 100; display: flex;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; cursor: pointer;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s ease-in;
+            overflow: hidden;
+        }
+
+        /* Animación de Nebulosa de Fondo */
+        .nebula-bg {
+            position: absolute; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(0, 80, 150, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 30% 30%, rgba(150, 0, 100, 0.1) 0%, transparent 40%);
+            filter: blur(60px);
+            animation: moveNebula 30s infinite alternate;
+        }
+
+        @keyframes moveNebula {
+            from { transform: translate(-25%, -25%) rotate(0deg); }
+            to { transform: translate(0%, 0%) rotate(10deg); }
+        }
+
+        .grid-overlay {
+            position: absolute; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        .scanline {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 242, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        .title-container {
+            position: relative; z-index: 10;
+        }
+
+        .glitch-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 15px;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 2px 2px #ff2d75, -2px -2px #00f2ff;
+            animation: titlePulse 4s infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+
+        .btn-container {
+            margin-top: 50px; position: relative; z-index: 10;
+        }
+
+        .btn-main {
+            background: rgba(0, 20, 30, 0.6);
+            color: #00f2ff;
+            border: 1px solid #00f2ff;
+            padding: 20px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 4px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            margin: 30px;
+        }
+
+        /* Línea de escaneo láser en el botón */
+        .btn-main::after {
+            content: '';
+            position: absolute; top: -100%; left: 0;
+            width: 100%; height: 20%;
+            background: rgba(0, 242, 255, 0.4);
+            box-shadow: 0 0 15px #00f2ff;
+            animation: scanBtn 3s infinite;
+        }
+
+        @keyframes scanBtn {
+            0% { top: -20%; }
+            100% { top: 120%; }
+        }
+
+        .btn-main:hover {
+            background: rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+            color: #fff;
+        }
+
+        /* HUD */
+        #hud {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; display: flex;
+            flex-direction: column; justify-content: space-between;
+            padding: 30px; box-sizing: border-box;
+            opacity: 0; transition: opacity 1s;
+        }
+
+        .hud-panel {
+            background: rgba(0, 10, 20, 0.7);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            backdrop-filter: blur(12px);
+            padding: 15px; border-radius: 4px;
+        }
+
+        #instructions {
+            position: fixed; 
+            top: 15%; 
+            width: 100%;
+            text-align: center; color: rgba(255,255,255,0.7);
+            font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
+            animation: breathe 2s infinite;
+            z-index: 55;
+            text-shadow: 0 0 10px rgba(0,0,0,1);
+        }
+
+        #log-overlay {
+            position: fixed; 
+            bottom: 22%; 
+            width: 100%;
+            text-align: center; z-index: 60; pointer-events: none;
+        }
+
+        .log-entry {
+            display: inline-block; padding: 15px 35px;
+            background: rgba(0,0,0,0.85); 
+            border-left: 4px solid #ff2d75;
+            color: white; font-size: 1rem;
+            transform: translateY(10px); opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 85%;
+            backdrop-filter: blur(8px);
+        }
+        .log-entry.active { transform: translateY(0); opacity: 1; }
+
+        #reentry-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ff5500;
+            z-index: 150; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease-out, background 0.8s ease-in;
+        }
+
+        #victory {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 26, 51, 0.3) 0%, rgba(0,0,0,0.9) 100%);
+            z-index: 200; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; color: white; opacity: 0; 
+            transition: opacity 2.5s ease-out, filter 2s ease-out;
+            cursor: pointer;
+            filter: blur(15px);
+        }
+
+        #victory.visible {
+            filter: blur(0px);
+            opacity: 1 !important;
+        }
+
+        .heart { 
+            color: #ff2d75; font-size: 5rem; margin-bottom: 20px; 
+            animation: beat 1s infinite; 
+            filter: drop-shadow(0 0 20px #ff2d75);
+        }
+
+        .victory-text {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            padding: 20px;
+            scale: 1.1;
+            transition: transform 0.1s ease-out, scale 3s ease-out;
+        }
+        
+        #victory.visible .victory-text { scale: 1; }
+
+        .final-btn {
+            margin-top: 40px; background: transparent; color: #fff;
+            border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px;
+            font-size: 0.7rem; letter-spacing: 2px; cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        @keyframes breathe { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+        @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+        @media (max-width: 768px) {
+            #hud { padding: 15px; }
+            #instructions { top: 12%; font-size: 0.6rem; letter-spacing: 2px; }
+            .hud-panel { padding: 10px; }
+            #alt-val { font-size: 1.1rem; }
+            .log-entry { font-size: 0.85rem; padding: 10px 20px; }
+            #log-overlay { bottom: 20%; }
+            .heart { font-size: 3.5rem; }
+            .victory-text h1 { font-size: 1.3rem; letter-spacing: 3px; }
+            .victory-text p { font-size: 0.9rem; }
+            .glitch-title { font-size: 1.8rem; letter-spacing: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" onclick="begin()">
+        <div class="nebula-bg"></div>
+        <div class="grid-overlay"></div>
+        <div class="scanline"></div>
+        
+        <div class="title-container">
+            <div class="glitch-title">ARTEMIS II</div>
+            <div style="font-size: 0.7rem; letter-spacing: 5px; opacity: 0.7; margin-bottom: 20px; color: #00f2ff;">PROTOCOL: HOMECOMING_INIT</div>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn-main">COMENZAR VIAJE DE REGRESO A TI</button>
+            <div id="loading-txt" style="margin-top: 15px; font-size: 0.6rem; letter-spacing: 2px; opacity: 0; transition: opacity 0.3s;">SINCRONIZANDO NÚCLEO...</div>
+        </div>
+    </div>
+
+    <div id="reentry-flash"></div>
+
+    <div id="hud">
+        <div class="hud-panel" style="width: fit-content;">
+            <div style="font-size: 0.6rem; letter-spacing: 2px; color: #00f2ff;">ALTITUD ORBITAL</div>
+            <div id="alt-val" style="font-size: 1.4rem; font-family: 'Orbitron';">384,400 KM</div>
+        </div>
+        <div id="instructions">MANTÉN PULSADO PARA ACELERAR EL ENCUENTRO</div>
+        <div class="hud-panel" style="width: fit-content; align-self: flex-end;">
+            <div style="font-size: 0.6rem; letter-spacing: 2px; color: #00f2ff;">ESTADO</div>
+            <div id="system-status" style="color: #00ff00;">ORION-01 ONLINE</div>
+        </div>
+    </div>
+
+    <div id="log-overlay">
+        <div id="current-log" class="log-entry">ESTABLECIENDO CONTACTO...</div>
+    </div>
+
+    <div id="victory" onclick="spawnVictoryHeart(event)">
+        <div class="victory-text" id="parallax-content">
+            <div class="heart">❤️</div>
+            <h1 style="font-family: 'Orbitron'; letter-spacing: 8px; margin-bottom: 20px;">ERES MI HOGAR</h1>
+            <p style="max-width: 80%; line-height: 1.6; opacity: 0.9; font-size: 1.1rem; margin: 0 auto;">
+                He cruzado el vacío del espacio y el silencio de la Luna...<br>
+                Pero mi mayor aventura siempre será volver a tu lado.<br>
+                <strong style="color: #ff2d75; display: block; margin-top: 10px;">Tú eres mi gravedad.</strong>
+            </p>
+            <button class="final-btn" onclick="location.reload(true)">Reiniciar Misión</button>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, ship, earth, stars, cloudsLayer, atmo;
+        let victoryHeartsGroup;
+        let isStarted = false, isFinished = false, isPressing = false;
+        let altitude = 384400;
+        let logIndex = 0;
+        let reEntryTriggered = false;
+        let mouseX = 0, mouseY = 0;
+
+        const diaryEntries = [
+            "Dejando atrás la desolación lunar...",
+            "La Tierra se ve tan hermosa desde aquí.",
+            "Pensaba en nosotros mientras veía las estrellas.",
+            "No hay paisaje espacial que supere tu mirada.",
+            "Iniciando maniobra de aproximación.",
+            "Atravesando el cinturón de escombros...",
+            "El calor del reingreso me recuerda tu abrazo.",
+            "Ya huelo el aire de casa.",
+            "Te amo, ahora y siempre."
+        ];
+
+        function createRealisticEarthTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048; canvas.height = 1024;
+            const ctx = canvas.getContext('2d');
+            const oceanGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+            oceanGrad.addColorStop(0, '#001a33'); oceanGrad.addColorStop(0.5, '#003366'); oceanGrad.addColorStop(1, '#001a33');
+            ctx.fillStyle = oceanGrad; ctx.fillRect(0, 0, 2048, 1024);
+            function drawContinent(points, color, jitter = 6) {
+                ctx.fillStyle = color; ctx.beginPath();
+                points.forEach((p, i) => {
+                    const x = (p[0] + 180) * (2048 / 360);
+                    const y = (90 - p[1]) * (1024 / 180);
+                    const rx = x + (Math.random() - 0.5) * jitter;
+                    const ry = y + (Math.random() - 0.5) * jitter;
+                    if (i === 0) ctx.moveTo(rx, ry); else ctx.lineTo(rx, ry);
+                });
+                ctx.closePath(); ctx.fill();
+            }
+            const landGreen = '#144514'; const landBrown = '#4d3a26'; const landIce = '#f0faff';
+            drawContinent([[-168, 65], [-130, 70], [-100, 75], [-60, 80], [-55, 50], [-75, 30], [-90, 15], [-110, 30], [-125, 45], [-160, 60]], landGreen, 8);
+            drawContinent([[-80, 12], [-50, 10], [-35, -5], [-45, -20], [-60, -55], [-75, -55], [-85, -15], [-80, 10]], landGreen, 6);
+            drawContinent([[-18, 35], [2, 37], [30, 32], [50, 15], [45, -5], [35, -35], [10, -35], [-10, -10], [-15, 5]], landBrown, 10);
+            drawContinent([[-10, 40], [0, 60], [20, 75], [60, 78], [120, 75], [170, 70], [150, 20], [120, 10], [100, 5], [80, 25], [40, 35]], landGreen, 12);
+            drawContinent([[110, -10], [140, -12], [155, -25], [150, -45], [120, -40], [115, -20]], landBrown, 5);
+            ctx.fillStyle = landIce; ctx.fillRect(0, 0, 2048, 120); ctx.fillRect(0, 904, 2048, 120);
+            ctx.fillStyle = '#ffcc66'; for(let i=0; i<2500; i++) { if(Math.random() > 0.3) ctx.fillRect(Math.random()*2048, Math.random()*1024, 1, 1); }
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function createCloudTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024; canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 1024, 512);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            for (let i = 0; i < 350; i++) {
+                const x = Math.random() * 1024; const y = Math.random() * 512;
+                const r = Math.random() * 60 + 5;
+                const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+                g.addColorStop(0, 'rgba(255,255,255,0.85)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+            }
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function createHeartTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ff2d75'; ctx.font = '50px serif'; ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle'; ctx.fillText('❤️', 32, 32);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 3000);
+            camera.position.set(0, 0, 20);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.body.appendChild(renderer.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            const sun = new THREE.DirectionalLight(0xffffff, 2.0); sun.position.set(200, 100, 200); scene.add(sun);
+
+            const shipGroup = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.5, 2.5, 32), new THREE.MeshStandardMaterial({color: 0xcccccc, metalness: 0.95, roughness: 0.05}));
+            body.rotation.x = Math.PI/2;
+            const cockpit = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 32), new THREE.MeshPhysicalMaterial({color: 0x000205, metalness: 1, roughness: 0, clearcoat: 1}));
+            cockpit.scale.set(1.3, 0.7, 1.8); cockpit.position.set(0, 0.45, 0.5);
+            const wings = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.03, 1.4), new THREE.MeshStandardMaterial({color: 0x0a0a0a, metalness: 0.9}));
+            wings.position.set(0, -0.1, -0.6);
+            shipGroup.add(body, cockpit, wings);
+            ship = shipGroup; scene.add(ship);
+
+            window.flame = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0, 2.2, 16), new THREE.MeshBasicMaterial({color: 0x00f2ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending}));
+            window.flame.position.z = -2.2; window.flame.rotation.x = -Math.PI/2;
+            ship.add(window.flame);
+
+            const earthGroup = new THREE.Group();
+            earth = new THREE.Mesh(new THREE.SphereGeometry(120, 128, 128), new THREE.MeshStandardMaterial({map: createRealisticEarthTexture(), roughness: 0.8, metalness: 0.15}));
+            cloudsLayer = new THREE.Mesh(new THREE.SphereGeometry(123.5, 64, 64), new THREE.MeshStandardMaterial({map: createCloudTexture(), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending}));
+            atmo = new THREE.Mesh(new THREE.SphereGeometry(134, 64, 64), new THREE.MeshBasicMaterial({color: 0x00aaff, transparent: true, opacity: 0.15, side: THREE.BackSide, blending: THREE.AdditiveBlending}));
+            earthGroup.add(earth, cloudsLayer, atmo); earthGroup.position.z = -750; scene.add(earthGroup);
+
+            const sPos = new Float32Array(36000);
+            for(let i=0; i<36000; i++) sPos[i] = (Math.random() - 0.5) * 2500;
+            const sGeo = new THREE.BufferGeometry(); sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+            stars = new THREE.Points(sGeo, new THREE.PointsMaterial({color: 0xffffff, size: 1.0, transparent: true})); scene.add(stars);
+
+            victoryHeartsGroup = new THREE.Group(); scene.add(victoryHeartsGroup);
+
+            window.addEventListener('mousedown', () => { if(isStarted && !isFinished) isPressing = true; });
+            window.addEventListener('mouseup', () => isPressing = false);
+            window.addEventListener('touchstart', () => { if(isStarted && !isFinished) isPressing = true; });
+            window.addEventListener('touchend', () => isPressing = false);
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1; mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+                if(isFinished) {
+                    const content = document.getElementById('parallax-content');
+                    content.style.transform = `rotateY(${mouseX * 12}deg) rotateX(${-mouseY * 12}deg)`;
+                }
+            });
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        function begin() {
+            if(isStarted) return;
+            const loadTxt = document.getElementById('loading-txt');
+            loadTxt.style.opacity = '1';
+            
+            // Secuencia de despegue
+            setTimeout(() => {
+                isStarted = true;
+                document.getElementById('start-screen').style.transform = 'scale(1.2)';
+                document.getElementById('start-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('start-screen').style.display = 'none';
+                    document.getElementById('hud').style.opacity = '1'; updateLog();
+                }, 1000);
+            }, 800);
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function updateLog() {
+            if(isFinished) return;
+            const el = document.getElementById('current-log');
+            el.classList.remove('active');
+            setTimeout(() => {
+                el.innerText = diaryEntries[logIndex % diaryEntries.length];
+                el.classList.add('active'); logIndex++;
+            }, 600);
+        }
+
+        function spawnVictoryHeart(e) {
+            if(!isFinished) return;
+            const tex = createHeartTexture();
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending }));
+            sprite.position.set((Math.random()-0.5)*20, (Math.random()-0.5)*15, camera.position.z - 8);
+            sprite.scale.set(0, 0, 1);
+            sprite.userData = { vX: (Math.random()-0.5)*0.12, vY: (Math.random()+0.2)*0.08, growth: 0.12, life: 1.0 };
+            victoryHeartsGroup.add(sprite);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = Date.now() * 0.001;
+
+            if(isStarted && !isFinished) {
+                let speed = isPressing ? 4.2 : 0.75;
+                let distToEarth = camera.position.distanceTo(earth.parent.position);
+                if (distToEarth < 290 && !reEntryTriggered) {
+                    reEntryTriggered = true;
+                    document.getElementById('system-status').innerText = "AVISO: REINGRESO TÉRMICO";
+                    document.getElementById('system-status').style.color = "#ff6600";
+                }
+                camera.position.z -= speed;
+                ship.position.z = camera.position.z - 10;
+                if(isPressing || reEntryTriggered) {
+                    let vib = reEntryTriggered ? 0.28 : 0.08;
+                    ship.position.x = (Math.random() - 0.5) * vib; ship.position.y = (Math.random() - 0.5) * vib;
+                    window.flame.material.color.setHex(reEntryTriggered ? 0xff3300 : 0x00f2ff);
+                    window.flame.scale.set(reEntryTriggered ? 3.5 : 1.8, reEntryTriggered ? 6.5 : 3, reEntryTriggered ? 3.5 : 1.8);
+                    window.flame.material.opacity = 0.9;
+                } else {
+                    window.flame.scale.set(1, 1, 1); window.flame.material.opacity = 0.2;
+                    ship.position.x = 0; ship.position.y = 0;
+                }
+                camera.rotation.z = Math.sin(time * 0.8) * 0.06;
+                let progress = Math.max(0, (distToEarth - 140) / 610);
+                document.getElementById('alt-val').innerText = Math.floor(progress * 384400).toLocaleString() + " KM";
+                if((isPressing || reEntryTriggered) && Date.now() % 3000 < 20) updateLog();
+                earth.rotation.y += 0.001; if(cloudsLayer) cloudsLayer.rotation.y += 0.0015;
+                if(distToEarth < 195) {
+                    const flash = document.getElementById('reentry-flash');
+                    let flashProgress = (1 - (distToEarth - 140) / 55);
+                    flash.style.opacity = Math.min(1, flashProgress);
+                    if(flashProgress > 0.8) {
+                        flash.style.background = "white";
+                        renderer.domElement.style.filter = `blur(${(flashProgress-0.8)*60}px)`;
+                    }
+                }
+                if(distToEarth < 140) {
+                    isFinished = true;
+                    setTimeout(() => {
+                        renderer.domElement.style.filter = "none";
+                        camera.position.set(0, 50, -420); camera.lookAt(earth.parent.position);
+                        const vic = document.getElementById('victory');
+                        vic.style.display = 'flex';
+                        setTimeout(() => vic.classList.add('visible'), 50);
+                        document.getElementById('hud').style.opacity = '0'; 
+                        document.getElementById('log-overlay').style.opacity = '0';
+                        scene.remove(ship);
+                        document.getElementById('reentry-flash').style.opacity = '0';
+                    }, 650);
+                }
+            } else if (isFinished) {
+                earth.rotation.y += 0.0003; if(cloudsLayer) cloudsLayer.rotation.y += 0.0006;
+                camera.position.x = Math.sin(time * 0.08) * 15;
+                camera.position.y = 50 + Math.cos(time * 0.08) * 8;
+                camera.lookAt(earth.parent.position);
+                victoryHeartsGroup.children.forEach((h) => {
+                    h.position.x += h.userData.vX; h.position.y += h.userData.vY;
+                    if(h.scale.x < 2) { h.scale.x += h.userData.growth; h.scale.y += h.userData.growth; }
+                    h.userData.life -= 0.015; h.material.opacity = h.userData.life;
+                    if(h.userData.life <= 0) victoryHeartsGroup.remove(h);
+                });
+                if(Math.random() > 0.95) spawnVictoryHeart();
+            }
+            renderer.render(scene, camera);
+        }
+        init();
+    </script>
+</body>
+</html>
