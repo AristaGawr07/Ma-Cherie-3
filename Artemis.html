@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROMETEO</title>
+    <title>PROMETEO· HOMECOMING AUDIO</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&display=swap');
 
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body { 
             margin: 0; background: #000; overflow: hidden; 
             font-family: 'JetBrains Mono', monospace; color: #a0f0ff;
-            user-select: none;
         }
         
         canvas { display: block; touch-action: none; transition: filter 2s ease-in; }
@@ -27,7 +31,6 @@
             overflow: hidden;
         }
 
-        /* Animación de Nebulosa de Fondo */
         .nebula-bg {
             position: absolute; width: 200%; height: 200%;
             background: radial-gradient(circle at center, rgba(0, 80, 150, 0.15) 0%, transparent 50%),
@@ -96,7 +99,6 @@
             margin: 30px;
         }
 
-        /* Línea de escaneo láser en el botón */
         .btn-main::after {
             content: '';
             position: absolute; top: -100%; left: 0;
@@ -142,6 +144,7 @@
             animation: breathe 2s infinite;
             z-index: 55;
             text-shadow: 0 0 10px rgba(0,0,0,1);
+            pointer-events: none;
         }
 
         #log-overlay {
@@ -202,6 +205,62 @@
         
         #victory.visible .victory-text { scale: 1; }
 
+        /* CONTENEDOR DE MENSAJES EXTRA (varios mensajes emocionales) */
+        .extra-messages-container {
+            position: fixed;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            z-index: 210;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            pointer-events: none;
+        }
+        .extra-message {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .extra-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .extra-message .poem-box {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 45, 117, 0.6);
+            border-radius: 32px;
+            padding: 20px 32px;
+            max-width: 85%;
+            box-shadow: 0 0 30px rgba(255, 45, 117, 0.3);
+        }
+        .extra-message p {
+            margin: 6px 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            line-height: 1.5;
+            color: #ffe6f0;
+        }
+        .extra-message strong {
+            color: #ff2d75;
+            font-weight: bold;
+        }
+        @media (max-width: 640px) {
+            .extra-message .poem-box { padding: 14px 20px; }
+            .extra-message p { font-size: 0.75rem; }
+            .extra-messages-container { bottom: 12%; gap: 12px; }
+        }
+
         .final-btn {
             margin-top: 40px; background: transparent; color: #fff;
             border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px;
@@ -209,21 +268,136 @@
             text-transform: uppercase;
         }
 
+        /* ---------- REPRODUCTOR DE AUDIO (compacto, ESQUINA INFERIOR IZQUIERDA) ---------- */
+        .audio-module {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 130;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            border-radius: 32px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            font-family: 'JetBrains Mono', monospace;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .audio-module.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .audio-btn {
+            background: rgba(0, 242, 255, 0.2);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+
+        .audio-btn:hover {
+            background: #00f2ff;
+            color: #000;
+            box-shadow: 0 0 8px #00f2ff;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.25);
+            border-radius: 20px;
+            height: 4px;
+            cursor: pointer;
+            position: relative;
+            width: 100px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #ff2d75;
+            border-radius: 20px;
+            box-shadow: 0 0 4px #ff2d75;
+        }
+
+        .time-display {
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+            color: #a0f0ff;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 16px;
+            font-family: monospace;
+            white-space: nowrap;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,0,0,0.4);
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        .volume-icon {
+            color: #00f2ff;
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            width: 60px;
+            height: 3px;
+            -webkit-appearance: none;
+            background: #2c4c5c;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]:focus {
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff2d75;
+            cursor: pointer;
+            box-shadow: 0 0 5px #ff2d75;
+        }
+
+        /* Responsive: en móviles se ajusta a la izquierda abajo */
+        @media (max-width: 640px) {
+            .audio-module {
+                bottom: 12px;
+                left: 12px;
+                padding: 6px 12px;
+                gap: 8px;
+            }
+            .progress-container { width: 70px; }
+            .volume-control { display: none; }
+            .time-display { font-size: 0.55rem; }
+            .audio-btn { width: 28px; height: 28px; font-size: 0.8rem; }
+        }
+
         @keyframes breathe { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-
-        @media (max-width: 768px) {
-            #hud { padding: 15px; }
-            #instructions { top: 12%; font-size: 0.6rem; letter-spacing: 2px; }
-            .hud-panel { padding: 10px; }
-            #alt-val { font-size: 1.1rem; }
-            .log-entry { font-size: 0.85rem; padding: 10px 20px; }
-            #log-overlay { bottom: 20%; }
-            .heart { font-size: 3.5rem; }
-            .victory-text h1 { font-size: 1.3rem; letter-spacing: 3px; }
-            .victory-text p { font-size: 0.9rem; }
-            .glitch-title { font-size: 1.8rem; letter-spacing: 8px; }
-        }
     </style>
 </head>
 <body>
@@ -232,12 +406,10 @@
         <div class="nebula-bg"></div>
         <div class="grid-overlay"></div>
         <div class="scanline"></div>
-        
         <div class="title-container">
             <div class="glitch-title">PROMETEO</div>
             <div style="font-size: 0.7rem; letter-spacing: 5px; opacity: 0.7; margin-bottom: 20px; color: #00f2ff;">PROTOCOL: HOMECOMING_INIT</div>
         </div>
-
         <div class="btn-container">
             <button class="btn-main">COMENZAR VIAJE DE REGRESO A TI</button>
             <div id="loading-txt" style="margin-top: 15px; font-size: 0.6rem; letter-spacing: 2px; opacity: 0; transition: opacity 0.3s;">SINCRONIZANDO NÚCLEO...</div>
@@ -275,15 +447,160 @@
         </div>
     </div>
 
+    <!-- CONTENEDOR DE MENSAJES EXTRA (aparecerán secuencialmente) -->
+    <div id="extraMessagesContainer" class="extra-messages-container">
+        <!-- Mensaje 1: El viaje no importa... -->
+        <div id="extraMsg1" class="extra-message">
+            <div class="poem-box">
+                <p>✨ <strong>EL VIAJE NO IMPORTA SI NO ESTAS AL FINAL JUNTO A MÍ</strong> ✨</p>
+                <p>💫 El viaje quiero que sea a tu lado,<br>
+                siempre que esté contigo todo estará bien,<br>
+                contigo voy y vuelvo de cualquier planeta,<br>
+                y cualquier galaxia. ❤️</p>
+            </div>
+        </div>
+        <!-- Mensaje 2: Te amooo infinitamente²... -->
+        <div id="extraMsg2" class="extra-message">
+            <div class="poem-box">
+                <p>🌹 <strong>Te amooo infinitamente² mucho muchote,<br>Ma Chérie ♥</strong> 🌹</p>
+                <p style="font-size: 0.9rem;">Eres mi estrella polar, mi órbita favorita,<br>el latido que guía mi nave a través del cosmos.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPRODUCTOR DE AUDIO COMPACTO (ESQUINA INFERIOR IZQUIERDA) -->
+    <div id="audio-player-module" class="audio-module">
+        <button id="playPauseBtn" class="audio-btn">▶</button>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="time-display"><span id="currentTime">0:00</span> / <span id="durationTime">0:00</span></div>
+        <div class="volume-control">
+            <span class="volume-icon">🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+        </div>
+    </div>
+
     <script>
+        // --------------------  MUSICA INTEGRADA (Vocaroo URL directa MP3) --------------------
+        const AUDIO_URL = "https://media.vocaroo.com/mp3/1bHR9tEGL03i";
+        
+        let audioElement = null;
+        let playPauseBtn, progressBar, progressContainer, currentTimeSpan, durationSpan, volumeSlider;
+        
+        function initAudioPlayer() {
+            audioElement = new Audio(AUDIO_URL);
+            audioElement.preload = "auto";
+            audioElement.volume = 0.7;
+            
+            playPauseBtn = document.getElementById('playPauseBtn');
+            progressBar = document.getElementById('progressBar');
+            progressContainer = document.getElementById('progressContainer');
+            currentTimeSpan = document.getElementById('currentTime');
+            durationSpan = document.getElementById('durationTime');
+            volumeSlider = document.getElementById('volumeSlider');
+            
+            audioElement.addEventListener('loadedmetadata', () => {
+                if (audioElement.duration && isFinite(audioElement.duration)) {
+                    durationSpan.innerText = formatTime(audioElement.duration);
+                } else {
+                    durationSpan.innerText = "0:00";
+                }
+            });
+            
+            audioElement.addEventListener('timeupdate', () => {
+                if (audioElement.duration && isFinite(audioElement.duration)) {
+                    const percent = (audioElement.currentTime / audioElement.duration) * 100;
+                    progressBar.style.width = percent + "%";
+                    currentTimeSpan.innerText = formatTime(audioElement.currentTime);
+                }
+            });
+            
+            audioElement.addEventListener('ended', () => {
+                playPauseBtn.innerHTML = "▶";
+            });
+            
+            progressContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!audioElement.duration) return;
+                const rect = progressContainer.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const width = rect.width;
+                const percent = clickX / width;
+                audioElement.currentTime = percent * audioElement.duration;
+            });
+            
+            playPauseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!audioElement) return;
+                if (audioElement.paused) {
+                    audioElement.play().catch(err => console.warn("Autoplay bloqueado"));
+                    playPauseBtn.innerHTML = "⏸";
+                } else {
+                    audioElement.pause();
+                    playPauseBtn.innerHTML = "▶";
+                }
+            });
+            
+            volumeSlider.addEventListener('input', (e) => {
+                e.stopPropagation();
+                const val = parseFloat(e.target.value);
+                audioElement.volume = val;
+                const volIcon = document.querySelector('.volume-icon');
+                if (val === 0) volIcon.innerHTML = "🔇";
+                else if (val < 0.3) volIcon.innerHTML = "🔈";
+                else if (val < 0.7) volIcon.innerHTML = "🔉";
+                else volIcon.innerHTML = "🔊";
+            });
+            volumeSlider.dispatchEvent(new Event('input'));
+        }
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        function showAudioModule() {
+            const moduleEl = document.getElementById('audio-player-module');
+            moduleEl.classList.add('visible');
+        }
+        
+        // Mostrar mensajes emocionales secuencialmente después de la victoria
+        let messagesShown = false;
+        function showSequentialMessages() {
+            if (messagesShown) return;
+            messagesShown = true;
+            const msg1 = document.getElementById('extraMsg1');
+            const msg2 = document.getElementById('extraMsg2');
+            
+            // Primer mensaje aparece después de 2.8 segundos
+            setTimeout(() => {
+                if (msg1) msg1.classList.add('show');
+                // Desvanecer mensaje1 después de 9 segundos
+                setTimeout(() => {
+                    if (msg1) msg1.style.opacity = '0';
+                }, 9000);
+            }, 2800);
+            
+            // Segundo mensaje aparece después de 6 segundos (para que se superponga un poco)
+            setTimeout(() => {
+                if (msg2) msg2.classList.add('show');
+                setTimeout(() => {
+                    if (msg2) msg2.style.opacity = '0';
+                }, 10000);
+            }, 6000);
+        }
+        
+        // ---------- ESCENA THREE.JS ----------
         let scene, camera, renderer, ship, earth, stars, cloudsLayer, atmo;
         let victoryHeartsGroup;
         let isStarted = false, isFinished = false, isPressing = false;
-        let altitude = 384400;
         let logIndex = 0;
         let reEntryTriggered = false;
         let mouseX = 0, mouseY = 0;
-
+        
         const diaryEntries = [
             "Dejando atrás la desolación lunar...",
             "La Tierra se ve tan hermosa desde aquí.",
@@ -295,7 +612,7 @@
             "Ya huelo el aire de casa.",
             "Te amo, ahora y siempre."
         ];
-
+        
         function createRealisticEarthTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 2048; canvas.height = 1024;
@@ -324,7 +641,7 @@
             ctx.fillStyle = '#ffcc66'; for(let i=0; i<2500; i++) { if(Math.random() > 0.3) ctx.fillRect(Math.random()*2048, Math.random()*1024, 1, 1); }
             return new THREE.CanvasTexture(canvas);
         }
-
+        
         function createCloudTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 1024; canvas.height = 512;
@@ -340,7 +657,7 @@
             }
             return new THREE.CanvasTexture(canvas);
         }
-
+        
         function createHeartTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 64; canvas.height = 64;
@@ -349,20 +666,17 @@
             ctx.textBaseline = 'middle'; ctx.fillText('❤️', 32, 32);
             return new THREE.CanvasTexture(canvas);
         }
-
+        
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 3000);
             camera.position.set(0, 0, 20);
-
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.body.appendChild(renderer.domElement);
-
             scene.add(new THREE.AmbientLight(0xffffff, 0.4));
             const sun = new THREE.DirectionalLight(0xffffff, 2.0); sun.position.set(200, 100, 200); scene.add(sun);
-
             const shipGroup = new THREE.Group();
             const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.5, 2.5, 32), new THREE.MeshStandardMaterial({color: 0xcccccc, metalness: 0.95, roughness: 0.05}));
             body.rotation.x = Math.PI/2;
@@ -372,61 +686,58 @@
             wings.position.set(0, -0.1, -0.6);
             shipGroup.add(body, cockpit, wings);
             ship = shipGroup; scene.add(ship);
-
             window.flame = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0, 2.2, 16), new THREE.MeshBasicMaterial({color: 0x00f2ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending}));
             window.flame.position.z = -2.2; window.flame.rotation.x = -Math.PI/2;
             ship.add(window.flame);
-
             const earthGroup = new THREE.Group();
             earth = new THREE.Mesh(new THREE.SphereGeometry(120, 128, 128), new THREE.MeshStandardMaterial({map: createRealisticEarthTexture(), roughness: 0.8, metalness: 0.15}));
             cloudsLayer = new THREE.Mesh(new THREE.SphereGeometry(123.5, 64, 64), new THREE.MeshStandardMaterial({map: createCloudTexture(), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending}));
             atmo = new THREE.Mesh(new THREE.SphereGeometry(134, 64, 64), new THREE.MeshBasicMaterial({color: 0x00aaff, transparent: true, opacity: 0.15, side: THREE.BackSide, blending: THREE.AdditiveBlending}));
             earthGroup.add(earth, cloudsLayer, atmo); earthGroup.position.z = -750; scene.add(earthGroup);
-
             const sPos = new Float32Array(36000);
             for(let i=0; i<36000; i++) sPos[i] = (Math.random() - 0.5) * 2500;
             const sGeo = new THREE.BufferGeometry(); sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
             stars = new THREE.Points(sGeo, new THREE.PointsMaterial({color: 0xffffff, size: 1.0, transparent: true})); scene.add(stars);
-
             victoryHeartsGroup = new THREE.Group(); scene.add(victoryHeartsGroup);
-
-            window.addEventListener('mousedown', () => { if(isStarted && !isFinished) isPressing = true; });
+            
+            window.addEventListener('mousedown', (e) => { if(isStarted && !isFinished) isPressing = true; });
             window.addEventListener('mouseup', () => isPressing = false);
-            window.addEventListener('touchstart', () => { if(isStarted && !isFinished) isPressing = true; });
+            window.addEventListener('touchstart', (e) => { if(isStarted && !isFinished) isPressing = true; });
             window.addEventListener('touchend', () => isPressing = false);
+            
             window.addEventListener('mousemove', (e) => {
                 mouseX = (e.clientX / window.innerWidth) * 2 - 1; mouseY = (e.clientY / window.innerHeight) * 2 - 1;
                 if(isFinished) {
                     const content = document.getElementById('parallax-content');
-                    content.style.transform = `rotateY(${mouseX * 12}deg) rotateX(${-mouseY * 12}deg)`;
+                    if(content) content.style.transform = `rotateY(${mouseX * 12}deg) rotateX(${-mouseY * 12}deg)`;
                 }
             });
             window.addEventListener('resize', onResize);
             animate();
         }
-
+        
         function begin() {
             if(isStarted) return;
             const loadTxt = document.getElementById('loading-txt');
             loadTxt.style.opacity = '1';
-            
-            // Secuencia de despegue
             setTimeout(() => {
                 isStarted = true;
                 document.getElementById('start-screen').style.transform = 'scale(1.2)';
                 document.getElementById('start-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('start-screen').style.display = 'none';
-                    document.getElementById('hud').style.opacity = '1'; updateLog();
+                    document.getElementById('hud').style.opacity = '1'; 
+                    updateLog();
+                    showAudioModule();
                 }, 1000);
             }, 800);
         }
-
+        
         function onResize() {
             camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
-
+        
         function updateLog() {
             if(isFinished) return;
             const el = document.getElementById('current-log');
@@ -436,7 +747,7 @@
                 el.classList.add('active'); logIndex++;
             }, 600);
         }
-
+        
         function spawnVictoryHeart(e) {
             if(!isFinished) return;
             const tex = createHeartTexture();
@@ -446,11 +757,10 @@
             sprite.userData = { vX: (Math.random()-0.5)*0.12, vY: (Math.random()+0.2)*0.08, growth: 0.12, life: 1.0 };
             victoryHeartsGroup.add(sprite);
         }
-
+        
         function animate() {
             requestAnimationFrame(animate);
             const time = Date.now() * 0.001;
-
             if(isStarted && !isFinished) {
                 let speed = isPressing ? 4.2 : 0.75;
                 let distToEarth = camera.position.distanceTo(earth.parent.position);
@@ -497,6 +807,8 @@
                         document.getElementById('log-overlay').style.opacity = '0';
                         scene.remove(ship);
                         document.getElementById('reentry-flash').style.opacity = '0';
+                        // Mostrar los mensajes extra secuencialmente después de la victoria
+                        showSequentialMessages();
                     }, 650);
                 }
             } else if (isFinished) {
@@ -514,7 +826,9 @@
             }
             renderer.render(scene, camera);
         }
+        
         init();
+        initAudioPlayer();
     </script>
 </body>
 </html>
