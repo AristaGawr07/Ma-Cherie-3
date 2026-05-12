@@ -1702,3 +1702,229 @@ body {
         display: none;
     }
 }
+/* BOTÓN ROMPECABEZAS - PUZZLE DEL AMOR */
+.rompecabeza {
+    position: fixed;
+    top: 50%;
+    right: 80px;
+    transform: translateY(-50%);
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+    z-index: 175;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: flotarPuzzle 4s ease-in-out infinite;
+}
+
+/* PIEZA PRINCIPAL DEL PUZZLE */
+.rompecabeza .pieza {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffb6b6);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* PROTUBERANCIAS DEL PUZZLE (forma de pieza) */
+.rompecabeza .pieza::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: inherit;
+    border-radius: 50%;
+    top: -10px;
+    left: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.rompecabeza .pieza::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: inherit;
+    border-radius: 50%;
+    bottom: -10px;
+    right: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* HUECOS DEL PUZZLE */
+.rompecabeza .hueco {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,0.5);
+    pointer-events: none;
+}
+
+.rompecabeza .hueco-1 {
+    top: 25px;
+    left: -9px;
+}
+
+.rompecabeza .hueco-2 {
+    bottom: 25px;
+    right: -9px;
+}
+
+/* CORAZÓN DENTRO DEL PUZZLE */
+.rompecabeza .corazon-puzzle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    animation: latidoPuzzle 1.5s ease-in-out infinite;
+    z-index: 2;
+}
+
+/* TEXTO DEL PUZZLE */
+.rompecabeza span {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    font-weight: bold;
+    color: #ff6b6b;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    white-space: nowrap;
+    background: rgba(255,255,255,0.9);
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* PIEZAS QUE FLOTAN ALREDEDOR */
+.rompecabeza .pieza-flotante {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: linear-gradient(135deg, #ff8e8e, #ffb6b6);
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    animation: flotarPieza 3s ease-in-out infinite;
+}
+
+@keyframes flotarPieza {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.6;
+    }
+    80% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(calc(var(--tx) * 60px), calc(var(--ty) * 60px)) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ANIMACIONES */
+@keyframes flotarPuzzle {
+    0%, 100% {
+        transform: translateY(-50%) translateY(0px);
+    }
+    50% {
+        transform: translateY(-50%) translateY(-8px);
+    }
+}
+
+@keyframes latidoPuzzle {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* EFECTO HOVER - PIEZAS SE CONECTAN */
+.rompecabeza:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.rompecabeza:hover .pieza {
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(135deg, #ff5252, #ff6b6b, #ff8e8e);
+}
+
+.rompecabeza:hover .corazon-puzzle {
+    animation: latidoPuzzle 0.8s ease-in-out infinite;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .rompecabeza {
+        right: 60px;
+        width: 65px;
+        height: 65px;
+    }
+    
+    .rompecabeza .corazon-puzzle {
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .rompecabeza {
+        right: 40px;
+        width: 55px;
+        height: 55px;
+        top: 45%;
+    }
+    
+    .rompecabeza .corazon-puzzle {
+        font-size: 22px;
+    }
+    
+    .rompecabeza span {
+        font-size: 9px;
+        bottom: -25px;
+        white-space: nowrap;
+    }
+    
+    .rompecabeza .pieza::before {
+        width: 15px;
+        height: 15px;
+        top: -8px;
+        left: 20px;
+    }
+    
+    .rompecabeza .pieza::after {
+        width: 15px;
+        height: 15px;
+        bottom: -8px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rompecabeza {
+        right: 30px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .rompecabeza .corazon-puzzle {
+        font-size: 20px;
+    }
+    
+    .rompecabeza span {
+        font-size: 8px;
+        bottom: -22px;
+    }
+}
