@@ -1,42 +1,59 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Crear el botón
-    const btn = document.createElement('a');
-    btn.href = 'aniversarios/';
-    btn.className = 'aniversario-btn';
-    btn.textContent = 'Nuestros Aniversarios';
-    document.body.appendChild(btn);
+/* Estilo para el botón de aniversarios */
+.aniversario-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
-    // Efecto de corazones
-    btn.addEventListener('mouseenter', function(e) {
-        const hearts = 10; // Número de corazones
-        
-        for(let i = 0; i < hearts; i++) {
-            createHeart(e);
-        }
-    });
+.aniversario-btn:hover {
+    background: linear-gradient(45deg, #ff8e8e, #ff6b6b);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+    transform: translateY(-2px);
+}
 
-    function createHeart(e) {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerHTML = '❤️';
-        
-        // Posición alrededor del cursor
-        const x = e.clientX + (Math.random() * 20 - 10);
-        const y = e.clientY + (Math.random() * 20 - 10);
-        
-        heart.style.left = x + 'px';
-        heart.style.top = y + 'px';
-        
-        // Tamaño y animación aleatoria
-        const size = Math.random() * 20 + 10;
-        heart.style.fontSize = size + 'px';
-        heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-        
-        document.body.appendChild(heart);
-        
-        // Eliminar después de la animación
-        setTimeout(() => {
-            heart.remove();
-        }, 4000);
+.aniversario-btn::before {
+    content: '❤️';
+    margin-right: 8px;
+}
+
+.aniversario-btn::after {
+    content: '❤️';
+    margin-left: 8px;
+}
+
+/* Estilo para los corazones que aparecen */
+.heart {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    font-size: 16px;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
     }
-});
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
