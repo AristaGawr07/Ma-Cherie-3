@@ -3,11 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestros Aniversarios</title>
-   <link rel="stylesheet" href="aniversaio.css">
+    <title>Nuestros Aniversarios - 2 Años Especial</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="aniversarios.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos adicionales solo para el index */
+        .hero-section {
+            text-align: center;
+            padding: 20px 20px 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            color: #8b5a4b;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        /* CONTADOR DE TIEMPO REAL */
+        .time-counter {
+            background: linear-gradient(135deg, #3d1a1a, #5c1a1a);
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 550px;
+            text-align: center;
+            border: 2px solid #c41e3a;
+            box-shadow: 0 5px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .counter-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #e8c8b0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .counter-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .counter-block {
+            text-align: center;
+            min-width: 65px;
+        }
+
+        .counter-value {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f0d8c8;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            min-width: 70px;
+        }
+
+        .counter-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            color: #b89585;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .counter-total {
+            margin-top: 15px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            color: #e8c8b0;
+            border-top: 1px solid rgba(168, 50, 50, 0.4);
+            padding-top: 12px;
+        }
+
+        /* Corazones flotantes semi-transparentes */
+        .floating-hearts-index {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-heart-index {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.12;
+            animation: floatHeartIndex 20s linear infinite;
+            pointer-events: none;
+            color: #c41e3a;
+        }
+
+        @keyframes floatHeartIndex {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.12;
+            }
+            90% {
+                opacity: 0.12;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .dot-decoration {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #d32f2f;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            color: #b89585;
+            border-top: 1px solid rgba(211, 47, 47, 0.2);
+        }
+
+        /* Tarjeta especial de 2 años */
+        .two-years-card {
+            background: linear-gradient(135deg, #3d1a1a, #5c1a1a, #4a0e0e);
+            border: 3px solid #c41e3a;
+            position: relative;
+            animation: twoYearsGlow 2s ease-in-out infinite;
+        }
+
+        .two-years-card .date {
+            color: #f0d8c8;
+            text-shadow: 0 0 8px #c41e3a;
+            font-size: 4rem;
+        }
+
+        .two-years-card .label {
+            color: #e8c8b0;
+            font-weight: bold;
+        }
+
+        .two-years-badge {
+            margin-top: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: rgba(196, 30, 58, 0.6);
+            padding: 4px 12px;
+            border-radius: 30px;
+            color: #f0d8c8;
+            border: 1px solid #c41e3a;
+            animation: badgePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes twoYearsGlow {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
+                border-color: #c41e3a;
+            }
+            50% {
+                box-shadow: 0 15px 40px rgba(196, 30, 58, 0.6);
+                border-color: #e85d04;
+            }
+        }
+
+        @keyframes badgePulse {
+            0%, 100% {
+                transform: scale(1);
+                background: rgba(196, 30, 58, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                background: rgba(196, 30, 58, 0.9);
+            }
+        }
+
+        .two-years-card::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1rem;
+            opacity: 0.7;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .two-years-card::after {
+            content: '✨';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 1rem;
+            opacity: 0.7;
+            animation: sparkle 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
 </head>
 <body>
+
+    <div class="floating-hearts-index" id="floatingHeartsIndex"></div>
+
     <div class="floating-button">
         <a href="../index.html" class="anniversary-btn">
             <span class="heart-icon">❤️</span>
@@ -16,18 +245,57 @@
     </div>
 
     <div class="container">
-        <h1 class="title">Nuestros Aniversarios</h1>
         
-       <div class="buttons-grid">
-    <!-- Botón de 13 meses (actualizado) -->
-    <a href="13-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div class="date">13</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🌸🌹💐</div>
+        <div class="hero-section">
+            <h1 class="hero-title">Nuestros Aniversarios</h1>
+            <div class="dot-decoration">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+            <p class="hero-subtitle">CADA MES ES UN MOTIVO PARA CELEBRAR</p>
         </div>
-    </a>
-      <!-- Botón de 14 años (nuevo) -->
+
+        <!-- CONTADOR DE TIEMPO REAL -->
+        <div class="time-counter" id="timeCounter">
+            <div class="counter-title">❤️ TIEMPO A TU LADO ❤️</div>
+            <div class="counter-numbers">
+                <div class="counter-block">
+                    <div class="counter-value" id="yearsCount">0</div>
+                    <div class="counter-label">Años</div>
+                </div>
+                <div class="counter-block">
+                    <div class="counter-value" id="daysCount">0</div>
+                    <div class="counter-label">Días</div>
+                </div>
+                <div class="counter-block">
+                    <div class="counter-value" id="hoursCount">0</div>
+                    <div class="counter-label">Horas</div>
+                </div>
+                <div class="counter-block">
+                    <div class="counter-value" id="minutesCount">0</div>
+                    <div class="counter-label">Minutos</div>
+                </div>
+                <div class="counter-block">
+                    <div class="counter-value" id="secondsCount">0</div>
+                    <div class="counter-label">Segundos</div>
+                </div>
+            </div>
+            <div class="counter-total" id="totalMessage">Cargando...</div>
+        </div>
+
+        <div class="buttons-grid">
+            
+            <a href="13-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">13</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌸🌹💐</div>
+                </div>
+            </a>
+            
             <a href="14-aniversario.html" class="anniversary-card">
                 <div class="card-content">
                     <div class="date">14</div>
@@ -35,95 +303,193 @@
                     <div class="flowers">🌷🌼✨</div>
                 </div>
             </a>
-           
-    <!-- Botón de 15 meses (nuevo) -->
-   <a href="15-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div class="date">15</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🌺🌻💮</div>
-        </div>
-    </a>  
+            
+            <a href="15-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">15</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌺🌻💮</div>
+                </div>
+            </a>
+            
+            <a href="16-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">16</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🥀🌷🌺</div>
+                </div>
+            </a>
+            
+            <a href="17-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">17</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌹🌺🌸</div>
+                </div>
+            </a>
+            
+            <a href="18-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">18</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">💔🌊🌌</div>
+                </div>
+            </a>
+            
+            <a href="19-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">19</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌸💗🌱</div>
+                </div>
+            </a>
+            
+            <a href="20-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">20</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">💙🌫️🍂</div>
+                </div>
+            </a>
+            
+            <a href="21-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">21</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🩶🌑💔</div>
+                </div>
+            </a>
+            
+            <a href="22-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">22</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌸💗✨</div>
+                </div>
+            </a>
+            
+            <a href="23-aniversario.html" class="anniversary-card">
+                <div class="card-content">
+                    <div class="date">23</div>
+                    <div class="label">MESES JUNTOS</div>
+                    <div class="flowers">🌈🎨✨</div>
+                </div>
+            </a>
 
-<!-- Botón de 16 meses (nuevo) -->
-    <a href="16-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div  class="date">16</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🥀🌷🌺</div>
-        </div>
-    </a>
+            <a href="24-aniversario.html" class="anniversary-card two-years-card">
+                <div class="card-content">
+                    <div class="date">★ 24 ★</div>
+                    <div class="label">2 AÑOS JUNTOS 🎂</div>
+                    <div class="flowers">❤️✨🎉</div>
+                    <div class="two-years-badge">★ ESPECIAL ★</div>
+                </div>
+            </a>
 
-            <!-- Botón de 17 meses (nuevo) -->
-    <a href="17-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div class="date">17</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🌹🌺🌸</div>
+            <div class="coming-soon-card">
+                <div class="card-content">
+                    <div class="soon-text">Próximamente</div>
+                    <div class="heart-emoji">💖✨💖</div>
+                </div>
+            </div>
         </div>
-    </a>
 
-  <a href="18-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div class="date">18</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🌌🌙✨</div>
+        <div class="footer-note">
+            ❤️ Cada mes es un paso más en nuestra historia ❤️
         </div>
-    </a>
-
-            <!-- Botón de 19 meses (NUEVO) -->
-    <a href="19-aniversario.html" class="anniversary-card">
-        <div class="card-content">
-            <div class="date">19</div>
-            <div class="label">MESES JUNTOS</div>
-            <div class="flowers">🌸💗🌱</div>
-        </div>
-    </a>
-
-               <a href="20-aniversario.html" class="anniversary-card">
-    <div class="card-content">
-        <div class="date">20</div>
-        <div class="label">MESES JUNTOS</div>
-        <div class="flowers">💙🌫️🍂</div>
     </div>
-</a>
 
-               <a href="21-aniversario.html" class="anniversary-card">
-    <div class="card-content">
-        <div class="date">21</div>
-        <div class="label">MESES JUNTOS</div>
-        <div class="flowers">🩶🌑💔</div>
-    </div>
-</a>
+    <script>
+        // CONTADOR DE TIEMPO REAL
+        const startDate = new Date(2024, 4, 14, 0, 0, 0);
+        
+        function updateCounter() {
+            const now = new Date();
+            const diff = now - startDate;
+            
+            const totalSeconds = Math.floor(diff / 1000);
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const totalHours = Math.floor(totalMinutes / 60);
+            const totalDays = Math.floor(totalHours / 24);
+            
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+            
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            const currentYearAniversary = new Date(now.getFullYear(), startDate.getMonth(), startDate.getDate());
+            if (now < currentYearAniversary) {
+                years--;
+            }
+            
+            const finalYears = years >= 0 ? years : 0;
+            const seconds = totalSeconds % 60;
+            const minutes = totalMinutes % 60;
+            const hours = totalHours % 24;
+            const daysTotal = totalDays;
+            
+            document.getElementById('yearsCount').textContent = finalYears;
+            document.getElementById('daysCount').textContent = daysTotal;
+            document.getElementById('hoursCount').textContent = hours;
+            document.getElementById('minutesCount').textContent = minutes;
+            document.getElementById('secondsCount').textContent = seconds;
+            
+            document.getElementById('totalMessage').innerHTML = `🎂 <strong>${finalYears} años, ${daysTotal} días, ${hours} horas, ${minutes} minutos y ${seconds} segundos</strong> a tu lado 🎂`;
+        }
+        
+        updateCounter();
+        setInterval(updateCounter, 1000);
+        
+        // CORAZONES FLOTANTES
+        const floatingContainer = document.getElementById('floatingHeartsIndex');
+        
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart-index';
+            heart.innerHTML = '❤️';
+            
+            const startX = Math.random() * 100;
+            const duration = 15 + Math.random() * 25;
+            const delay = Math.random() * 20;
+            const size = 15 + Math.random() * 35;
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            
+            floatingContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        let heartInterval = setInterval(() => {
+            const existingHearts = document.querySelectorAll('.floating-heart-index').length;
+            if (existingHearts < 12) {
+                createFloatingHeart();
+            }
+        }, 800);
+        
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createFloatingHeart, i * 300);
+        }
+        
+        window.addEventListener('beforeunload', () => {
+            clearInterval(heartInterval);
+        });
+    </script>
 
-<!-- Botón de 22 meses (NUEVO) -->
-<a href="22-aniversario.html" class="anniversary-card">
-    <div class="card-content">
-        <div class="date">22</div>
-        <div class="label">MESES JUNTOS</div>
-        <div class="flowers">🌸💗✨</div>
-    </div>
-</a>
-
-     <!-- Botón de 23 meses (NUEVO) -->
-<a href="23-aniversario.html" class="anniversary-card">
-    <div class="card-content">
-        <div class="date">23</div>
-        <div class="label">MESES JUNTOS</div>
-        <div class="flowers">🌈🎨✨</div>
-    </div>
-</a>
-           
- <!-- Espacio para próximos aniversarios -->
-    <div class="coming-soon-card">
-        <div class="card-content">
-            <div class="soon-text">Próximamente</div>
-            <div class="heart-emoji">💖</div>
-        </div>
-    </div>
-</div>
-
-
-</a>
+    <script src="aniversarios.js"></script>
 </body>
 </html>
