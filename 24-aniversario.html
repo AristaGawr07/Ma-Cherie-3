@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 Meses - 2 Años Juntos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Fondo elegante granate */
+        body {
+            background: linear-gradient(135deg, #3d1a1a 0%, #5c1a1a 50%, #4a0e0e 100%);
+            color: #f5e6d3;
+            min-height: 100vh;
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Decoración de fondo sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(139, 0, 0, 0.08) 2px, transparent 2px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .memory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            padding: 50px 25px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .memory-item {
+            position: relative;
+            width: 90%;
+            max-width: 680px;
+            padding: 45px;
+            background: rgba(30, 12, 12, 0.82);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(180, 60, 60, 0.4);
+        }
+        
+        .text-memory {
+            background: rgba(20, 8, 8, 0.9);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 500;
+            color: #f2e2d4;
+            line-height: 1.65;
+            text-align: center;
+            padding: 40px 35px;
+            border-radius: 20px;
+            border-left: 5px solid #a83232;
+            border-right: 5px solid #a83232;
+            letter-spacing: 0.5px;
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .memory-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6);
+            background: rgba(40, 18, 18, 0.88);
+            border-color: rgba(180, 60, 60, 0.6);
+        }
+        
+        .title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.2rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #e8c8b0;
+            text-shadow: 0 0 30px rgba(180, 60, 60, 0.6);
+            position: relative;
+            background: linear-gradient(135deg, #f2e2d4, #d4b896, #c4a882);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .title span {
+            font-size: 2.8rem;
+            display: inline-block;
+            animation: gentlePulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        /* Corazones flotantes semi-transparentes */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 22px;
+            animation: floatUp 22s linear infinite;
+            opacity: 0.18;
+            color: #c44;
+            filter: drop-shadow(0 0 4px #8b1a1a);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            8% { opacity: 0.18; }
+            92% { opacity: 0.18; }
+            100% { transform: translateY(-100px) translateX(50px) rotate(400deg); opacity: 0; }
+        }
+
+        /* Mensajes flotantes de amor */
+        .floating-messages {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-msg {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            background: rgba(70, 25, 25, 0.65);
+            backdrop-filter: blur(5px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #f0d8c8;
+            white-space: nowrap;
+            animation: floatMsg 24s linear infinite;
+            border: 1px solid #a52a2a;
+            letter-spacing: 0.8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes floatMsg {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            8% { opacity: 0.85; }
+            92% { opacity: 0.85; }
+            100% { transform: translateY(-100px) translateX(70px); opacity: 0; }
+        }
+
+        .memory-divider {
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a83232, #c41e3a, #a83232, transparent);
+            margin: 35px 0;
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        .celebration-marker {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            margin-top: 25px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            background: rgba(100, 30, 30, 0.4);
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+        }
+
+        .floating-button .anniversary-btn {
+            background: linear-gradient(135deg, #8b0000, #5c1a1a);
+            border: 1px solid #c41e3a;
+            color: #f0d8c8;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .heart-decoration {
+            display: inline-block;
+            animation: heartBeat 1.6s ease-in-out infinite;
+            margin: 0 6px;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Estilo para números destacados */
+        .highlight-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #d44545;
+            display: inline-block;
+            margin: 0 6px;
+            text-shadow: 0 0 5px rgba(180, 60, 60, 0.5);
+        }
+
+        .signature-date {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            margin-top: 30px;
+            opacity: 0.7;
+            text-align: center;
+            border-top: 1px dashed rgba(180, 60, 60, 0.4);
+            padding-top: 20px;
+        }
+
+        /* Palabras con más peso emocional */
+        .emotional-word {
+            font-weight: 700;
+            color: #e8a8a8;
+            text-shadow: 0 0 3px rgba(200, 80, 80, 0.5);
+        }
+
+        /* Estrella decorativa */
+        .star-decoration {
+            position: absolute;
+            font-size: 1rem;
+            opacity: 0.3;
+            animation: starTwinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.9); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Estrellas decorativas fijas -->
+    <div style="position: fixed; top: 15%; left: 5%; font-size: 1.2rem; opacity: 0.2; pointer-events: none;">✨</div>
+    <div style="position: fixed; bottom: 20%; right: 3%; font-size: 1rem; opacity: 0.2; pointer-events: none;">✨</div>
+    <div style="position: fixed; top: 40%; right: 8%; font-size: 0.8rem; opacity: 0.15; pointer-events: none;">⭐</div>
+
+    <div class="floating-button">
+        <a href="index.html" class="anniversary-btn">
+            <span class="heart-icon">❤️</span>
+            <span class="btn-text">Anivermeses</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1 class="title">
+            <span>✦</span> 24 MESES <br>2 AÑOS JUNTOS <span>✦</span>
+        </h1>
+        
+        <div class="memory-container">
+            <!-- Mensaje 1 - Emoción principal con más peso -->
+            <div class="memory-item text-memory">
+                "<span class="emotional-word">Veinticuatro meses</span>. Dos años completos. <span class="emotional-word">La emoción</span> que siento al escribir esto <span class="emotional-word">no cabe en palabras</span>. Hemos llegado hasta <span class="emotional-word">aquí</span>, juntos, y mi <span class="emotional-word">corazón está lleno</span>."
+                <div class="celebration-marker">❤️ 2 AÑOS ❤️</div>
+            </div>
+            
+            <!-- Mensaje 2 - Agradecimiento profundo -->
+            <div class="memory-item text-memory">
+                "Estoy <span class="emotional-word">realmente emocionado</span> por estos <span class="highlight-number">24 meses</span>. <span class="emotional-word">No ha sido fácil</span>, pero <span class="emotional-word">aquí seguimos</span>. Y lo mejor: <span class="emotional-word">quiero seguir, deseo seguir, espero seguir</span> a tu lado."
+            </div>
+            
+            <!-- Mensaje 3 - Progreso y crecimiento -->
+            <div class="memory-item text-memory">
+                "<span class="emotional-word">Quiero que progresemos</span>. En lo individual, en lo nuestro, en los sueños, en el día a día. Que cada nuevo mes sea <span class="emotional-word">un escalón más hacia donde queremos estar</span>."
+            </div>
+
+            <div class="memory-divider"></div>
+
+            <!-- Mensaje 4 - Futuro con convicción -->
+            <div class="memory-item text-memory">
+                "<span class="emotional-word">Espero que lleguemos a muchos más</span>. Que sumemos años, experiencias, aprendizajes. Que <span class="emotional-word">construyamos algo sólido, real, nuestro</span>."
+            </div>
+
+            <!-- Mensaje 5 - Final emotivo y promesa -->
+            <div class="memory-item text-memory">
+                "Gracias por estos <span class="highlight-number">dos años</span>. Por cada uno de los <span class="highlight-number">730 días</span> que hemos <span class="emotional-word">elegido seguir</span>. <span class="emotional-word">Vamos por más. Vamos por todo.</span>"
+                <div class="signature-date">— 24 meses. 2 años. Y los que vienen. <span class="heart-decoration">❤️</span> —</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Corazones flotantes semi-transparentes (POCOS) -->
+    <div class="floating-hearts" id="heartsContainer"></div>
+    
+    <!-- Mensajes flotantes -->
+    <div class="floating-messages" id="messagesContainer"></div>
+
+    <script>
+        // Corazones flotantes semi-transparentes en tonos granate
+        const heartsContainer = document.getElementById('heartsContainer');
+        const heartColors = ['#9b2a2a', '#8b1a1a', '#a52a2a', '#6b1010'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '❤️';
+            
+            const startX = Math.random() * 100;
+            const duration = 18 + Math.random() * 24;
+            const delay = Math.random() * 18;
+            const size = 20 + Math.random() * 32;
+            const color = heartColors[Math.floor(Math.random() * heartColors.length)];
+            
+            heart.style.left = `${startX}%`;
+            heart.style.bottom = `-50px`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.color = color;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.animationDelay = `${delay}s`;
+            heart.style.opacity = '0.15';
+            
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        
+        // Mensajes cortos de amor con más sentimiento
+        const loveMessages = [
+            "❤️ gracias por quedarte",
+            "✨ 24 meses y aquí estamos",
+            "🤍 dos años de verdad",
+            "🌙 eres mi razón",
+            "🌟 vamos por mucho más",
+            "💪 juntos todo es posible",
+            "🕯️ cada día te elijo más",
+            "🌹 admiro tu fuerza",
+            "❤️ gracias por estos 2 años",
+            "✨ me haces querer ser mejor",
+            "🤍 vales cada día",
+            "🌟 esto solo comienza",
+            "💪 gracias por no rendirte",
+            "🌙 contigo hasta el final",
+            "❤️ 730 días eligiéndonos",
+            "🤍 esto es solo el principio",
+            "✨ lo mejor está por venir"
+        ];
+        
+        function createMessage() {
+            const msg = document.createElement('div');
+            msg.className = 'floating-msg';
+            msg.innerHTML = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+            
+            const startX = Math.random() * 80 + 10;
+            const duration = 20 + Math.random() * 24;
+            const delay = Math.random() * 22;
+            const fontSize = 13 + Math.random() * 6;
+            
+            msg.style.left = `${startX}%`;
+            msg.style.bottom = `-40px`;
+            msg.style.fontSize = `${fontSize}px`;
+            msg.style.animationDuration = `${duration}s`;
+            msg.style.animationDelay = `${delay}s`;
+            
+            document.getElementById('messagesContainer').appendChild(msg);
+            
+            setTimeout(() => {
+                msg.remove();
+            }, duration * 1000);
+        }
+        
+        // Pocos corazones (solo 6-8 a la vez)
+        let heartInterval = setInterval(() => {
+            const existingHearts = document.querySelectorAll('.floating-heart').length;
+            if (existingHearts < 10) {
+                createHeart();
+            }
+        }, 1200);
+        
+        // Pocas burbujas de mensajes
+        let msgInterval = setInterval(() => {
+            const existingMsgs = document.querySelectorAll('.floating-msg').length;
+            if (existingMsgs < 6) {
+                createMessage();
+            }
+        }, 4000);
+        
+        // Corazones iniciales (solo 8)
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+        
+        // Mensajes iniciales (solo 4)
+        for (let i = 0; i < 4; i++) {
+            setTimeout(createMessage, i * 1000);
+        }
+
+        // Limpiar intervalos al salir (opcional)
+        window.addEventListener('beforeunload', () => {
+            clearInterval(heartInterval);
+            clearInterval(msgInterval);
+        });
+
+        // Efecto de aparición escalonada
+        const items = document.querySelectorAll('.memory-item');
+        items.forEach((item, index) => {
+            item.style.animation = `floatIn 0.9s ease-out ${index * 0.25}s forwards`;
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(35px)';
+        });
+
+        // Animación de entrada
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatIn {
+                from { opacity: 0; transform: translateY(35px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

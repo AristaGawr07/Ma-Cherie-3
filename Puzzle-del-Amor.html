@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Para ti ♥ Ma Chérie♥</title>
+<style>
+  body { margin:0; background:#ffe1ec; color:#333; font-family:"Poppins",sans-serif; padding:20px; display:flex; flex-direction:column; gap:15px; align-items:center; overflow:auto; }
+  h1 { color:#ff4081; text-shadow:0 0 10px #ff80ab,0 0 25px #ffcce0; text-align:center; font-size:1.9em; margin:5px 0 0; }
+  .subtitulo { color:#ff6699; text-align:center; font-size:0.95em; margin-top:-5px; margin-bottom:5px; font-style:italic; }
+  input, textarea, button { width:100%; max-width:480px; padding:10px; border-radius:8px; border:1px solid #ff80ab; font-size:15px; box-sizing: border-box; }
+  button { background:#ff4081; color:#fff; font-weight:bold; cursor:pointer; transition:0.2s; border:none; }
+  button:hover { background:#ff80ab; }
+  .url-input-group { display: flex; gap: 10px; width: 100%; max-width: 480px; align-items: center; }
+  .url-input-group input { flex: 1; margin: 0; }
+  .url-input-group button { width: auto; padding: 10px 16px; white-space: nowrap; }
+  .option-divider { display: flex; align-items: center; gap: 15px; color: #ff4081; font-weight: bold; width: 100%; max-width: 480px; }
+  .option-divider hr { flex: 1; border: none; height: 2px; background: linear-gradient(90deg, transparent, #ff80ab, #ff4081, #ff80ab, transparent); }
+  #preview-container { flex:1; border:2px solid #ff80ab; border-radius:10px; overflow:hidden; margin-top:10px; width:100%; max-width:900px; background:#fff; }
+  iframe { width:100%; height:640px; border:none; background:#fff; }
+  .status-msg { font-size: 0.85em; margin-top: 5px; color: #d63384; max-width: 480px; text-align: center; }
+  .instruccion { background: #fff0f5; padding: 12px; border-radius: 12px; text-align: center; max-width: 480px; font-size: 0.9em; color: #cc3366; border: 1px dashed #ff99bb; }
+</style>
+</head>
+<body>
+
+<h1>♥ Para ti, mi amor ♥</h1>
+<div class="subtitulo">✨ Algo especial que hice pensando en ti ✨</div>
+
+<div class="instruccion">
+  📸 Elige una foto nuestra o una que te guste<br>
+  💬 Escribe un mensaje solo para ti<br>
+  🎁 Al terminar el puzzle, te espera una sorpresa
+</div>
+
+<input type="file" id="imgInput" accept="image/*">
+
+<div class="option-divider"><hr><span>♥ o usa esta foto que guarde de primeras vida ♥</span><hr></div>
+
+<div class="url-input-group">
+  <input type="text" id="urlInput" placeholder="https://files.catbox.moe/5zgi6z.jpeg" value="https://files.catbox.moe/5zgi6z.jpeg">
+  <button id="loadUrlBtn">🖼️ Cargar esta foto</button>
+</div>
+<div id="urlStatus" class="status-msg"></div>
+
+<textarea id="mensaje" placeholder="Escribe aquí lo que quieres que diga vida"></textarea>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+  <button id="previewBtn">👀 Ver cómo queda</button>
+  <button id="downloadBtn">💾 Guardar para ti</button>
+</div>
+
+<div id="preview-container"><iframe id="preview" title="Vista previa de tu sorpresa"></iframe></div>
+
+<script>
+let imageBase64 = null;
+
+const imgInput = document.getElementById('imgInput');
+const urlInput = document.getElementById('urlInput');
+const loadUrlBtn = document.getElementById('loadUrlBtn');
+const previewBtn = document.getElementById('previewBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const urlStatus = document.getElementById('urlStatus');
+const mensajeTextarea = document.getElementById('mensaje');
+const previewIframe = document.getElementById('preview');
+
+function setUrlStatus(message, isError = false) {
+  urlStatus.textContent = message;
+  urlStatus.style.color = isError ? '#d32f2f' : '#2e7d32';
+  if (!isError) setTimeout(() => { if(urlStatus.textContent === message) urlStatus.textContent = ''; }, 4000);
+}
+
+async function loadImageFromUrl(url) {
+  if (!url) {
+    setUrlStatus('❌ Ingresa una URL de imagen, amor.', true);
+    return false;
+  }
+  setUrlStatus('🖼️ Cargando tu foto...', false);
+  loadUrlBtn.disabled = true;
+  loadUrlBtn.textContent = '🔄 Cargando...';
+
+  try {
+    let response = await fetch(url, { mode: 'cors', cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const blob = await response.blob();
+    if (!blob.type.startsWith('image/')) throw new Error('El contenido no es una imagen válida');
+    
+    const reader = new FileReader();
+    const base64 = await new Promise((resolve, reject) => {
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    imageBase64 = base64;
+    setUrlStatus('✅ Foto cargada exitosamente, mi vida ♥ ');
+    imgInput.value = '';
+    return true;
+  } catch (error) {
+    console.warn('Error en fetch directo:', error);
+    
+    try {
+      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+      const proxyResponse = await fetch(proxyUrl);
+      if (!proxyResponse.ok) throw new Error(`Proxy error ${proxyResponse.status}`);
+      const proxyBlob = await proxyResponse.blob();
+      if (!proxyBlob.type.startsWith('image/')) throw new Error('Proxy: contenido no es imagen');
+      
+      const proxyReader = new FileReader();
+      const proxyBase64 = await new Promise((resolve, reject) => {
+        proxyReader.onloadend = () => resolve(proxyReader.result);
+        proxyReader.onerror = reject;
+        proxyReader.readAsDataURL(proxyBlob);
+      });
+      imageBase64 = proxyBase64;
+      setUrlStatus('✅ Tu foto está lista hermosa ♥');
+      imgInput.value = '';
+      return true;
+    } catch (proxyError) {
+      console.error('Error también con proxy:', proxyError);
+      setUrlStatus(`❌ No pude cargar la foto, amor. Revisa que la URL esté bien.`, true);
+      imageBase64 = null;
+      return false;
+    }
+  } finally {
+    loadUrlBtn.disabled = false;
+    loadUrlBtn.textContent = '🖼️ Cargar esta foto';
+  }
+}
+
+loadUrlBtn.addEventListener('click', async () => {
+  const url = urlInput.value.trim();
+  if (!url) {
+    setUrlStatus('❌ Pon la URL de la foto, mi amorcito ♥.', true);
+    return;
+  }
+  await loadImageFromUrl(url);
+});
+
+imgInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('Elige una foto bonita, por favor.');
+    imgInput.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    imageBase64 = ev.target.result;
+    setUrlStatus('✅ Foto cargada desde tu dispositivo ♥');
+    urlInput.value = '';
+  };
+  reader.onerror = () => {
+    alert('No pude leer la foto, intenta de nuevo.');
+    imageBase64 = null;
+  };
+  reader.readAsDataURL(file);
+});
+
+function buildPuzzleHTML(imgBase64, msg) {
+  const mensajeFinal = msg || "Te amo más de lo que las palabras pueden decir ♥";
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Para ti, mi vida ♥</title>
+<style>
+html,body{ margin:0;padding:0;height:100%; font-family:'Poppins',sans-serif; background:#ffd0e1; overflow:hidden; }
+.scene{ position:fixed;inset:0; display:flex;flex-direction:column;align-items:center;justify-content:center; opacity:0;transition:opacity 1s ease;z-index:0; }
+.scene.active{ opacity:1;z-index:10; }
+h1{ font-size:24px;margin:20px 0 10px 0;text-align:center;color:#fff; text-shadow:0 0 15px #ff66aa,0 0 25px #ff99cc; }
+#moveCounter{ text-align:center; color:#000; font-size:16px; text-shadow:0 0 6px #ffb6c1; margin-bottom:10px; }
+#puzzle{ position:relative;width:320px;height:320px; background:linear-gradient(145deg,#ffd9e9,#fff); border-radius:16px; box-shadow:inset 0 0 15px #ffcce0,0 8px 18px rgba(0,0,0,0.25); overflow:hidden; transition:box-shadow 1s ease, opacity 1s ease; }
+#puzzle.glow{ box-shadow:0 0 50px 20px #ff66aa,inset 0 0 25px #ffe6f1; }
+.piece{ position:absolute;width:calc(100%/3 - 2px);height:calc(100%/3 - 2px); background-size:300% 300%;cursor:pointer;transition:transform 0.25s ease-out, box-shadow 0.2s ease; border-radius:10px;border:1px solid rgba(255,255,255,0.6); box-shadow:0 2px 5px rgba(0,0,0,0.25),inset 0 0 4px rgba(255,255,255,0.5); }
+.empty{ background:none;border:none;box-shadow:none; }
+#winMessage{ position:absolute;top:50%;left:50%;transform:translate(-50%,-50%); color:#fff;font-size:2em;font-weight:bold;text-shadow:0 0 10px #ff4081,0 0 20px #ff80ab; background:rgba(255,64,129,0.25);padding:15px 25px;border-radius:10px;opacity:0; transition:opacity 0.8s ease;text-align:center;z-index:5; }
+#winMessage.show{ opacity:1; }
+.heart{ position:absolute;width:20px;height:20px;background:#ff5fa2; transform:rotate(45deg);opacity:0.8;border-radius:4px; animation:float 10s ease-in-out infinite;bottom:-40px;z-index:1; }
+.heart:before,.heart:after{ content:'';position:absolute;width:20px;height:20px;background:inherit;border-radius:50%; }
+.heart:before{ left:-10px;} .heart:after{ top:-10px;}
+@keyframes float{ 0%{transform:translateY(0) rotate(45deg) scale(1);} 100%{transform:translateY(-850px) rotate(45deg) scale(1.3);opacity:0;} }
+#final{ background:rgba(0,0,0,0.7); }
+#final img{ width:90%;max-width:380px;border-radius:16px;box-shadow:0 0 25px #fff3;z-index:3; }
+#final h2{ color:#fff;text-shadow:0 0 20px #ff77aa;font-size:2em;margin-top:20px;text-align:center;z-index:3; }
+#giftBtn{ margin-top:25px;background:#ff5fa2;color:#fff;font-size:1.1em;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;box-shadow:0 0 15px #ff9acb;animation:heartbeat 1.5s infinite ease-in-out;z-index:3; }
+@keyframes heartbeat{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+#eggScene { background: radial-gradient(circle at bottom, #ffb6c1, #ff80ab); color: #fff; text-shadow: 0 0 15px #ff4081; transform: scale(0.9); transition: all 1s ease; }
+#eggScene.show { transform: scale(1); opacity: 1; }
+#egg { width: 130px; height: 180px; background: radial-gradient(ellipse at 50% 30%, #fff 0%, #ffd9e9 60%, #ff80ab 100%); border-radius: 50% 50% 48% 48% / 60% 60% 40% 40%; box-shadow: 0 0 25px #ff8dc7, inset 0 -8px 15px rgba(255, 255, 255, 0.6); cursor: pointer; animation: pulse 3s infinite ease-in-out; position: relative; overflow: hidden; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+#egg.crack { animation: shake 0.6s ease, fadeOut 1.2s ease forwards; position: relative; }
+#egg::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="180"><path d="M60 10 L70 50 L50 90 L80 130 L40 170 L60 130 L50 90 L65 50 Z" fill="none" stroke="%23ff0077" stroke-width="3"/></svg>') center/contain no-repeat; opacity: 0; }
+#egg.crack::after { opacity: 1; animation: flash 1.1s ease; }
+@keyframes shake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(3deg); } 40% { transform: rotate(-3deg); } 60% { transform: rotate(2deg); } 80% { transform: rotate(-2deg); } }
+@keyframes fadeOut { to { opacity: 0; transform: scale(1.25); } }
+@keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+#finalScene{ background:linear-gradient(180deg,#160018,#2b0030 60%,#0a0010); }
+#finalMessage{ color:#fff;text-shadow:0 0 25px #ff4d88;font-size:2em;text-align:center;white-space:pre-line;z-index:3;margin-bottom:20px; }
+#finalPhoto{ opacity:0;width:85%;max-width:420px;border-radius:18px;box-shadow:0 0 30px #ff9acb77;transition:opacity 1.2s ease, transform 1.2s ease;transform:scale(1.1);z-index:3; }
+#finalPhoto.show{ opacity:1;transform:scale(1); }
+#restartBtn{ opacity:0;margin-top:25px;background:#ff4081;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:bold;box-shadow:0 0 15px #ff80ab;cursor:pointer;font-size:1.1em;transition:opacity 1s ease;z-index:3; }
+#restartBtn.show{ opacity:1;animation:pulseGlow 2s infinite ease-in-out; }
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 15px #ff80ab;}50%{box-shadow:0 0 25px #ffb3d1;}}
+</style>
+</head>
+<body>
+<div id="scene1" class="scene active"><h1>♥ Arma nuestro puzzle ♥</h1><div id="moveCounter">Movimientos: 0</div><div id="puzzle"></div><div id="winMessage"></div></div>
+<div id="final" class="scene"><img src="${imgBase64}"><h2>${mensajeFinal}</h2><button id="giftBtn">🎁 Abre tu regalo</button></div>
+<div id="eggScene" class="scene"><h2>♥ Rompe el huevo de la sorpresa ♥</h2><div id="egg"></div></div>
+<div id="finalScene" class="scene"><div id="finalMessage"></div><img id="finalPhoto" src="${imgBase64}"><button id="restartBtn">🔁 Volver a empezar</button></div>
+<script>
+const SIZE=3, imageURL='${imgBase64}';
+const puzzle=document.getElementById('puzzle'), moveCounter=document.getElementById('moveCounter');
+const winMessage=document.getElementById('winMessage'), finalDiv=document.getElementById('final'), giftBtn=document.getElementById('giftBtn');
+const eggScene=document.getElementById('eggScene'), egg=document.getElementById('egg'), finalScene=document.getElementById('finalScene');
+const finalMessage=document.getElementById('finalMessage'), finalPhoto=document.getElementById('finalPhoto'), restartBtn=document.getElementById('restartBtn');
+const total=SIZE*SIZE; let tiles=[], order=[], bloqueado=false, movimientos=0;
+
+function showScene(id){ document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+for(let i=0;i<total-1;i++){ const piece=document.createElement('div'); piece.className='piece'; const row=Math.floor(i/SIZE), col=i%SIZE; piece.style.backgroundImage='url('+imageURL+')'; piece.style.backgroundPosition=\`\${(col*100)/(SIZE-1)}% \${(row*100)/(SIZE-1)}%\`; piece.style.backgroundSize=\`\${SIZE*100}% \${SIZE*100}%\`; puzzle.appendChild(piece); tiles.push(piece); order.push(i); }
+const empty=document.createElement('div'); empty.className='piece empty'; puzzle.appendChild(empty); tiles.push(empty); order.push(total-1);
+let emptyIndex=total-1; 
+function shuffle(){ for(let i=0;i<60;i++){ const idx=Math.floor(Math.random()*(total-1)); move(idx,false); } }
+function render(){ order.forEach((tileIndex,pos)=>{ const r=Math.floor(pos/SIZE), c=pos%SIZE; tiles[tileIndex].style.transform=\`translate(\${c*106.6}px,\${r*106.6}px)\`; }); }
+puzzle.addEventListener('click',e=>{ if(bloqueado) return; if(!e.target.classList.contains('piece')||e.target.classList.contains('empty'))return; const tileIdx=tiles.indexOf(e.target); const pos=order.indexOf(tileIdx); move(pos,true); });
+function move(pos,contar=true){ const emptyPos=order.indexOf(emptyIndex); const r=Math.floor(pos/SIZE),c=pos%SIZE; const er=Math.floor(emptyPos/SIZE),ec=emptyPos%SIZE; if(Math.abs(r-er)+Math.abs(c-ec)===1){ [order[pos],order[emptyPos]]=[order[emptyPos],order[pos]]; render(); if(contar){movimientos++;moveCounter.textContent="Movimientos: "+movimientos;} checkWin(); } }
+function checkWin(){ if(order.every((v,i)=>v===i)){ bloqueado=true; moveCounter.textContent="Total de movimientos: "+movimientos; winMessage.textContent="¡Lo lograste en "+movimientos+" movimientos! 💕"; winMessage.classList.add('show'); puzzle.classList.add('glow'); generarCorazones(document.body); setTimeout(()=>{ winMessage.style.display='none'; showScene('final'); generarCorazones(finalDiv); },2500); } }
+function generarCorazones(parent){ for(let i=0;i<40;i++){ const heart=document.createElement('div'); heart.className='heart'; const colores=['#ff4d6d','#ff66b2','#b300ff','#ff1493']; heart.style.background=colores[Math.floor(Math.random()*colores.length)]; heart.style.left=Math.random()*100+'%'; heart.style.animationDelay=Math.random()*10+'s'; heart.style.animationDuration=(8+Math.random()*5)+'s'; parent.appendChild(heart); setTimeout(()=>heart.remove(),15000); } }
+giftBtn.addEventListener('click',()=>{ showScene('eggScene'); });
+egg.addEventListener('click',()=>{ if(egg.classList.contains('crack')) return; egg.classList.add('crack'); generarCorazones(eggScene); setTimeout(()=>{eggScene.style.opacity='0';},700); setTimeout(()=>{ showScene('finalScene'); mostrarMensajeFinal("Cada pieza encajó, igual que tú en mi vida. Te amo ♥"); generarCorazones(finalScene); },1700); });
+function mostrarMensajeFinal(texto){ finalMessage.textContent=''; let i=0; const intervalo=setInterval(()=>{ finalMessage.textContent+=texto.charAt(i); i++; if(i>=texto.length){ clearInterval(intervalo); setTimeout(()=>{ finalPhoto.classList.add('show'); setTimeout(()=>restartBtn.classList.add('show'),1000); },500); } },70); }
+restartBtn.addEventListener('click',()=>location.reload());
+shuffle(); render();
+<\/script>
+</body>
+</html>`;
+}
+
+previewBtn.addEventListener('click', () => {
+  if (!imageBase64) {
+    alert("♥ Carga una foto primero, amor.");
+    return;
+  }
+  const msg = mensajeTextarea.value.trim() || "Te amo más de lo que las palabras pueden decir ♥";
+  const fullHtml = buildPuzzleHTML(imageBase64, msg);
+  previewIframe.srcdoc = fullHtml;
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!imageBase64) {
+    alert("💕 Elige una foto para tu sorpresa, mi amor.");
+    return;
+  }
+  const msg = mensajeTextarea.value.trim() || "Te amo más de lo que las palabras pueden decir ♥";
+  const fullHtml = buildPuzzleHTML(imageBase64, msg);
+  const blob = new Blob([fullHtml], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "Para-ti-mi-amor.html";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+window.addEventListener('load', async () => {
+  const preloadedUrl = urlInput.value.trim();
+  if (preloadedUrl) {
+    await loadImageFromUrl(preloadedUrl);
+  }
+});
+</script>
+</body>
+</html>
