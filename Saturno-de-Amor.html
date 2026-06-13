@@ -11,7 +11,6 @@
     font-family: 'Segoe UI', 'Corbel', 'Arial', sans-serif;
   }
   
-  /* Panel flotante para el título y el reproductor */
   .ui-panel {
     position: fixed;
     top: 20px;
@@ -27,7 +26,6 @@
     font-size: clamp(1.6rem, 6vw, 3rem);
     font-weight: 300;
     letter-spacing: 6px;
-    color: #ffe6cc;
     background: linear-gradient(135deg, #ffd6a5, #f5b7a8);
     background-clip: text;
     -webkit-background-clip: text;
@@ -43,7 +41,6 @@
     opacity: 0.8;
   }
   
-  /* Reproductor de música con control de volumen */
   .music-controls {
     position: fixed;
     bottom: 25px;
@@ -109,7 +106,6 @@
     letter-spacing: 1px;
   }
   
-  /* Control de volumen */
   .volume-control {
     display: flex;
     align-items: center;
@@ -201,7 +197,7 @@
     <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
   </div>
 </div>
-<div class="rotate-hint">〰️ Fais glisser pour tourner le message 〰️</div>
+<div class="rotate-hint">〰️ Gira con el ratón 〰️</div>
 
 <audio id="bgAudio" loop preload="auto">
   <source src="https://files.catbox.moe/pgafel.mp3" type="audio/mpeg">
@@ -235,11 +231,9 @@
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.toneMapping = THREE.ReinhardToneMapping;
-  renderer.toneMappingExposure = 1.1;
   document.body.appendChild(renderer.domElement);
   
-  // --- Efecto Bloom (brillo suave) ---
+  // --- Efecto Bloom ---
   const renderScene = new RenderPass(scene, camera);
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.3, 0.7);
   bloomPass.threshold = 0.2;
@@ -249,14 +243,13 @@
   effectComposer.addPass(renderScene);
   effectComposer.addPass(bloomPass);
   
-  // --- Control interactivo (rotación y zoom) ---
+  // --- Control interactivo ---
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.rotateSpeed = 1.2;
   controls.zoomSpeed = 1.0;
   controls.enableZoom = true;
-  controls.zoomSpeed = 0.8;
   controls.enablePan = false;
   controls.autoRotate = false;
   controls.target.set(0, 0, 0);
@@ -267,30 +260,18 @@
   const starCount = 3200;
   const starGeo = new THREE.BufferGeometry();
   const starPos = new Float32Array(starCount * 3);
-  const starCol = new Float32Array(starCount * 3);
   for (let i = 0; i < starCount; i++) {
     starPos[i*3] = (Math.random() - 0.5) * 400;
     starPos[i*3+1] = (Math.random() - 0.5) * 240;
     starPos[i*3+2] = (Math.random() - 0.5) * 180 - 70;
-    const warm = Math.random() > 0.7;
-    if (warm) {
-      starCol[i*3] = 1.0;
-      starCol[i*3+1] = 0.7;
-      starCol[i*3+2] = 0.5;
-    } else {
-      starCol[i*3] = 0.9;
-      starCol[i*3+1] = 0.9;
-      starCol[i*3+2] = 1.0;
-    }
   }
   starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-  starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
-  const starMat = new THREE.PointsMaterial({ size: 0.13, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
   const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
   
-  // --- Partículas doradas alrededor ---
-  const glowCount = 1200;
+  // --- Partículas doradas ---
+  const glowCount = 1000;
   const glowGeo = new THREE.BufferGeometry();
   const glowPositions = new Float32Array(glowCount * 3);
   for (let i = 0; i < glowCount; i++) {
@@ -299,81 +280,97 @@
     glowPositions[i*3+2] = (Math.random() - 0.5) * 16 - 4;
   }
   glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPositions, 3));
-  const glowMat = new THREE.PointsMaterial({ color: 0xffaa77, size: 0.035, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+  const glowMat = new THREE.PointsMaterial({ color: 0xffaa77, size: 0.03, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
   const glowParticles = new THREE.Points(glowGeo, glowMat);
   scene.add(glowParticles);
   
-  // --- Mensaje Central con dos caras ---
+  // ========== TEXTO LADO A (FRANCÉS) ==========
+  const textA = "✦ 25 MOIS ✦\n\nMON AMOUR, MA CHÉRIE\n\nDEPUIS 25 LUNES\nTU FAIS BRILLER MES JOURS\n\nCHAQUE INSTANT AVEC TOI\nEST UNE ÉTOILE DANS MON CIEL\n\nJE T'AIME PLUS CHAQUE JOUR\n\n♡ MON TRÉSOR ♡";
+  
+  // ========== TEXTO LADO B (ITALIANO) ==========
+  const textB = "✦ PER SEMPRE ✦\n\nAMORE MIO, TESORO MIO\n\n25 MESI DI MAGIA\nINSIEME ABBIAMO\nDIPINTO L'INFINITO\n\nLA TUA MANO NELLA MIA\nÈ LA MIA CASA\n\nJE T'AIME MON AMOUR\n\n❤️ AMORE MIO ❤️";
+  
+  // Función para crear textura con texto
+  function createTextTexture(content, bgGradientColors, borderColor, textColor) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d');
+    
+    // Fondo con gradiente
+    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    grad.addColorStop(0, bgGradientColors[0]);
+    grad.addColorStop(0.5, bgGradientColors[1]);
+    grad.addColorStop(1, bgGradientColors[2]);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Borde decorativo
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 12;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    // Dibujar líneas de texto
+    const lines = content.split('\n');
+    const lineHeight = 68;
+    const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
+    
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    lines.forEach((line, idx) => {
+      // Determinar tamaño de fuente según la línea
+      if (line.includes('✦') || line.includes('❤️') || line.includes('♡')) {
+        ctx.font = `54px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.fillStyle = '#ffcf9a';
+      } else if (line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MA CHÉRIE') || line.includes('TESORO MIO')) {
+        ctx.font = `44px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.fillStyle = '#ffaa88';
+      } else if (line.trim() === '') {
+        return;
+      } else {
+        ctx.font = `36px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.fillStyle = textColor;
+      }
+      
+      // Efecto de sombra/brillo
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#ffaa77';
+      ctx.fillText(line, canvas.width/2, startY + idx * lineHeight);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(line, canvas.width/2, startY + idx * lineHeight);
+    });
+    
+    // Decoraciones
+    ctx.font = `36px "Segoe UI"`;
+    ctx.fillStyle = '#ff8899';
+    ctx.fillText("✨", canvas.width/2 - 120, canvas.height - 70);
+    ctx.fillText("✨", canvas.width/2 + 120, canvas.height - 70);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+  
+  // Crear texturas
+  const textureA = createTextTexture(
+    textA,
+    ['#2a1a35', '#1e1228', '#100b18'],
+    '#ffc49b',
+    '#ffe3ca'
+  );
+  
+  const textureB = createTextTexture(
+    textB,
+    ['#1f2a3a', '#121a27', '#0a0f18'],
+    '#aac9ff',
+    '#cbe4fe'
+  );
+  
+  // --- Crear el cubo mensaje ---
   const messageGroup = new THREE.Group();
-  
-  // ========== LADO A (FRANCÉS/ITALIANO - ROMÁNTICO) ==========
-  const sideAText = `✦ 25 MOIS ✦\n\nMON AMOUR, MA CHÉRIE\nDEPUIS 25 LUNES\nTU FAIS BRILLER MES JOURS\n\nCHAQUE INSTANT AVEC TOI\nEST UNE ÉTOILE DANS MON CIEL\n\nJE T'AIME PLUS CHAQUE JOUR\n♡ MON TRÉSOR ♡`;
-  
-  // ========== LADO B (ITALIANO/FRANCÉS - APASIONADO) ==========
-  const sideBText = `✦ PER SEMPRE ✦\n\nAMORE MIO, TESORO MIO\n25 MESI DI MAGIA\nINSIEME ABBIAMO\nDIPINTO L'INFINITO\n\nLA TUA MANO NELLA MIA\nÈ LA MIA CASA\n\nJE T'AIME MON AMOUR\n❤️ AMORE MIO ❤️`;
-  
-  // Crear canvas para Lado A
-  const canvasA = document.createElement('canvas');
-  canvasA.width = 1024;
-  canvasA.height = 1024;
-  const ctxA = canvasA.getContext('2d');
-  const gradA = ctxA.createLinearGradient(0, 0, canvasA.width, canvasA.height);
-  gradA.addColorStop(0, '#2a1a35');
-  gradA.addColorStop(0.5, '#1e1228');
-  gradA.addColorStop(1, '#100b18');
-  ctxA.fillStyle = gradA;
-  ctxA.fillRect(0, 0, canvasA.width, canvasA.height);
-  ctxA.strokeStyle = '#ffc49b';
-  ctxA.lineWidth = 10;
-  ctxA.strokeRect(35, 35, canvasA.width - 70, canvasA.height - 70);
-  
-  const linesA = sideAText.split('\n');
-  let startYA = canvasA.height / 2 - (linesA.length * 42) / 2;
-  linesA.forEach((line, idx) => {
-    ctxA.fillStyle = idx === 0 ? '#ffcf9a' : '#ffe3ca';
-    ctxA.font = idx === 0 ? `58px "Segoe UI", "Corbel", sans-serif` : `36px "Segoe UI", "Corbel", sans-serif`;
-    ctxA.textAlign = 'center';
-    ctxA.textBaseline = 'middle';
-    ctxA.fillText(line, canvasA.width/2, startYA + idx * 52);
-  });
-  ctxA.font = `32px "Segoe UI"`;
-  ctxA.fillStyle = '#ff8899';
-  ctxA.fillText("✨", canvasA.width/2 - 80, canvasA.height - 60);
-  ctxA.fillText("✨", canvasA.width/2 + 80, canvasA.height - 60);
-  const textureA = new THREE.CanvasTexture(canvasA);
-  
-  // Crear canvas para Lado B
-  const canvasB = document.createElement('canvas');
-  canvasB.width = 1024;
-  canvasB.height = 1024;
-  const ctxB = canvasB.getContext('2d');
-  const gradB = ctxB.createLinearGradient(0, 0, canvasB.width, canvasB.height);
-  gradB.addColorStop(0, '#1f2a3a');
-  gradB.addColorStop(0.5, '#121a27');
-  gradB.addColorStop(1, '#0a0f18');
-  ctxB.fillStyle = gradB;
-  ctxB.fillRect(0, 0, canvasB.width, canvasB.height);
-  ctxB.strokeStyle = '#aac9ff';
-  ctxB.lineWidth = 10;
-  ctxB.strokeRect(35, 35, canvasB.width - 70, canvasB.height - 70);
-  
-  const linesB = sideBText.split('\n');
-  let startYB = canvasB.height / 2 - (linesB.length * 42) / 2;
-  linesB.forEach((line, idx) => {
-    ctxB.fillStyle = idx === 0 ? '#ffcf9a' : '#cbe4fe';
-    ctxB.font = idx === 0 ? `58px "Segoe UI", "Corbel", sans-serif` : `36px "Segoe UI", "Corbel", sans-serif`;
-    ctxB.textAlign = 'center';
-    ctxB.textBaseline = 'middle';
-    ctxB.fillText(line, canvasB.width/2, startYB + idx * 52);
-  });
-  ctxB.font = `32px "Segoe UI"`;
-  ctxB.fillStyle = '#ff8899';
-  ctxB.fillText("❤️", canvasB.width/2 - 80, canvasB.height - 60);
-  ctxB.fillText("❤️", canvasB.width/2 + 80, canvasB.height - 60);
-  const textureB = new THREE.CanvasTexture(canvasB);
-  
-  // Crear el cubo con las texturas
-  const geometry = new THREE.BoxGeometry(2.9, 2.9, 0.18);
+  const geometry = new THREE.BoxGeometry(3.0, 3.0, 0.2);
   const materials = [
     new THREE.MeshStandardMaterial({ map: textureB, roughness: 0.25, metalness: 0.1, emissive: '#221c2a', emissiveIntensity: 0.15 }),
     new THREE.MeshStandardMaterial({ map: textureA, roughness: 0.25, metalness: 0.1, emissive: '#1e1726', emissiveIntensity: 0.15 }),
@@ -386,12 +383,12 @@
   messageBox.castShadow = true;
   messageGroup.add(messageBox);
   
-  // Anillo de partículas alrededor del mensaje
+  // Anillo de partículas decorativo
   const haloCount = 400;
   const haloGeo = new THREE.BufferGeometry();
   const haloPos = new Float32Array(haloCount * 3);
   for (let i = 0; i < haloCount; i++) {
-    const rad = 2.0 + Math.random() * 0.6;
+    const rad = 2.1 + Math.random() * 0.6;
     const ang = Math.random() * Math.PI * 2;
     const yoff = (Math.random() - 0.5) * 1.6;
     haloPos[i*3] = Math.cos(ang) * rad;
@@ -399,7 +396,7 @@
     haloPos[i*3+2] = Math.sin(ang) * rad;
   }
   haloGeo.setAttribute('position', new THREE.BufferAttribute(haloPos, 3));
-  const haloMat = new THREE.PointsMaterial({ color: 0xffb88a, size: 0.025, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+  const haloMat = new THREE.PointsMaterial({ color: 0xffb88a, size: 0.028, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
   const haloPoints = new THREE.Points(haloGeo, haloMat);
   messageGroup.add(haloPoints);
   
@@ -409,7 +406,7 @@
   const orbCount = 250;
   const orbPositions = new Float32Array(orbCount * 3);
   for (let i = 0; i < orbCount; i++) {
-    const r = 1.9 + Math.random() * 0.8;
+    const r = 2.0 + Math.random() * 0.8;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.random() * Math.PI * 2;
     orbPositions[i*3] = Math.sin(theta) * Math.cos(phi) * r;
@@ -418,11 +415,24 @@
   }
   const orbBufferGeo = new THREE.BufferGeometry();
   orbBufferGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
-  const orbMatStars = new THREE.PointsMaterial({ color: 0xffc89c, size: 0.03, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+  const orbMatStars = new THREE.PointsMaterial({ color: 0xffc89c, size: 0.032, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
   const orbitingStarsObj = new THREE.Points(orbBufferGeo, orbMatStars);
   scene.add(orbitingStarsObj);
   
   const originalOrbPos = orbPositions.slice();
+  
+  // --- Iluminación ---
+  const ambientLight = new THREE.AmbientLight(0x22223b);
+  scene.add(ambientLight);
+  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.0);
+  mainLight.position.set(4, 8, 5);
+  scene.add(mainLight);
+  const backLight = new THREE.PointLight(0x6688ff, 0.5);
+  backLight.position.set(0, 1, -5);
+  scene.add(backLight);
+  const warmLight = new THREE.PointLight(0xffaa66, 0.6);
+  warmLight.position.set(2, -1, 2);
+  scene.add(warmLight);
   
   // --- Animación ---
   let time = 0;
@@ -431,14 +441,14 @@
     requestAnimationFrame(animateScene);
     time += 0.012;
     
-    messageGroup.rotation.y = Math.sin(time * 0.2) * 0.1;
-    messageGroup.rotation.x = Math.sin(time * 0.25) * 0.05;
+    messageGroup.rotation.y = Math.sin(time * 0.15) * 0.08;
+    messageGroup.rotation.x = Math.sin(time * 0.2) * 0.04;
     
     const positions = orbitingStarsObj.geometry.attributes.position.array;
     for (let i = 0; i < orbCount; i++) {
       const origX = originalOrbPos[i*3];
       const origZ = originalOrbPos[i*3+2];
-      const angle = time * 0.8;
+      const angle = time * 0.6;
       const newX = origX * Math.cos(angle) + origZ * Math.sin(angle);
       const newZ = -origX * Math.sin(angle) + origZ * Math.cos(angle);
       positions[i*3] = newX;
@@ -446,9 +456,9 @@
     }
     orbitingStarsObj.geometry.attributes.position.needsUpdate = true;
     
-    stars.rotation.y += 0.0003;
-    stars.rotation.x += 0.0002;
-    glowParticles.rotation.y += 0.0005;
+    stars.rotation.y += 0.0002;
+    stars.rotation.x += 0.0001;
+    glowParticles.rotation.y += 0.0004;
     
     effectComposer.render();
   }
@@ -532,6 +542,12 @@
     effectComposer.setSize(window.innerWidth, window.innerHeight);
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+  
+  // Refrescar texturas periódicamente (por si acaso)
+  setInterval(() => {
+    textureA.needsUpdate = true;
+    textureB.needsUpdate = true;
+  }, 1000);
 </script>
 </body>
 </html>
