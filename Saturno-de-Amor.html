@@ -153,12 +153,6 @@
     .music-controls { padding: 6px 14px; gap: 10px; }
   }
   
-  @media (max-width: 500px) {
-    .volume-slider { width: 40px; }
-    .volume-icon { font-size: 11px; }
-    .volume-control { gap: 4px; }
-  }
-  
   .rotate-hint {
     position: fixed;
     bottom: 90px;
@@ -179,7 +173,7 @@
   }
   
   @media (max-width: 500px) {
-    .rotate-hint { bottom: 80px; font-size: 9px; white-space: nowrap; }
+    .rotate-hint { bottom: 80px; font-size: 9px; }
   }
 </style>
 </head>
@@ -221,7 +215,7 @@
   import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
   
-  // --- Escena espacial romántica ---
+  // --- Escena ---
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x030318);
   scene.fog = new THREE.FogExp2(0x030318, 0.0015);
@@ -235,12 +229,12 @@
   renderer.setPixelRatio(window.devicePixelRatio);
   document.body.appendChild(renderer.domElement);
   
-  // --- Efecto Bloom (brillo mágico) ---
+  // --- Efecto Bloom ---
   const renderScene = new RenderPass(scene, camera);
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.4, 0.85);
-  bloomPass.threshold = 0.15;
-  bloomPass.strength = 0.55;
-  bloomPass.radius = 0.5;
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.3, 0.7);
+  bloomPass.threshold = 0.1;
+  bloomPass.strength = 0.5;
+  bloomPass.radius = 0.4;
   const effectComposer = new EffectComposer(renderer);
   effectComposer.addPass(renderScene);
   effectComposer.addPass(bloomPass);
@@ -258,10 +252,8 @@
   controls.maxDistance = 8.5;
   controls.minDistance = 2.8;
   
-  // ========== ANIMACIONES DE CALIDAD ==========
-  
-  // --- 1. Campo de estrellas profundo ---
-  const starCount = 4000;
+  // --- Estrellas de fondo ---
+  const starCount = 3000;
   const starGeo = new THREE.BufferGeometry();
   const starPositions = new Float32Array(starCount * 3);
   for (let i = 0; i < starCount; i++) {
@@ -274,77 +266,91 @@
   const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
   
-  // --- 2. Estrellas fugaces ---
-  const shootingStars = [];
-  const shootingStarCount = 8;
-  const trailLines = [];
-  for (let i = 0; i < shootingStarCount; i++) {
-    const material = new THREE.LineBasicMaterial({ color: 0xffaa77 });
-    const geometry = new THREE.BufferGeometry();
-    const line = new THREE.Line(geometry, material);
-    scene.add(line);
-    trailLines.push(line);
-    shootingStars.push({ active: false, progress: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, trail: [] });
-  }
-  
-  function spawnShootingStar() {
-    for (let star of shootingStars) {
-      if (!star.active && Math.random() < 0.003) {
-        star.active = true;
-        star.progress = 0;
-        star.x = (Math.random() - 0.5) * 30;
-        star.y = (Math.random() - 0.5) * 20 + 5;
-        star.z = (Math.random() - 0.5) * 40 - 20;
-        star.vx = (Math.random() - 0.5) * 0.8 - 0.5;
-        star.vy = (Math.random() - 0.5) * 0.6 - 0.3;
-        star.vz = (Math.random() - 0.5) * 0.7 + 0.5;
-        star.trail = [];
-        break;
-      }
-    }
-  }
-  
-  // --- 3. Polvo estelar brillante ---
-  const dustCount = 2500;
+  // --- Partículas doradas ---
+  const dustCount = 2000;
   const dustGeo = new THREE.BufferGeometry();
   const dustPositions = new Float32Array(dustCount * 3);
-  const dustColors = new Float32Array(dustCount * 3);
   for (let i = 0; i < dustCount; i++) {
-    dustPositions[i*3] = (Math.random() - 0.5) * 28;
+    dustPositions[i*3] = (Math.random() - 0.5) * 25;
     dustPositions[i*3+1] = (Math.random() - 0.5) * 18;
-    dustPositions[i*3+2] = (Math.random() - 0.5) * 22 - 8;
-    const colorWarm = Math.random() > 0.6;
-    dustColors[i*3] = colorWarm ? 1.0 : 0.9;
-    dustColors[i*3+1] = colorWarm ? 0.7 : 0.9;
-    dustColors[i*3+2] = colorWarm ? 0.5 : 1.0;
+    dustPositions[i*3+2] = (Math.random() - 0.5) * 20 - 6;
   }
   dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-  dustGeo.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
-  const dustMat = new THREE.PointsMaterial({ size: 0.035, vertexColors: true, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+  const dustMat = new THREE.PointsMaterial({ color: 0xffaa77, size: 0.035, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
   const dustParticles = new THREE.Points(dustGeo, dustMat);
   scene.add(dustParticles);
   
-  // --- 4. Anillo brillante giratorio ---
-  const ringParticleCount = 400;
-  const ringGeo = new THREE.BufferGeometry();
-  const ringPositions = new Float32Array(ringParticleCount * 3);
-  for (let i = 0; i < ringParticleCount; i++) {
-    const angle = (i / ringParticleCount) * Math.PI * 2;
-    const radius = 2.0;
-    const yOffset = Math.sin(angle * 2) * 0.2;
-    ringPositions[i*3] = Math.cos(angle) * radius;
-    ringPositions[i*3+1] = yOffset;
-    ringPositions[i*3+2] = Math.sin(angle) * radius;
+  // ========== FUNCIÓN SIMPLE PARA CREAR TEXTO ==========
+  function createTextTexture(content, textColor, bgColor) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const ctx = canvas.getContext('2d');
+    
+    // Fondo
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Borde decorativo
+    ctx.strokeStyle = textColor;
+    ctx.lineWidth = 6;
+    ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+    ctx.strokeStyle = '#ffffff40';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    // Texto
+    const lines = content.split('\n');
+    const lineHeight = 72;
+    const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
+    
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    lines.forEach((line, idx) => {
+      const yPos = startY + idx * lineHeight;
+      
+      if (line.includes('✦') || line.includes('❤️') || line.includes('♡')) {
+        ctx.font = `56px "Segoe UI", "Corbel", sans-serif`;
+        ctx.fillStyle = '#ffcf9a';
+        ctx.fillText(line, canvas.width/2, yPos);
+      }
+      else if (line.includes('MA CHÉRIE') || line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MON TRÉSOR')) {
+        ctx.font = `48px "Segoe UI", "Corbel", sans-serif`;
+        ctx.fillStyle = '#ffaa88';
+        ctx.fillText(line, canvas.width/2, yPos);
+      }
+      else if (line.includes('JE T')) {
+        ctx.font = `46px "Segoe UI", "Corbel", sans-serif`;
+        ctx.fillStyle = '#ffbb99';
+        ctx.fillText(line, canvas.width/2, yPos);
+      }
+      else if (line.trim() === '') {
+        return;
+      }
+      else {
+        ctx.font = `36px "Segoe UI", "Corbel", sans-serif`;
+        ctx.fillStyle = textColor;
+        ctx.fillText(line, canvas.width/2, yPos);
+      }
+    });
+    
+    // Decoraciones
+    ctx.font = `32px "Segoe UI"`;
+    ctx.fillStyle = '#ffaa88';
+    ctx.fillText("✨", canvas.width/2 - 130, canvas.height - 60);
+    ctx.fillText("✨", canvas.width/2 + 130, canvas.height - 60);
+    ctx.fillText("⭐", canvas.width/2 - 140, 70);
+    ctx.fillText("⭐", canvas.width/2 + 140, 70);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
   }
-  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
-  const ringParticleMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.032, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
-  const ringParticlesObj = new THREE.Points(ringGeo, ringParticleMat);
-  scene.add(ringParticlesObj);
   
-  // ========== MENSAJE EN ESPAÑOL CON TÉRMINOS FRANCESES ==========
-  const messageGroup = new THREE.Group();
+  // ========== TEXTOS EN ESPAÑOL CON TÉRMINOS FRANCESES ==========
   
-  // Texto para la cara frontal (Español con Ma Chérie, Mon Amour)
+  // Cara A
   const textFront = `✦ 25 MESES ✦
 
 MI AMOR, MA CHÉRIE
@@ -360,9 +366,9 @@ GRACIAS POR CADA SUEÑO
 
 JE T'AIME, MA CHÉRIE
 
-♡ ETERNAMENTE TUYA/O ♡`;
+♡ ETERNAMENTE TUYA ♡`;
   
-  // Texto para la cara trasera (Español con términos franceses/italianos)
+  // Cara B
   const textBack = `✦ PARA SIEMPRE ✦
 
 AMORE MIO, MON TRÉSOR
@@ -380,148 +386,48 @@ JE T'AIME, MON AMOUR
 
 ❤️ POR SIEMPRE JUNTOS ❤️`;
   
-  function createElegantTexture(content, isFront) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 1024;
-    const ctx = canvas.getContext('2d');
-    
-    const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
-    if (isFront) {
-      grad.addColorStop(0, '#2a1a40');
-      grad.addColorStop(0.5, '#1a1028');
-      grad.addColorStop(1, '#0e0818');
-    } else {
-      grad.addColorStop(0, '#1a2540');
-      grad.addColorStop(0.5, '#101528');
-      grad.addColorStop(1, '#080c18');
-    }
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Decoración de esquinas
-    ctx.strokeStyle = isFront ? '#ffc49b' : '#aac9ff';
-    ctx.lineWidth = 4;
-    for (let i = 0; i < 4; i++) {
-      const cornerX = i % 2 === 0 ? 40 : canvas.width - 40;
-      const cornerY = i < 2 ? 40 : canvas.height - 40;
-      ctx.beginPath();
-      ctx.moveTo(cornerX, cornerY);
-      ctx.lineTo(cornerX + (i % 2 === 0 ? 60 : -60), cornerY);
-      ctx.moveTo(cornerX, cornerY);
-      ctx.lineTo(cornerX, cornerY + (i < 2 ? 60 : -60));
-      ctx.stroke();
-    }
-    
-    // Borde decorativo
-    ctx.strokeStyle = isFront ? '#ffc49b' : '#aac9ff';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(35, 35, canvas.width - 70, canvas.height - 70);
-    ctx.strokeStyle = '#ffffff30';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(45, 45, canvas.width - 90, canvas.height - 90);
-    
-    // Dibujar texto
-    const lines = content.split('\n');
-    const lineHeight = 70;
-    const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
-    
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    lines.forEach((line, idx) => {
-      const yPos = startY + idx * lineHeight;
-      
-      if (line.includes('✦') || line.includes('❤️') || line.includes('♡')) {
-        ctx.font = `58px "Segoe UI", "Corbel", "Arial", sans-serif`;
-        ctx.fillStyle = '#ffcf9a';
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = '#ffaa77';
-        ctx.fillText(line, canvas.width/2, yPos);
-        ctx.shadowBlur = 0;
-      }
-      else if (line.includes('MA CHÉRIE') || line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MON TRÉSOR')) {
-        ctx.font = `48px "Segoe UI", "Corbel", "Arial", sans-serif`;
-        ctx.fillStyle = '#ffaa88';
-        ctx.shadowBlur = 14;
-        ctx.shadowColor = '#ff8866';
-        ctx.fillText(line, canvas.width/2, yPos);
-        ctx.shadowBlur = 0;
-      }
-      else if (line.includes('JE T')) {
-        ctx.font = `46px "Segoe UI", "Corbel", "Arial", sans-serif`;
-        ctx.fillStyle = '#ffbb99';
-        ctx.fillText(line, canvas.width/2, yPos);
-      }
-      else if (line.trim() === '') {
-        return;
-      }
-      else {
-        ctx.font = `35px "Segoe UI", "Corbel", "Arial", sans-serif`;
-        ctx.fillStyle = isFront ? '#ffe3ca' : '#cbe4fe';
-        ctx.fillText(line, canvas.width/2, yPos);
-        ctx.fillStyle = isFront ? '#d4b896' : '#a0b8d4';
-        ctx.fillText(line, canvas.width/2 + 2, yPos + 2);
-      }
-    });
-    
-    // Decoraciones
-    ctx.font = `36px "Segoe UI"`;
-    ctx.fillStyle = '#ffaa88';
-    ctx.fillText("✨", canvas.width/2 - 140, canvas.height - 65);
-    ctx.fillText("✨", canvas.width/2 + 140, canvas.height - 65);
-    ctx.fillStyle = '#ff88aa';
-    ctx.fillText("⭐", canvas.width/2 - 150, 75);
-    ctx.fillText("⭐", canvas.width/2 + 150, 75);
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-  }
+  const textureFront = createTextTexture(textFront, '#ffe3ca', '#1a1028');
+  const textureBack = createTextTexture(textBack, '#cbe4fe', '#101528');
   
-  const textureFront = createElegantTexture(textFront, true);
-  const textureBack = createElegantTexture(textBack, false);
-  
-  // Crear tarjeta
+  // ========== CREAR TARJETA (Mensaje flotante) ==========
   const cardGroup = new THREE.Group();
   
-  const frontPlane = new THREE.PlaneGeometry(2.9, 2.9);
-  const frontMat = new THREE.MeshStandardMaterial({ map: textureFront, side: THREE.DoubleSide, roughness: 0.25, metalness: 0.15, emissive: '#2a1a40', emissiveIntensity: 0.2, transparent: true });
-  const frontCard = new THREE.Mesh(frontPlane, frontMat);
-  frontCard.position.z = 0.06;
-  cardGroup.add(frontCard);
-  
-  const backPlane = new THREE.PlaneGeometry(2.9, 2.9);
-  const backMat = new THREE.MeshStandardMaterial({ map: textureBack, side: THREE.DoubleSide, roughness: 0.25, metalness: 0.15, emissive: '#1a2540', emissiveIntensity: 0.2, transparent: true });
-  const backCard = new THREE.Mesh(backPlane, backMat);
-  backCard.position.z = -0.06;
-  backCard.rotation.y = Math.PI;
-  cardGroup.add(backCard);
-  
-  // Marco dorado
-  const frameGeo = new THREE.BoxGeometry(3.05, 3.05, 0.1);
-  const frameMat = new THREE.MeshStandardMaterial({ color: 0xd49a6a, metalness: 0.7, roughness: 0.3, emissive: '#552200', emissiveIntensity: 0.15 });
-  const frame = new THREE.Mesh(frameGeo, frameMat);
-  cardGroup.add(frame);
-  
-  // Diamantes en esquinas
-  const diamondMat = new THREE.MeshStandardMaterial({ color: 0xffaa77, metalness: 0.8, roughness: 0.2, emissive: '#ff8844', emissiveIntensity: 0.3 });
-  const corners = [
-    [-1.45, 1.45, 0.08], [1.45, 1.45, 0.08],
-    [-1.45, -1.45, 0.08], [1.45, -1.45, 0.08]
+  // Usar BoxGeometry para que tenga grosor y se vea bien desde cualquier ángulo
+  const geometry = new THREE.BoxGeometry(3.0, 3.0, 0.12);
+  const materials = [
+    new THREE.MeshStandardMaterial({ color: 0xd49a6a, metalness: 0.6, roughness: 0.4 }), // derecha
+    new THREE.MeshStandardMaterial({ color: 0xd49a6a, metalness: 0.6, roughness: 0.4 }), // izquierda
+    new THREE.MeshStandardMaterial({ map: textureFront, roughness: 0.3, metalness: 0.1 }), // arriba (FRONTAL)
+    new THREE.MeshStandardMaterial({ map: textureBack, roughness: 0.3, metalness: 0.1 }),  // abajo (TRASERA)
+    new THREE.MeshStandardMaterial({ color: 0xb07d5a, metalness: 0.5, roughness: 0.5 }), // frente
+    new THREE.MeshStandardMaterial({ color: 0xb07d5a, metalness: 0.5, roughness: 0.5 })  // atrás
   ];
-  corners.forEach(pos => {
-    const diamond = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), diamondMat);
-    diamond.position.set(pos[0], pos[1], pos[2]);
-    cardGroup.add(diamond);
-  });
+  
+  const messageBox = new THREE.Mesh(geometry, materials);
+  messageBox.castShadow = true;
+  cardGroup.add(messageBox);
+  
+  // Añadir un brillo alrededor (anillo de partículas)
+  const ringCount = 200;
+  const ringGeo = new THREE.BufferGeometry();
+  const ringPositions = new Float32Array(ringCount * 3);
+  for (let i = 0; i < ringCount; i++) {
+    const angle = (i / ringCount) * Math.PI * 2;
+    ringPositions[i*3] = Math.cos(angle) * 2.0;
+    ringPositions[i*3+1] = Math.sin(angle) * 0.3;
+    ringPositions[i*3+2] = Math.sin(angle) * 2.0;
+  }
+  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
+  const ringMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.03, transparent: true, blending: THREE.AdditiveBlending });
+  const ringParticles = new THREE.Points(ringGeo, ringMat);
+  cardGroup.add(ringParticles);
   
   scene.add(cardGroup);
   
-  // --- Partículas orbitantes ---
-  const orbCount = 150;
-  const orbItems = [];
-  for (let i = 0; i < orbCount; i++) {
+  // --- Corazones orbitantes ---
+  const heartCount = 100;
+  const hearts = [];
+  for (let i = 0; i < heartCount; i++) {
     const canvas = document.createElement('canvas');
     canvas.width = 64;
     canvas.height = 64;
@@ -529,25 +435,37 @@ JE T'AIME, MON AMOUR
     ctx.fillStyle = 'rgba(0,0,0,0)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = `${18 + Math.random() * 12}px "Segoe UI"`;
-    ctx.fillStyle = `rgba(255, ${120 + Math.random() * 80}, ${100 + Math.random() * 80}, 0.8)`;
+    ctx.fillStyle = `rgba(255, ${120 + Math.random() * 80}, ${100 + Math.random() * 80}, 0.9)`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const icons = ['❤️', '✨', '⭐', '💫', '🌟'];
-    ctx.fillText(icons[Math.floor(Math.random() * icons.length)], canvas.width/2, canvas.height/2);
+    ctx.fillText("❤️", canvas.width/2, canvas.height/2);
     const texture = new THREE.CanvasTexture(canvas);
     const mat = new THREE.SpriteMaterial({ map: texture, transparent: true, blending: THREE.AdditiveBlending });
     const sprite = new THREE.Sprite(mat);
-    const radius = 2.2 + Math.random() * 0.8;
-    const speed = 0.002 + Math.random() * 0.005;
+    const radius = 2.3 + Math.random() * 0.8;
+    const speed = 0.002 + Math.random() * 0.006;
     const angle = Math.random() * Math.PI * 2;
     const yOffset = (Math.random() - 0.5) * 1.4;
-    sprite.userData = { radius, speed, angle, yOffset, baseScale: 0.18 + Math.random() * 0.1 };
-    sprite.scale.set(sprite.userData.baseScale, sprite.userData.baseScale, 1);
+    sprite.userData = { radius, speed, angle, yOffset, scale: 0.18 + Math.random() * 0.08 };
+    sprite.scale.set(sprite.userData.scale, sprite.userData.scale, 1);
     scene.add(sprite);
-    orbItems.push(sprite);
+    hearts.push(sprite);
   }
   
-  // ========== ANIMACIÓN PRINCIPAL ==========
+  // --- Iluminación ---
+  const ambientLight = new THREE.AmbientLight(0x22223b);
+  scene.add(ambientLight);
+  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.0);
+  mainLight.position.set(4, 8, 5);
+  scene.add(mainLight);
+  const fillLight = new THREE.PointLight(0xffaa77, 0.5);
+  fillLight.position.set(1, 1, 3);
+  scene.add(fillLight);
+  const backLight = new THREE.PointLight(0x6688ff, 0.4);
+  backLight.position.set(0, 1, -4);
+  scene.add(backLight);
+  
+  // ========== ANIMACIÓN ==========
   let time = 0;
   
   function animate() {
@@ -555,60 +473,27 @@ JE T'AIME, MON AMOUR
     time += 0.012;
     
     // Rotación suave de la tarjeta
-    cardGroup.rotation.y = Math.sin(time * 0.12) * 0.08;
-    cardGroup.rotation.x = Math.sin(time * 0.18) * 0.04;
+    cardGroup.rotation.y = Math.sin(time * 0.1) * 0.05;
+    cardGroup.rotation.x = Math.sin(time * 0.15) * 0.03;
     
-    // Rotación del anillo
-    ringParticlesObj.rotation.y = time * 0.3;
-    ringParticlesObj.rotation.x = Math.sin(time * 0.5) * 0.2;
+    // Rotación del anillo de partículas
+    ringParticles.rotation.y = time * 0.4;
+    ringParticles.rotation.x = Math.sin(time * 0.5) * 0.2;
     
-    // Movimiento de partículas
+    // Movimiento de partículas de fondo
     dustParticles.rotation.y += 0.0005;
-    dustParticles.rotation.x += 0.0003;
     stars.rotation.y += 0.0002;
-    stars.rotation.x += 0.0001;
     
-    // Estrellas fugaces
-    spawnShootingStar();
-    for (let i = 0; i < shootingStars.length; i++) {
-      const star = shootingStars[i];
-      if (star.active) {
-        star.progress += 0.02;
-        const t = star.progress;
-        const currentX = star.x + star.vx * t * 15;
-        const currentY = star.y + star.vy * t * 15;
-        const currentZ = star.z + star.vz * t * 15;
-        star.trail.unshift({ x: currentX, y: currentY, z: currentZ });
-        if (star.trail.length > 20) star.trail.pop();
-        const points = star.trail.map(p => new THREE.Vector3(p.x, p.y, p.z));
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        trailLines[i].geometry.dispose();
-        trailLines[i].geometry = geometry;
-        if (t >= 1 || Math.abs(currentX) > 25 || Math.abs(currentY) > 18 || Math.abs(currentZ) > 30) {
-          star.active = false;
-          trailLines[i].geometry.dispose();
-          trailLines[i].geometry = new THREE.BufferGeometry();
-        }
-      }
-    }
-    
-    // Actualizar elementos orbitantes
-    orbItems.forEach(sprite => {
-      const d = sprite.userData;
+    // Actualizar corazones orbitantes
+    hearts.forEach(heart => {
+      const d = heart.userData;
       d.angle += d.speed;
       const x = Math.cos(d.angle) * d.radius;
       const z = Math.sin(d.angle) * d.radius;
-      sprite.position.set(x, d.yOffset, z);
-      const scale = d.baseScale + Math.sin(time * 3) * 0.03;
-      sprite.scale.set(scale, scale, 1);
-      if (sprite.material.map) sprite.material.map.needsUpdate = true;
+      heart.position.set(x, d.yOffset, z);
+      const scaleAnim = d.scale + Math.sin(time * 3) * 0.02;
+      heart.scale.set(scaleAnim, scaleAnim, 1);
     });
-    
-    // Refrescar texturas
-    if (Math.floor(time * 2) % 30 === 0) {
-      textureFront.needsUpdate = true;
-      textureBack.needsUpdate = true;
-    }
     
     effectComposer.render();
   }
