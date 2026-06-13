@@ -18,7 +18,7 @@
     height: 100vh;
   }
 
-  /* --- Reproductor Musical Adaptable y Romántico --- */
+  /* --- Reproductor Musical Romántico --- */
   .player {
     position: fixed;
     bottom: 25px;
@@ -105,6 +105,7 @@
     -webkit-background-clip: text;
     color: transparent;
     animation: gentleGlow 3s infinite alternate;
+    z-index: 10;
   }
 
   @keyframes gentleGlow {
@@ -127,13 +128,12 @@
   <div class="time" id="time">0:00 / 0:00</div>
 </div>
 
-<!-- NUEVA CANCIÓN: URL ROMÁNTICA REEMPLAZADA -->
+<!-- Audio con la URL que proporcionaste -->
 <audio id="audio" loop>
   <source src="https://files.catbox.moe/pgafel.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-  // --- JavaScript para la animación de estrellas y el reproductor ---
   (function() {
     // ======================= ANIMACIÓN DE PARTÍCULAS (Fondo Estelar Romántico) =======================
     const canvas = document.createElement('canvas');
@@ -203,7 +203,6 @@
     
     function animateParticles() {
       ctx.clearRect(0, 0, width, height);
-      // Fondo con degradado suave y romántico
       const grad = ctx.createLinearGradient(0, 0, 0, height);
       grad.addColorStop(0, '#03001c');
       grad.addColorStop(0.5, '#1a0b2e');
@@ -256,7 +255,7 @@
         audio.pause();
         playBtn.textContent = '💖';
       } else {
-        audio.play().catch(e => console.log("Auto-play bloqueado, necesita interacción."));
+        audio.play().catch(e => console.log("Para escuchar, haz clic en play"));
         playBtn.textContent = '✨';
       }
       isPlaying = !isPlaying;
@@ -280,7 +279,6 @@
       }
     });
     
-    // Añadir un pequeño efecto hover en el reproductor
     const playerDiv = document.querySelector('.player');
     playerDiv.addEventListener('mouseenter', () => {
       playerDiv.style.borderColor = 'rgba(255, 200, 210, 0.8)';
@@ -292,7 +290,7 @@
     });
   })();
 </script>
-<!-- Mensaje flotante (se reemplaza con texto en canvas pero lo dejamos como etiqueta decorativa) -->
+
 <div class="info">💗  M O N   C Œ U R   T ' A P P A R T I E N T   💗  |  C A R A   M I A   ✨  |  A M O R E   M I O   💕</div>
 </body>
 </html>
