@@ -2,166 +2,159 @@
 <html lang="es">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Saturno Eterno - Poema Orbital</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>25 Meses - Nuestro Viaje</title>
 <style>
   body {
     margin: 0;
     overflow: hidden;
-    font-family: 'Cinema', 'Segoe UI', 'Arial', sans-serif;
+    font-family: 'Segoe UI', 'Corbel', 'Arial', sans-serif;
   }
   
-  /* Info flotante principal */
-  .floating-message {
-    position: absolute;
-    bottom: 15%;
+  /* Panel flotante para el título y el reproductor */
+  .ui-panel {
+    position: fixed;
+    top: 20px;
     left: 0;
     width: 100%;
     text-align: center;
     pointer-events: none;
     z-index: 20;
-    animation: fadeInUp 2s ease-out;
+    text-shadow: 0 0 15px rgba(0,0,0,0.5);
   }
   
-  .floating-message h1 {
-    font-size: clamp(1.2rem, 5vw, 2.5rem);
-    letter-spacing: 8px;
-    color: rgba(255, 220, 180, 0.95);
-    text-shadow: 0 0 20px rgba(255, 160, 100, 0.8), 0 0 40px rgba(255, 80, 40, 0.4);
-    background: linear-gradient(135deg, #ffd89b, #c7e9fb);
+  .title-25 {
+    font-size: clamp(1.6rem, 6vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 6px;
+    color: #ffe6cc;
+    background: linear-gradient(135deg, #ffd6a5, #f5b7a8);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    font-weight: 400;
-    text-transform: uppercase;
-    backdrop-filter: blur(2px);
+    text-shadow: 0 0 30px rgba(255, 180, 100, 0.4);
+    margin-bottom: 8px;
   }
   
-  .floating-message p {
-    font-size: clamp(0.7rem, 3vw, 1rem);
-    color: rgba(255, 200, 160, 0.8);
-    letter-spacing: 3px;
-    margin-top: 8px;
-    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  .sub {
+    font-size: clamp(0.7rem, 3vw, 0.9rem);
+    color: #ffccaa;
+    letter-spacing: 2px;
+    opacity: 0.8;
   }
   
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Reproductor de música (estilo mejorado) */
-  .music-player {
+  /* Reproductor de música mejorado */
+  .music-controls {
     position: fixed;
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    width: 85%;
-    max-width: 480px;
-    background: rgba(5, 5, 15, 0.7);
-    backdrop-filter: blur(20px);
-    border-radius: 60px;
-    padding: 8px 20px;
+    background: rgba(20, 15, 30, 0.75);
+    backdrop-filter: blur(16px);
+    border-radius: 50px;
+    padding: 6px 18px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    border: 1px solid rgba(255, 200, 150, 0.3);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    gap: 14px;
+    border: 1px solid rgba(255, 210, 160, 0.4);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     z-index: 100;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: monospace;
+    pointer-events: auto;
   }
   
-  .play-btn {
-    background: linear-gradient(135deg, #ffaa88, #ff6680);
+  .play-pause {
+    background: linear-gradient(135deg, #f5a97f, #e07a5f);
     border: none;
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 15px rgba(255, 80, 120, 0.5);
+    box-shadow: 0 0 12px rgba(240, 100, 70, 0.6);
   }
   
-  .play-btn:hover {
+  .play-pause:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 80, 120, 0.8);
+    background: linear-gradient(135deg, #f7b787, #e8876a);
   }
   
-  .progress-bar-container {
+  .progress-bar-bg {
     flex: 1;
+    width: 200px;
+    max-width: 280px;
     height: 4px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,240,0.25);
     border-radius: 4px;
     cursor: pointer;
-    position: relative;
   }
   
   .progress-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #ffaa88, #ff6680);
+    background: linear-gradient(90deg, #ffb48a, #ff8c6b);
     border-radius: 4px;
-    position: relative;
-    transition: width 0.1s linear;
   }
   
-  .time-info {
-    font-size: 12px;
-    color: #ffccaa;
-    font-family: monospace;
-    letter-spacing: 1px;
-    min-width: 90px;
+  .time-text {
+    font-size: 11px;
+    color: #ffddbb;
+    min-width: 80px;
     text-align: right;
+    letter-spacing: 1px;
   }
   
-  @media (max-width: 600px) {
-    .music-player { padding: 6px 15px; gap: 10px; }
-    .play-btn { width: 38px; height: 38px; font-size: 16px; }
-    .time-info { font-size: 10px; min-width: 75px; }
-    .floating-message { bottom: 20%; }
+  @media (max-width: 550px) {
+    .progress-bar-bg { width: 140px; }
+    .time-text { font-size: 9px; min-width: 70px; }
+    .play-pause { width: 38px; height: 38px; font-size: 16px; }
+    .music-controls { padding: 5px 14px; gap: 10px; }
   }
   
-  /* Créditos sutiles */
-  .credits {
-    position: absolute;
-    bottom: 12px;
-    right: 18px;
-    font-size: 9px;
-    color: rgba(255,200,180,0.4);
+  /* Leyenda interactiva */
+  .rotate-hint {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-size: 11px;
+    color: #ffd4aa;
+    letter-spacing: 1px;
     font-family: monospace;
-    z-index: 100;
     pointer-events: none;
+    z-index: 99;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 500px) {
+    .rotate-hint { bottom: 80px; font-size: 9px; }
   }
 </style>
 </head>
 <body>
-
-<div class="floating-message">
-  <h1>✦ BAJO EL CIELO DE SATURNO ✦</h1>
-  <p>DONDE LAS PALABRA S ORBITAN TU CORAZÓN</p>
+<div class="ui-panel">
+  <div class="title-25">25 MESES • NUESTRO VIAJE</div>
+  <div class="sub">CADA DÍA, UNA NUEVA ESTRELLA</div>
 </div>
-
-<div class="music-player">
-  <button class="play-btn" id="playBtn">▶</button>
-  <div class="progress-bar-container" id="progressContainer">
+<div class="music-controls">
+  <button class="play-pause" id="playBtn">▶</button>
+  <div class="progress-bar-bg" id="progressContainer">
     <div class="progress-fill" id="progressFill"></div>
   </div>
-  <div class="time-info" id="timeDisplay">0:00 / 0:00</div>
+  <div class="time-text" id="timeDisplay">0:00 / 0:00</div>
 </div>
-<div class="credits">SATURNO ROMÁNTICO • POESÍA VISUAL</div>
+<div class="rotate-hint">〰️ Gira el mensaje con el ratón 〰️</div>
 
-<audio id="bgAudio" loop>
+<audio id="bgAudio" loop preload="auto">
   <source src="https://files.catbox.moe/pgafel.mp3" type="audio/mpeg">
 </audio>
 
@@ -181,398 +174,305 @@
   import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
   
-  // --- Configuración inicial ---
+  // --- Escena espacial romántica ---
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x020210);
-  scene.fog = new THREE.FogExp2(0x020210, 0.0004);
+  scene.background = new THREE.Color(0x040414);
+  scene.fog = new THREE.FogExp2(0x040414, 0.0025);
   
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 2.5, 14);
+  camera.position.set(0, 0.8, 4.5);
   camera.lookAt(0, 0, 0);
   
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.toneMapping = THREE.ReinhardToneMapping;
-  renderer.toneMappingExposure = 1.2;
+  renderer.toneMappingExposure = 1.1;
   document.body.appendChild(renderer.domElement);
   
-  // --- Efecto Bloom para brillo (más profesional) ---
+  // --- Efecto Bloom (brillo suave) ---
   const renderScene = new RenderPass(scene, camera);
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
-  bloomPass.threshold = 0.1;
-  bloomPass.strength = 0.6;
-  bloomPass.radius = 0.5;
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.3, 0.7);
+  bloomPass.threshold = 0.2;
+  bloomPass.strength = 0.5;
+  bloomPass.radius = 0.4;
   const effectComposer = new EffectComposer(renderer);
   effectComposer.addPass(renderScene);
   effectComposer.addPass(bloomPass);
   
-  // --- Controles interactivos (zoom y órbita suaves) ---
+  // --- Control interactivo (rotación y zoom) ---
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
-  controls.rotateSpeed = 0.8;
+  controls.rotateSpeed = 1.2;
   controls.zoomSpeed = 1.0;
   controls.enableZoom = true;
+  controls.zoomSpeed = 0.8;
   controls.enablePan = false;
   controls.autoRotate = false;
-  controls.target.set(0, 0.2, 0);
-  controls.maxDistance = 22;
-  controls.minDistance = 5;
+  controls.target.set(0, 0, 0);
+  controls.maxDistance = 7.5;
+  controls.minDistance = 2.8;
   
-  // --- Iluminación artística ---
-  // Luz ambiental suave
-  const ambient = new THREE.AmbientLight(0x22223b);
-  scene.add(ambient);
-  // Luz principal desde arriba
-  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.2);
-  mainLight.position.set(4, 8, 5);
-  mainLight.castShadow = true;
-  mainLight.shadow.mapSize.width = 1024;
-  mainLight.shadow.mapSize.height = 1024;
-  scene.add(mainLight);
-  // Luz de relleno cálida desde abajo
-  const fillWarm = new THREE.PointLight(0xffaa66, 0.6);
-  fillWarm.position.set(0, -3, 1);
-  scene.add(fillWarm);
-  // Luz fría desde atrás para contraste
-  const backCool = new THREE.PointLight(0x6688ff, 0.5);
-  backCool.position.set(0, 1, -5);
-  scene.add(backCool);
-  // Luz dinámica para los anillos
-  const ringLight = new THREE.PointLight(0xff9966, 0.7);
-  ringLight.position.set(2, 1, 3);
-  scene.add(ringLight);
-  
-  // --- Fondo de estrellas mejorado (con brillo variable) ---
-  const starFieldGeo = new THREE.BufferGeometry();
-  const starCount = 3500;
-  const starPositionsArray = new Float32Array(starCount * 3);
-  const starColorsArray = new Float32Array(starCount * 3);
+  // --- Fondo de estrellas (mejorado con colores cálidos) ---
+  const starCount = 2800;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(starCount * 3);
+  const starCol = new Float32Array(starCount * 3);
   for (let i = 0; i < starCount; i++) {
-    starPositionsArray[i*3] = (Math.random() - 0.5) * 400;
-    starPositionsArray[i*3+1] = (Math.random() - 0.5) * 200;
-    starPositionsArray[i*3+2] = (Math.random() - 0.5) * 120 - 60;
-    // Color ligeramente variable (blanco / azulado / amarillento)
-    const colorChoice = Math.random();
-    if (colorChoice > 0.8) {
-      starColorsArray[i*3] = 1.0;
-      starColorsArray[i*3+1] = 0.8;
-      starColorsArray[i*3+2] = 0.6;
-    } else if (colorChoice > 0.6) {
-      starColorsArray[i*3] = 0.7;
-      starColorsArray[i*3+1] = 0.8;
-      starColorsArray[i*3+2] = 1.0;
+    starPos[i*3] = (Math.random() - 0.5) * 380;
+    starPos[i*3+1] = (Math.random() - 0.5) * 220;
+    starPos[i*3+2] = (Math.random() - 0.5) * 150 - 60;
+    const warm = Math.random() > 0.7;
+    if (warm) {
+      starCol[i*3] = 1.0;
+      starCol[i*3+1] = 0.75;
+      starCol[i*3+2] = 0.55;
     } else {
-      starColorsArray[i*3] = 1.0;
-      starColorsArray[i*3+1] = 1.0;
-      starColorsArray[i*3+2] = 1.0;
+      starCol[i*3] = 0.95;
+      starCol[i*3+1] = 0.95;
+      starCol[i*3+2] = 1.0;
     }
   }
-  starFieldGeo.setAttribute('position', new THREE.BufferAttribute(starPositionsArray, 3));
-  starFieldGeo.setAttribute('color', new THREE.BufferAttribute(starColorsArray, 3));
-  const starMaterial = new THREE.PointsMaterial({ size: 0.18, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
-  const stars = new THREE.Points(starFieldGeo, starMaterial);
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+  const starMat = new THREE.PointsMaterial({ size: 0.14, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+  const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
   
-  // --- Saturno (mejor textura mediante gradiente de materiales) ---
-  const saturnGroup = new THREE.Group();
-  
-  // Núcleo con textura de bandas suaves
-  const planetGeo = new THREE.SphereGeometry(1.35, 256, 256);
-  const planetMat = new THREE.MeshStandardMaterial({
-    color: 0xe2c9a7,
-    emissive: 0x442200,
-    emissiveIntensity: 0.18,
-    roughness: 0.45,
-    metalness: 0.35,
-    flatShading: false
-  });
-  const planet = new THREE.Mesh(planetGeo, planetMat);
-  planet.castShadow = true;
-  planet.receiveShadow = false;
-  saturnGroup.add(planet);
-  
-  // Añadir sutiles nubes (esferas translúcidas superpuestas)
-  const cloudGeo = new THREE.SphereGeometry(1.38, 128, 128);
-  const cloudMat = new THREE.MeshStandardMaterial({
-    color: 0xccaa88,
-    emissive: 0x331100,
-    transparent: true,
-    opacity: 0.15,
-    roughness: 0.7
-  });
-  const clouds = new THREE.Mesh(cloudGeo, cloudMat);
-  saturnGroup.add(clouds);
-  
-  // --- Anillos de Saturno (detallados con múltiples capas) ---
-  // Anillo interior denso
-  const ring1Geo = new THREE.TorusGeometry(1.95, 0.35, 256, 512);
-  const ring1Mat = new THREE.MeshStandardMaterial({
-    color: 0xc99e6f,
-    emissive: 0x552200,
-    emissiveIntensity: 0.12,
-    transparent: true,
-    opacity: 0.85,
-    side: THREE.DoubleSide,
-    roughness: 0.5
-  });
-  const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
-  ring1.rotation.x = Math.PI / 2.15;
-  ring1.rotation.z = 0.25;
-  saturnGroup.add(ring1);
-  
-  // Anillo medio brillante
-  const ring2Geo = new THREE.TorusGeometry(2.25, 0.22, 256, 512);
-  const ring2Mat = new THREE.MeshStandardMaterial({
-    color: 0xe8c49a,
-    emissive: 0x442200,
-    transparent: true,
-    opacity: 0.8,
-    side: THREE.DoubleSide,
-    roughness: 0.4,
-    metalness: 0.3
-  });
-  const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
-  ring2.rotation.x = Math.PI / 2.15;
-  ring2.rotation.z = 0.22;
-  saturnGroup.add(ring2);
-  
-  // Anillo exterior delgado y translúcido
-  const ring3Geo = new THREE.TorusGeometry(2.55, 0.12, 256, 512);
-  const ring3Mat = new THREE.MeshStandardMaterial({
-    color: 0xf0d6b0,
-    transparent: true,
-    opacity: 0.65,
-    side: THREE.DoubleSide,
-    emissive: 0x331100,
-    roughness: 0.6
-  });
-  const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
-  ring3.rotation.x = Math.PI / 2.15;
-  ring3.rotation.z = 0.19;
-  saturnGroup.add(ring3);
-  
-  // Anillo de polvo muy tenue exterior
-  const dustGeo = new THREE.TorusGeometry(2.85, 0.07, 256, 512);
-  const dustMat = new THREE.MeshStandardMaterial({
-    color: 0xffe0b0,
-    transparent: true,
-    opacity: 0.4,
-    side: THREE.DoubleSide
-  });
-  const dustRing = new THREE.Mesh(dustGeo, dustMat);
-  dustRing.rotation.x = Math.PI / 2.15;
-  dustRing.rotation.z = 0.15;
-  saturnGroup.add(dustRing);
-  
-  scene.add(saturnGroup);
-  
-  // --- Partículas alrededor de Saturno (polvo interestelar) ---
-  const dustParticleCount = 1800;
-  const dustGeoPart = new THREE.BufferGeometry();
-  const dustPositions = new Float32Array(dustParticleCount * 3);
-  for (let i = 0; i < dustParticleCount; i++) {
-    const radius = 1.8 + Math.random() * 1.9;
-    const angle = Math.random() * Math.PI * 2;
-    const yOff = (Math.random() - 0.5) * 1.1;
-    dustPositions[i*3] = Math.cos(angle) * radius;
-    dustPositions[i*3+1] = yOff;
-    dustPositions[i*3+2] = Math.sin(angle) * radius;
-  }
-  dustGeoPart.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-  const dustPartMat = new THREE.PointsMaterial({ color: 0xffcc99, size: 0.045, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-  const dustParticles = new THREE.Points(dustGeoPart, dustPartMat);
-  saturnGroup.add(dustParticles);
-  
-  // --- Palabras orbitando (efecto brillante y elegante) ---
-  const loveWords = [
-    "AMOR", "PASIÓN", "ESTRELLAS", "BESOS", "LUNA", "FELICIDAD",
-    "SUEÑOS", "ROMANCE", "INFINITO", "CORAZÓN", "TIERRA", "CIELO",
-    "VIDA", "POESÍA", "LUZ", "ARMONÍA", "DULZURA", "ETERNO"
-  ];
-  
-  const orbitRadiiSet = [2.9, 3.5, 4.0];
-  const orbitSpeeds = [0.0035, 0.0028, 0.0042];
-  const wordColors = ["#ffb6c1", "#ff99cc", "#ffc0cb", "#ffaacc", "#ff88aa", "#ffaa99", "#ffbb99"];
-  
-  const orbitingWords = [];
-  
-  loveWords.forEach((word, idx) => {
-    const radius = orbitRadiiSet[idx % orbitRadiiSet.length];
-    const speed = orbitSpeeds[idx % orbitSpeeds.length];
-    const startAngle = (idx / loveWords.length) * Math.PI * 2;
-    const colorWord = wordColors[idx % wordColors.length];
-    const yLev = (idx % 3 - 1) * 0.5;
-    
-    // Crear textura de alta calidad para cada palabra
-    const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'rgba(0,0,0,0)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Sombra y brillo
-    ctx.shadowBlur = 0;
-    ctx.font = `Bold ${52 + (idx % 3) * 8}px "Segoe UI", "Arial", "Helvetica Neue", sans-serif`;
-    ctx.fillStyle = colorWord;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    // Efecto de brillo con múltiples trazos
-    for (let i = 0; i < 3; i++) {
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = colorWord;
-      ctx.fillText(word, canvas.width/2, canvas.height/2);
-    }
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'white';
-    ctx.fillText(word, canvas.width/2, canvas.height/2);
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending });
-    const sprite = new THREE.Sprite(spriteMat);
-    sprite.scale.set(0.9, 0.9, 1);
-    sprite.userData = {
-      radius, speed, angle: startAngle,
-      yOffset: yLev,
-      baseScale: 0.9,
-      word: word
-    };
-    scene.add(sprite);
-    orbitingWords.push(sprite);
-  });
-  
-  // --- Corazones flotantes extras en órbitas aleatorias ---
-  const floatingHearts = [];
-  const heartCount = 100;
-  for (let i = 0; i < heartCount; i++) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'rgba(0,0,0,0)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const heartSize = 22 + Math.random() * 16;
-    ctx.font = `${heartSize}px "Segoe UI", "Arial"`;
-    ctx.fillStyle = `rgba(255, ${120 + Math.random() * 80}, ${120 + Math.random() * 80}, 0.8)`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText("❤️", canvas.width/2, canvas.height/2);
-    const texture = new THREE.CanvasTexture(canvas);
-    const heartMat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending });
-    const heartSprite = new THREE.Sprite(heartMat);
-    heartSprite.scale.set(0.22, 0.22, 1);
-    heartSprite.userData = {
-      radius: 2.2 + Math.random() * 2.6,
-      speed: 0.0015 + Math.random() * 0.005,
-      angle: Math.random() * Math.PI * 2,
-      yOffset: (Math.random() - 0.5) * 1.4
-    };
-    scene.add(heartSprite);
-    floatingHearts.push(heartSprite);
-  }
-  
-  // --- Partículas de luz adicionales (estrellas fugaces estáticas) ---
-  const glowCount = 600;
+  // --- Pequeñas partículas doradas alrededor (ambiente) ---
+  const glowCount = 900;
   const glowGeo = new THREE.BufferGeometry();
   const glowPositions = new Float32Array(glowCount * 3);
   for (let i = 0; i < glowCount; i++) {
-    glowPositions[i*3] = (Math.random() - 0.5) * 30;
-    glowPositions[i*3+1] = (Math.random() - 0.5) * 15;
-    glowPositions[i*3+2] = (Math.random() - 0.5) * 20 - 5;
+    glowPositions[i*3] = (Math.random() - 0.5) * 18;
+    glowPositions[i*3+1] = (Math.random() - 0.5) * 12;
+    glowPositions[i*3+2] = (Math.random() - 0.5) * 14 - 3;
   }
   glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPositions, 3));
-  const glowMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.035, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+  const glowMat = new THREE.PointsMaterial({ color: 0xffaa77, size: 0.035, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
   const glowParticles = new THREE.Points(glowGeo, glowMat);
   scene.add(glowParticles);
   
-  // --- Animación de elementos ---
+  // --- Mensaje Central con dos caras (lado A y lado B) ---
+  // Creamos un grupo que rotará entero
+  const messageGroup = new THREE.Group();
+  
+  // --- Función para crear texto con canvas (texto nítido) ---
+  function createTextTexture(text, bgColor, textColor, fontSizePx = 52) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1024;
+    canvas.height = 1024;
+    // Fondo transparente con un ligero radial (para dar profundidad)
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Sombra para efecto de relieve
+    ctx.shadowBlur = 0;
+    ctx.font = `${fontSizePx}px "Segoe UI", "Corbel", "Arial", sans-serif`;
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Efecto de brillo en el texto
+    for (let i = 0; i < 3; i++) {
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = textColor;
+      ctx.fillText(text, canvas.width/2, canvas.height/2);
+    }
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fff9f0';
+    ctx.fillText(text, canvas.width/2, canvas.height/2);
+    
+    return new THREE.CanvasTexture(canvas);
+  }
+  
+  // Texto para el Lado A (25 meses - mensajes de viaje y momentos)
+  const sideAText = `✦ 25 MESES ✦\n\nCADA INSTA NTE CONTIGO\nES UN VIAJE SIN MAPA\nTÚ Y YO \nCOMPLICES, CÓMPLICES\nENTRE RÍAS Y ESTRELLAS\n\nEL MEJOR PLAN \nES SEGUIR SOÑANDO\nCONTIGO.`;
+  
+  // Texto para el Lado B (recuerdos y futuro)
+  const sideBText = `✦ PARA SIEMPRE ✦\n\nRECUERDO TUS MANOS\nTUS PASOS, TU RISA\nCADA MES MÁS CERCA\nCADA DÍA MÁS NOSOTROS\n\n25 MESES SON\n25 PROMESAS CUMPLIDAS\nY MILES POR VIVIR\n\nTE QUIERO.\n(HASTA EL INFINITO)`;
+  
+  // Crear texturas para ambos lados (con fondo degradado suave)
+  const canvasA = document.createElement('canvas');
+  canvasA.width = 1024;
+  canvasA.height = 1024;
+  const ctxA = canvasA.getContext('2d');
+  // Fondo con gradiente radial (tonos cálidos y románticos)
+  const gradA = ctxA.createLinearGradient(0, 0, canvasA.width, canvasA.height);
+  gradA.addColorStop(0, '#2a1a35');
+  gradA.addColorStop(0.5, '#1e1228');
+  gradA.addColorStop(1, '#100b18');
+  ctxA.fillStyle = gradA;
+  ctxA.fillRect(0, 0, canvasA.width, canvasA.height);
+  // Marco decorativo sutil
+  ctxA.strokeStyle = '#ffc49b';
+  ctxA.lineWidth = 12;
+  ctxA.strokeRect(40, 40, canvasA.width - 80, canvasA.height - 80);
+  ctxA.fillStyle = '#ffdcc0';
+  ctxA.font = `44px "Segoe UI", "Corbel", "Arial", sans-serif`;
+  ctxA.textAlign = 'center';
+  ctxA.shadowBlur = 0;
+  // Dibujar líneas de texto con espaciado manual
+  const linesA = sideAText.split('\n');
+  let startY = canvasA.height / 2 - (linesA.length * 32) / 2;
+  linesA.forEach((line, idx) => {
+    ctxA.fillStyle = idx === 0 ? '#ffcf9a' : '#ffe3ca';
+    ctxA.font = idx === 0 ? `52px "Segoe UI", "Corbel", sans-serif` : `36px "Segoe UI", "Corbel", sans-serif`;
+    ctxA.fillText(line, canvasA.width/2, startY + idx * 58);
+  });
+  // Añadir pequeños corazones decorativos
+  ctxA.font = `28px "Segoe UI"`;
+  ctxA.fillStyle = '#ffaa88';
+  ctxA.fillText("❤️", canvasA.width/2 - 70, canvasA.height - 70);
+  ctxA.fillText("❤️", canvasA.width/2 + 70, canvasA.height - 70);
+  
+  const textureA = new THREE.CanvasTexture(canvasA);
+  
+  // Lado B
+  const canvasB = document.createElement('canvas');
+  canvasB.width = 1024;
+  canvasB.height = 1024;
+  const ctxB = canvasB.getContext('2d');
+  const gradB = ctxB.createLinearGradient(0, 0, canvasB.width, canvasB.height);
+  gradB.addColorStop(0, '#1f2a3a');
+  gradB.addColorStop(0.5, '#121a27');
+  gradB.addColorStop(1, '#0a0f18');
+  ctxB.fillStyle = gradB;
+  ctxB.fillRect(0, 0, canvasB.width, canvasB.height);
+  ctxB.strokeStyle = '#aac9ff';
+  ctxB.lineWidth = 12;
+  ctxB.strokeRect(40, 40, canvasB.width - 80, canvasB.height - 80);
+  const linesB = sideBText.split('\n');
+  let startYB = canvasB.height / 2 - (linesB.length * 32) / 2;
+  linesB.forEach((line, idx) => {
+    ctxB.fillStyle = idx === 0 ? '#ffcf9a' : '#cbe4fe';
+    ctxB.font = idx === 0 ? `52px "Segoe UI", "Corbel", sans-serif` : `34px "Segoe UI", "Corbel", sans-serif`;
+    ctxB.fillText(line, canvasB.width/2, startYB + idx * 52);
+  });
+  ctxB.font = `28px "Segoe UI"`;
+  ctxB.fillStyle = '#ffaa88';
+  ctxB.fillText("❤️", canvasB.width/2 - 70, canvasB.height - 70);
+  ctxB.fillText("❤️", canvasB.width/2 + 70, canvasB.height - 70);
+  const textureB = new THREE.CanvasTexture(canvasB);
+  
+  // Crear dos planos (uno para cada lado) y unirlos espalda con espalda
+  const geometry = new THREE.BoxGeometry(2.8, 2.8, 0.15);
+  const materials = [
+    new THREE.MeshStandardMaterial({ map: textureB, roughness: 0.3, metalness: 0.1, emissive: '#221c2a', emissiveIntensity: 0.2 }), // derecha (lado B)
+    new THREE.MeshStandardMaterial({ map: textureA, roughness: 0.3, metalness: 0.1, emissive: '#1e1726', emissiveIntensity: 0.2 }), // izquierda (lado A)
+    new THREE.MeshStandardMaterial({ color: 0x331e2c, roughness: 0.6 }), // arriba
+    new THREE.MeshStandardMaterial({ color: 0x331e2c, roughness: 0.6 }), // abajo
+    new THREE.MeshStandardMaterial({ color: 0x553d4a, roughness: 0.5 }), // frente
+    new THREE.MeshStandardMaterial({ color: 0x553d4a, roughness: 0.5 })  // atrás
+  ];
+  const messageBox = new THREE.Mesh(geometry, materials);
+  messageBox.castShadow = true;
+  messageBox.receiveShadow = false;
+  messageGroup.add(messageBox);
+  
+  // Añadir un leve resplandor alrededor del mensaje (partículas en anillo)
+  const haloCount = 300;
+  const haloGeo = new THREE.BufferGeometry();
+  const haloPos = new Float32Array(haloCount * 3);
+  for (let i = 0; i < haloCount; i++) {
+    const rad = 1.9 + Math.random() * 0.5;
+    const ang = Math.random() * Math.PI * 2;
+    const yoff = (Math.random() - 0.5) * 1.5;
+    haloPos[i*3] = Math.cos(ang) * rad;
+    haloPos[i*3+1] = yoff;
+    haloPos[i*3+2] = Math.sin(ang) * rad;
+  }
+  haloGeo.setAttribute('position', new THREE.BufferAttribute(haloPos, 3));
+  const haloMat = new THREE.PointsMaterial({ color: 0xffb88a, size: 0.022, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+  const haloPoints = new THREE.Points(haloGeo, haloMat);
+  messageGroup.add(haloPoints);
+  
+  scene.add(messageGroup);
+  
+  // --- Elementos decorativos: estrellitas orbitando alrededor del mensaje ---
+  const orbCount = 180;
+  const orbGroup = new THREE.Group();
+  const orbPositions = new Float32Array(orbCount * 3);
+  for (let i = 0; i < orbCount; i++) {
+    const r = 1.7 + Math.random() * 0.9;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI * 2;
+    orbPositions[i*3] = Math.sin(theta) * Math.cos(phi) * r;
+    orbPositions[i*3+1] = Math.sin(theta) * Math.sin(phi) * r * 0.6;
+    orbPositions[i*3+2] = Math.cos(theta) * r;
+  }
+  orbGroup.userData = { positions: orbPositions, speeds: Array.from({ length: orbCount }, () => 0.002 + Math.random() * 0.006) };
+  const orbBufferGeo = new THREE.BufferGeometry();
+  orbBufferGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
+  const orbMat = new THREE.PointsMaterial({ color: 0xffc89c, size: 0.028, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending });
+  const orbitingStars = new THREE.Points(orbBufferGeo, orbMat);
+  scene.add(orbitingStars);
+  
+  // --- Animación de partículas y rotación suave del grupo central ---
   let time = 0;
   
-  function animate() {
-    requestAnimationFrame(animate);
+  function animateParticles() {
+    requestAnimationFrame(animateParticles);
     time += 0.012;
     
-    // Rotación de Saturno y anillos
-    saturnGroup.rotation.y += 0.003;
-    saturnGroup.rotation.x = Math.sin(time * 0.15) * 0.05;
+    // Rotación muy sutil del mensaje central para dar vida (1 grado cada cierto tiempo)
+    messageGroup.rotation.y = Math.sin(time * 0.2) * 0.1;
+    messageGroup.rotation.x = Math.sin(time * 0.25) * 0.05;
     
-    // Rotación independiente de anillos
-    ring1.rotation.z += 0.0012;
-    ring2.rotation.z += 0.0015;
-    ring3.rotation.z += 0.0018;
-    dustRing.rotation.z += 0.002;
+    // Rotación de las estrellas orbitantes (simulando movimiento)
+    const positions = orbitingStars.geometry.attributes.position.array;
+    for (let i = 0; i < orbCount; i++) {
+      const speed = 0.003;
+      const angleDelta = time * speed;
+      // Movimiento orbital simple alrededor del eje Y
+      const x = orbPositions[i*3];
+      const z = orbPositions[i*3+2];
+      const newX = x * Math.cos(angleDelta) + z * Math.sin(angleDelta);
+      const newZ = -x * Math.sin(angleDelta) + z * Math.cos(angleDelta);
+      positions[i*3] = newX;
+      positions[i*3+2] = newZ;
+    }
+    orbitingStars.geometry.attributes.position.needsUpdate = true;
     
-    // Movimiento de estrellas de fondo (muy lento)
-    stars.rotation.y += 0.0002;
-    stars.rotation.x += 0.0001;
+    // Efecto de brillo en las partículas flotantes
+    glowParticles.rotation.y += 0.001;
+    stars.rotation.y += 0.0003;
+    stars.rotation.x += 0.0002;
     
-    // Luz dinámica que cambia de color sutilmente
-    const hue = (time * 0.1) % (Math.PI * 2);
-    ringLight.intensity = 0.65 + Math.sin(time) * 0.1;
-    fillWarm.intensity = 0.55 + Math.cos(time * 0.7) * 0.1;
-    
-    // Actualizar palabras en órbita
-    orbitingWords.forEach(sprite => {
-      const d = sprite.userData;
-      d.angle += d.speed;
-      const x = Math.cos(d.angle) * d.radius;
-      const z = Math.sin(d.angle) * d.radius;
-      sprite.position.set(x, d.yOffset, z);
-      // Efecto de pulsación suave
-      const scaleVal = d.baseScale + Math.sin(time * 3) * 0.04;
-      sprite.scale.set(scaleVal, scaleVal, 1);
-      if (sprite.material.map) sprite.material.map.needsUpdate = true;
-    });
-    
-    // Actualizar corazones flotantes
-    floatingHearts.forEach(heart => {
-      const d = heart.userData;
-      d.angle += d.speed;
-      const x = Math.cos(d.angle) * d.radius;
-      const z = Math.sin(d.angle) * d.radius;
-      heart.position.set(x, d.yOffset, z);
-      heart.position.y = d.yOffset + Math.sin(time * 1.8) * 0.07;
-    });
-    
-    // Actualizar controles de cámara y render con efecto bloom
-    controls.update();
     effectComposer.render();
   }
   
-  animate();
+  animateParticles();
   
-  // --- Reproductor de música con UI mejorada ---
+  // --- Control de música (solo empieza al hacer clic en play) ---
   const audioEl = document.getElementById('bgAudio');
-  const playButton = document.getElementById('playBtn');
+  const playBtn = document.getElementById('playBtn');
   const progressFill = document.getElementById('progressFill');
   const progressContainer = document.getElementById('progressContainer');
   const timeSpan = document.getElementById('timeDisplay');
   
-  function updateButton() {
-    playButton.textContent = audioEl.paused ? '▶' : '⏸';
+  function updateButtonUI() {
+    playBtn.textContent = audioEl.paused ? '▶' : '⏸';
   }
   
-  playButton.addEventListener('click', () => {
+  playBtn.addEventListener('click', () => {
     if (audioEl.paused) {
       audioEl.play();
     } else {
       audioEl.pause();
     }
-    updateButton();
+    updateButtonUI();
   });
   
   audioEl.addEventListener('timeupdate', () => {
     if (audioEl.duration) {
       const percent = (audioEl.currentTime / audioEl.duration) * 100;
       progressFill.style.width = percent + '%';
-      const curMin = Math.floor(audioEl.currentTime / 60);
-      const curSec = Math.floor(audioEl.currentTime % 60);
-      const durMin = Math.floor(audioEl.duration / 60);
-      const durSec = Math.floor(audioEl.duration % 60);
-      timeSpan.textContent = `${curMin}:${curSec.toString().padStart(2,'0')} / ${durMin}:${durSec.toString().padStart(2,'0')}`;
+      const curM = Math.floor(audioEl.currentTime / 60);
+      const curS = Math.floor(audioEl.currentTime % 60);
+      const durM = Math.floor(audioEl.duration / 60);
+      const durS = Math.floor(audioEl.duration % 60);
+      timeSpan.textContent = `${curM}:${curS.toString().padStart(2,'0')} / ${durM}:${durS.toString().padStart(2,'0')}`;
     }
   });
   
@@ -585,14 +485,16 @@
     }
   });
   
-  audioEl.addEventListener('ended', updateButton);
-  audioEl.addEventListener('play', updateButton);
-  audioEl.addEventListener('pause', updateButton);
+  audioEl.addEventListener('ended', updateButtonUI);
+  audioEl.addEventListener('play', updateButtonUI);
+  audioEl.addEventListener('pause', updateButtonUI);
   
-  // Intentar auto-reproducción
-  audioEl.play().catch(e => console.log('Autoplay bloqueado, esperando interacción'));
+  // No reproducir automáticamente
+  // Aseguramos que no empiece sola
+  audioEl.pause();
+  updateButtonUI();
   
-  // Ajuste responsive
+  // Ajuste responsive de la cámara
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
