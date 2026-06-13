@@ -38,7 +38,7 @@
     margin-left: 8px;
 }
 
-/* Estilo para los corazones que aparecen */
+/* Estilo para los corazones que aparecen con el mouse (solo en hover del botón) */
 .heart {
     position: absolute;
     pointer-events: none;
