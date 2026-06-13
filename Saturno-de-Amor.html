@@ -16,9 +16,13 @@
     display: block;
     width: 100vw;
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
   }
 
-  /* --- Reproductor Musical Romántico --- */
+  /* --- Reproductor Musical Adaptable y Romántico --- */
   .player {
     position: fixed;
     bottom: 25px;
@@ -87,55 +91,130 @@
     font-family: monospace;
   }
 
-  /* --- Etiqueta informativa con estilo soñador --- */
-  .info {
+  /* --- Carta Romántica (el mensaje de amor) --- */
+  .love-letter {
     position: fixed;
-    top: 20px;
-    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 550px;
+    background: rgba(20, 10, 35, 0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 32px;
+    padding: 28px 24px;
     text-align: center;
-    color: rgba(255, 220, 230, 0.9);
-    font-size: 12px;
-    pointer-events: none;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    font-weight: 400;
-    text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
-    background: linear-gradient(135deg, #ffdde1, #ffb6c1);
+    border: 1px solid rgba(255, 182, 193, 0.6);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 105, 180, 0.3);
+    z-index: 20;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .love-letter h1 {
+    font-size: 2rem;
+    margin: 0 0 12px 0;
+    background: linear-gradient(135deg, #ffb6c1, #ff69b4, #ffd9e6);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    animation: gentleGlow 3s infinite alternate;
-    z-index: 10;
+    letter-spacing: 2px;
   }
 
-  @keyframes gentleGlow {
-    0% { opacity: 0.6; text-shadow: 0 0 5px #ff69b4; }
-    100% { opacity: 1; text-shadow: 0 0 20px #ffb6c1; }
+  .love-letter p {
+    color: #ffe0e7;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 16px 0;
+    font-weight: 400;
+  }
+
+  .love-letter .french-phrase {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: #ffb6c1;
+    letter-spacing: 1px;
+  }
+
+  .love-letter .emoji-line {
+    font-size: 1.8rem;
+    margin: 15px 0 5px;
+    letter-spacing: 8px;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
   }
 
   @media (max-width: 600px) {
     .player { padding: 8px 15px; width: 90%; gap: 10px; }
-    .info { font-size: 8px; letter-spacing: 2px; top: 12px; }
-    .player button { width: 38px; height: 38px; font-size: 18px; }
+    .love-letter { padding: 20px 16px; width: 88%; }
+    .love-letter h1 { font-size: 1.5rem; }
+    .love-letter p { font-size: 0.9rem; }
+    .love-letter .french-phrase { font-size: 1.1rem; }
+  }
+
+  /* --- Etiqueta pequeña decorativa --- */
+  .info {
+    position: fixed;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255, 220, 230, 0.6);
+    font-size: 10px;
+    pointer-events: none;
+    letter-spacing: 2px;
+    z-index: 15;
+    font-style: italic;
   }
 </style>
 </head>
 <body>
 
+<!-- Reproductor -->
 <div class="player">
   <button id="play">💗</button>
   <div class="progress" id="progress"><div class="progress-bar" id="progress-bar"></div></div>
   <div class="time" id="time">0:00 / 0:00</div>
 </div>
 
-<!-- Audio con la URL que proporcionaste -->
+<!-- CARTA DE AMOR ROMÁNTICA (TEXTO COMPLETO) -->
+<div class="love-letter">
+  <div class="emoji-line">✨💖🌙💕✨</div>
+  <h1>Mon Amour, Ma Chérie</h1>
+  <p>
+    Desde que llegaste a mi vida, cada latido tiene tu nombre 💗<br>
+    Eres la luz que ilumina mis noches más oscuras, la razón de mis sonrisas más sinceras.
+  </p>
+  <div class="french-phrase">💫 Je t'aime plus que les étoiles 💫</div>
+  <p>
+    <strong>Cara mia, Amore mio</strong>, cada día a tu lado es un sueño hecho realidad. 
+    Tu mirada es mi hogar, tu voz es mi melodía favorita. 💖
+  </p>
+  <p>
+    ✨ Te quiero con todo mi corazón, con cada fibra de mi ser.  
+    Eres mi presente y mi eternidad. 💕
+  </p>
+  <div class="emoji-line">💗  T  U  Y  O    P  O  R    S  I  E  M  P  R  E  💗</div>
+</div>
+
+<div class="info">🎵  Para ti, con amor  |  Música: Saturno - Pablo Alborán  🎵</div>
+
 <audio id="audio" loop>
   <source src="https://files.catbox.moe/pgafel.mp3" type="audio/mpeg">
 </audio>
 
 <script>
   (function() {
-    // ======================= ANIMACIÓN DE PARTÍCULAS (Fondo Estelar Romántico) =======================
+    // ========== ANIMACIÓN DE PARTÍCULAS (Fondo Estelar) ==========
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
@@ -149,7 +228,7 @@
     const ctx = canvas.getContext('2d');
     let width, height;
     let particles = [];
-    const PARTICLE_COUNT = 280;
+    const PARTICLE_COUNT = 300;
     const COLORS = ['#ffffff', '#ffe0f0', '#ffb6c1', '#ff9eb5', '#ffd9e6', '#ffc0cb', '#ffe4f0'];
 
     function resizeCanvas() {
@@ -163,9 +242,9 @@
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = Math.random() * 2.5 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.25;
-        this.speedY = (Math.random() - 0.5) * 0.2 + (Math.random() * 0.3);
+        this.size = Math.random() * 2.5 + 0.8;
+        this.speedX = (Math.random() - 0.5) * 0.2;
+        this.speedY = (Math.random() - 0.5) * 0.15 + (Math.random() * 0.2);
         this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
         this.alpha = Math.random() * 0.6 + 0.3;
         this.twinkle = Math.random() * Math.PI * 2;
@@ -183,12 +262,12 @@
       
       draw() {
         ctx.save();
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 6;
         ctx.shadowColor = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.alpha + Math.sin(this.twinkle) * 0.15;
+        ctx.globalAlpha = this.alpha + Math.sin(this.twinkle) * 0.2;
         ctx.fill();
         ctx.restore();
       }
@@ -226,7 +305,7 @@
     initParticles();
     animateParticles();
     
-    // ======================= REPRODUCTOR DE MÚSICA =======================
+    // ========== REPRODUCTOR DE MÚSICA ==========
     const audio = document.getElementById('audio');
     const playBtn = document.getElementById('play');
     const progressBar = document.getElementById('progress-bar');
@@ -255,7 +334,7 @@
         audio.pause();
         playBtn.textContent = '💖';
       } else {
-        audio.play().catch(e => console.log("Para escuchar, haz clic en play"));
+        audio.play().catch(e => console.log("Haz clic para escuchar"));
         playBtn.textContent = '✨';
       }
       isPlaying = !isPlaying;
@@ -278,19 +357,7 @@
         audio.currentTime = percent * audio.duration;
       }
     });
-    
-    const playerDiv = document.querySelector('.player');
-    playerDiv.addEventListener('mouseenter', () => {
-      playerDiv.style.borderColor = 'rgba(255, 200, 210, 0.8)';
-      playerDiv.style.boxShadow = '0 0 25px rgba(255, 105, 180, 0.5)';
-    });
-    playerDiv.addEventListener('mouseleave', () => {
-      playerDiv.style.borderColor = 'rgba(255, 182, 193, 0.3)';
-      playerDiv.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.5)';
-    });
   })();
 </script>
-
-<div class="info">💗  M O N   C Œ U R   T ' A P P A R T I E N T   💗  |  C A R A   M I A   ✨  |  A M O R E   M I O   💕</div>
 </body>
 </html>
