@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>25 Mois - Étoile de Notre Amour</title>
+<title>25 Meses - Nuestro Amor</title>
 <style>
   body {
     margin: 0;
@@ -185,8 +185,8 @@
 </head>
 <body>
 <div class="ui-panel">
-  <div class="title-25">✦ 25 MOIS • NOTRE HISTOIRE ✦</div>
-  <div class="sub">L'AMOUR N'A PAS DE FRONTIÈRES</div>
+  <div class="title-25">✦ 25 MESES • NUESTRO AMOR ✦</div>
+  <div class="sub">CADA DÍA CONTIGO ES UNA ESTRELLA EN MI CIELO</div>
 </div>
 <div class="music-controls">
   <button class="play-pause" id="playBtn">▶</button>
@@ -260,38 +260,23 @@
   
   // ========== ANIMACIONES DE CALIDAD ==========
   
-  // --- 1. Campo de estrellas profundo con parpadeo ---
+  // --- 1. Campo de estrellas profundo ---
   const starCount = 4000;
   const starGeo = new THREE.BufferGeometry();
   const starPositions = new Float32Array(starCount * 3);
-  const starSizes = new Float32Array(starCount);
   for (let i = 0; i < starCount; i++) {
     starPositions[i*3] = (Math.random() - 0.5) * 500;
     starPositions[i*3+1] = (Math.random() - 0.5) * 300;
     starPositions[i*3+2] = (Math.random() - 0.5) * 250 - 100;
-    starSizes[i] = 0.08 + Math.random() * 0.15;
   }
   starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-  starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
   const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
   const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
   
-  // --- 2. Estrellas fugaces (partículas con estela) ---
+  // --- 2. Estrellas fugaces ---
   const shootingStars = [];
   const shootingStarCount = 8;
-  for (let i = 0; i < shootingStarCount; i++) {
-    const starObj = {
-      active: false,
-      progress: 0,
-      x: 0, y: 0, z: 0,
-      vx: 0, vy: 0, vz: 0,
-      trail: []
-    };
-    shootingStars.push(starObj);
-  }
-  
-  // Crear líneas para las estelas
   const trailLines = [];
   for (let i = 0; i < shootingStarCount; i++) {
     const material = new THREE.LineBasicMaterial({ color: 0xffaa77 });
@@ -299,6 +284,7 @@
     const line = new THREE.Line(geometry, material);
     scene.add(line);
     trailLines.push(line);
+    shootingStars.push({ active: false, progress: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, trail: [] });
   }
   
   function spawnShootingStar() {
@@ -318,7 +304,7 @@
     }
   }
   
-  // --- 3. Polvo estelar brillante (partículas giratorias) ---
+  // --- 3. Polvo estelar brillante ---
   const dustCount = 2500;
   const dustGeo = new THREE.BufferGeometry();
   const dustPositions = new Float32Array(dustCount * 3);
@@ -338,7 +324,7 @@
   const dustParticles = new THREE.Points(dustGeo, dustMat);
   scene.add(dustParticles);
   
-  // --- 4. Anillo brillante giratorio alrededor del mensaje ---
+  // --- 4. Anillo brillante giratorio ---
   const ringParticleCount = 400;
   const ringGeo = new THREE.BufferGeometry();
   const ringPositions = new Float32Array(ringParticleCount * 3);
@@ -355,48 +341,51 @@
   const ringParticlesObj = new THREE.Points(ringGeo, ringParticleMat);
   scene.add(ringParticlesObj);
   
-  // ========== MENSAJE DECORADO ==========
+  // ========== MENSAJE EN ESPAÑOL CON TÉRMINOS FRANCESES ==========
   const messageGroup = new THREE.Group();
   
-  // Texto para la cara frontal (Francés)
-  const textFront = `✦ 25 MOIS ✦
+  // Texto para la cara frontal (Español con Ma Chérie, Mon Amour)
+  const textFront = `✦ 25 MESES ✦
 
-MON AMOUR, MA CHÉRIE
+MI AMOR, MA CHÉRIE
 
-DEPUIS 25 LUNES
-TU FAIS BRILLER MES JOURS
+25 MESES A TU LADO
+Y CADA DÍA SIGO ENAMORÁNDOME
 
-CHAQUE INSTANT AVEC TOI
-EST UNE ÉTOILE DANS MON CIEL
+TUS MANOS, TU RISA, TU MIRADA
+SON MI LUGAR SEGURO, MI HOGAR
 
-JE T'AIME PLUS CHAQUE JOUR
+GRACIAS POR CADA INSTANTE
+GRACIAS POR CADA SUEÑO
 
-♡ MON TRÉSOR ♡`;
+JE T'AIME, MA CHÉRIE
+
+♡ ETERNAMENTE TUYA/O ♡`;
   
-  // Texto para la cara trasera (Italiano)
-  const textBack = `✦ PER SEMPRE ✦
+  // Texto para la cara trasera (Español con términos franceses/italianos)
+  const textBack = `✦ PARA SIEMPRE ✦
 
-AMORE MIO, TESORO MIO
+AMORE MIO, MON TRÉSOR
 
-25 MESI DI MAGIA
-INSIEME ABBIAMO
-DIPINTO L'INFINITO
+25 MESES DE MAGIA
+Y UNA VIDA ENTERA POR DELANTE
 
-LA TUA MANO NELLA MIA
-È LA MIA CASA
+HE ENCONTRADO EN TI
+LO QUE NUNCA BUSQUÉ
 
-JE T'AIME MON AMOUR
+CADA DÍA A TU LADO
+ES UN REGALO DEL CIELO
 
-❤️ AMORE MIO ❤️`;
+JE T'AIME, MON AMOUR
+
+❤️ POR SIEMPRE JUNTOS ❤️`;
   
-  // Función mejorada para crear textura decorada
   function createElegantTexture(content, isFront) {
     const canvas = document.createElement('canvas');
     canvas.width = 1024;
     canvas.height = 1024;
     const ctx = canvas.getContext('2d');
     
-    // Fondo con gradiente radial estrellado
     const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
     if (isFront) {
       grad.addColorStop(0, '#2a1a40');
@@ -410,7 +399,7 @@ JE T'AIME MON AMOUR
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Decoración de esquinas con filigrana
+    // Decoración de esquinas
     ctx.strokeStyle = isFront ? '#ffc49b' : '#aac9ff';
     ctx.lineWidth = 4;
     for (let i = 0; i < 4; i++) {
@@ -432,7 +421,7 @@ JE T'AIME MON AMOUR
     ctx.lineWidth = 1.5;
     ctx.strokeRect(45, 45, canvas.width - 90, canvas.height - 90);
     
-    // Dibujar líneas de texto
+    // Dibujar texto
     const lines = content.split('\n');
     const lineHeight = 70;
     const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
@@ -451,15 +440,15 @@ JE T'AIME MON AMOUR
         ctx.fillText(line, canvas.width/2, yPos);
         ctx.shadowBlur = 0;
       }
-      else if (line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MA CHÉRIE') || line.includes('TESORO MIO')) {
-        ctx.font = `50px "Segoe UI", "Corbel", "Arial", sans-serif`;
+      else if (line.includes('MA CHÉRIE') || line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MON TRÉSOR')) {
+        ctx.font = `48px "Segoe UI", "Corbel", "Arial", sans-serif`;
         ctx.fillStyle = '#ffaa88';
         ctx.shadowBlur = 14;
         ctx.shadowColor = '#ff8866';
         ctx.fillText(line, canvas.width/2, yPos);
         ctx.shadowBlur = 0;
       }
-      else if (line.includes('JE T') || line.includes('TI AMO')) {
+      else if (line.includes('JE T')) {
         ctx.font = `46px "Segoe UI", "Corbel", "Arial", sans-serif`;
         ctx.fillStyle = '#ffbb99';
         ctx.fillText(line, canvas.width/2, yPos);
@@ -476,7 +465,7 @@ JE T'AIME MON AMOUR
       }
     });
     
-    // Decoraciones florales/estelares
+    // Decoraciones
     ctx.font = `36px "Segoe UI"`;
     ctx.fillStyle = '#ffaa88';
     ctx.fillText("✨", canvas.width/2 - 140, canvas.height - 65);
@@ -484,17 +473,6 @@ JE T'AIME MON AMOUR
     ctx.fillStyle = '#ff88aa';
     ctx.fillText("⭐", canvas.width/2 - 150, 75);
     ctx.fillText("⭐", canvas.width/2 + 150, 75);
-    
-    // Patrón de puntos decorativos en los bordes
-    ctx.fillStyle = '#ffaa7733';
-    for (let i = 0; i < 30; i++) {
-      ctx.beginPath();
-      ctx.arc(70 + i * 35, canvas.height - 50, 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(70 + i * 35, 50, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
@@ -504,47 +482,29 @@ JE T'AIME MON AMOUR
   const textureFront = createElegantTexture(textFront, true);
   const textureBack = createElegantTexture(textBack, false);
   
-  // Crear el mensaje como una tarjeta flotante con grosor
+  // Crear tarjeta
   const cardGroup = new THREE.Group();
   
-  // Panel frontal
   const frontPlane = new THREE.PlaneGeometry(2.9, 2.9);
-  const frontMat = new THREE.MeshStandardMaterial({ 
-    map: textureFront, 
-    side: THREE.DoubleSide,
-    roughness: 0.25,
-    metalness: 0.15,
-    emissive: '#2a1a40',
-    emissiveIntensity: 0.2,
-    transparent: true
-  });
+  const frontMat = new THREE.MeshStandardMaterial({ map: textureFront, side: THREE.DoubleSide, roughness: 0.25, metalness: 0.15, emissive: '#2a1a40', emissiveIntensity: 0.2, transparent: true });
   const frontCard = new THREE.Mesh(frontPlane, frontMat);
   frontCard.position.z = 0.06;
   cardGroup.add(frontCard);
   
-  // Panel trasero
   const backPlane = new THREE.PlaneGeometry(2.9, 2.9);
-  const backMat = new THREE.MeshStandardMaterial({ 
-    map: textureBack, 
-    side: THREE.DoubleSide,
-    roughness: 0.25,
-    metalness: 0.15,
-    emissive: '#1a2540',
-    emissiveIntensity: 0.2,
-    transparent: true
-  });
+  const backMat = new THREE.MeshStandardMaterial({ map: textureBack, side: THREE.DoubleSide, roughness: 0.25, metalness: 0.15, emissive: '#1a2540', emissiveIntensity: 0.2, transparent: true });
   const backCard = new THREE.Mesh(backPlane, backMat);
   backCard.position.z = -0.06;
   backCard.rotation.y = Math.PI;
   cardGroup.add(backCard);
   
-  // Marco dorado elegante
+  // Marco dorado
   const frameGeo = new THREE.BoxGeometry(3.05, 3.05, 0.1);
   const frameMat = new THREE.MeshStandardMaterial({ color: 0xd49a6a, metalness: 0.7, roughness: 0.3, emissive: '#552200', emissiveIntensity: 0.15 });
   const frame = new THREE.Mesh(frameGeo, frameMat);
   cardGroup.add(frame);
   
-  // Pequeños diamantes en las esquinas del marco
+  // Diamantes en esquinas
   const diamondMat = new THREE.MeshStandardMaterial({ color: 0xffaa77, metalness: 0.8, roughness: 0.2, emissive: '#ff8844', emissiveIntensity: 0.3 });
   const corners = [
     [-1.45, 1.45, 0.08], [1.45, 1.45, 0.08],
@@ -558,10 +518,10 @@ JE T'AIME MON AMOUR
   
   scene.add(cardGroup);
   
-  // --- Partículas orbitando alrededor del mensaje (corazones y estrellas) ---
-  const orbHeartCount = 150;
-  const orbHearts = [];
-  for (let i = 0; i < orbHeartCount; i++) {
+  // --- Partículas orbitantes ---
+  const orbCount = 150;
+  const orbItems = [];
+  for (let i = 0; i < orbCount; i++) {
     const canvas = document.createElement('canvas');
     canvas.width = 64;
     canvas.height = 64;
@@ -584,33 +544,27 @@ JE T'AIME MON AMOUR
     sprite.userData = { radius, speed, angle, yOffset, baseScale: 0.18 + Math.random() * 0.1 };
     sprite.scale.set(sprite.userData.baseScale, sprite.userData.baseScale, 1);
     scene.add(sprite);
-    orbHearts.push(sprite);
+    orbItems.push(sprite);
   }
   
   // ========== ANIMACIÓN PRINCIPAL ==========
   let time = 0;
   
-  // Animación de parpadeo de estrellas
-  let starBlink = 0;
-  
   function animate() {
     requestAnimationFrame(animate);
     time += 0.012;
-    starBlink += 0.02;
     
     // Rotación suave de la tarjeta
     cardGroup.rotation.y = Math.sin(time * 0.12) * 0.08;
     cardGroup.rotation.x = Math.sin(time * 0.18) * 0.04;
     
-    // Rotación del anillo de partículas
+    // Rotación del anillo
     ringParticlesObj.rotation.y = time * 0.3;
     ringParticlesObj.rotation.x = Math.sin(time * 0.5) * 0.2;
     
-    // Movimiento de las partículas de polvo
+    // Movimiento de partículas
     dustParticles.rotation.y += 0.0005;
     dustParticles.rotation.x += 0.0003;
-    
-    // Movimiento de las estrellas de fondo
     stars.rotation.y += 0.0002;
     stars.rotation.x += 0.0001;
     
@@ -621,19 +575,15 @@ JE T'AIME MON AMOUR
       if (star.active) {
         star.progress += 0.02;
         const t = star.progress;
-        
         const currentX = star.x + star.vx * t * 15;
         const currentY = star.y + star.vy * t * 15;
         const currentZ = star.z + star.vz * t * 15;
-        
         star.trail.unshift({ x: currentX, y: currentY, z: currentZ });
         if (star.trail.length > 20) star.trail.pop();
-        
         const points = star.trail.map(p => new THREE.Vector3(p.x, p.y, p.z));
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         trailLines[i].geometry.dispose();
         trailLines[i].geometry = geometry;
-        
         if (t >= 1 || Math.abs(currentX) > 25 || Math.abs(currentY) > 18 || Math.abs(currentZ) > 30) {
           star.active = false;
           trailLines[i].geometry.dispose();
@@ -642,8 +592,8 @@ JE T'AIME MON AMOUR
       }
     }
     
-    // Actualizar elementos orbitantes (corazones y estrellas)
-    orbHearts.forEach(sprite => {
+    // Actualizar elementos orbitantes
+    orbItems.forEach(sprite => {
       const d = sprite.userData;
       d.angle += d.speed;
       const x = Math.cos(d.angle) * d.radius;
@@ -654,7 +604,7 @@ JE T'AIME MON AMOUR
       if (sprite.material.map) sprite.material.map.needsUpdate = true;
     });
     
-    // Efecto de brillo en las texturas
+    // Refrescar texturas
     if (Math.floor(time * 2) % 30 === 0) {
       textureFront.needsUpdate = true;
       textureBack.needsUpdate = true;
