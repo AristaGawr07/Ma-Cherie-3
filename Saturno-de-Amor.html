@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>25 Mois - Notre Voyage</title>
+<title>25 Mois - Étoile de Notre Amour</title>
 <style>
   body {
     margin: 0;
@@ -23,22 +23,23 @@
   }
   
   .title-25 {
-    font-size: clamp(1.6rem, 6vw, 3rem);
+    font-size: clamp(1.4rem, 5vw, 2.8rem);
     font-weight: 300;
     letter-spacing: 6px;
-    background: linear-gradient(135deg, #ffd6a5, #f5b7a8);
+    background: linear-gradient(135deg, #ffd6a5, #f5b7a8, #ffd6a5);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    text-shadow: 0 0 30px rgba(255, 180, 100, 0.4);
+    text-shadow: 0 0 40px rgba(255, 180, 100, 0.5);
     margin-bottom: 8px;
   }
   
   .sub {
-    font-size: clamp(0.7rem, 3vw, 0.9rem);
+    font-size: clamp(0.65rem, 2.5vw, 0.85rem);
     color: #ffccaa;
-    letter-spacing: 2px;
-    opacity: 0.8;
+    letter-spacing: 3px;
+    opacity: 0.9;
+    text-transform: uppercase;
   }
   
   .music-controls {
@@ -165,25 +166,26 @@
     transform: translateX(-50%);
     background: rgba(0,0,0,0.45);
     backdrop-filter: blur(4px);
-    padding: 4px 12px;
+    padding: 5px 16px;
     border-radius: 40px;
     font-size: 11px;
     color: #ffd4aa;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     font-family: monospace;
     pointer-events: none;
     z-index: 99;
     white-space: nowrap;
+    border: 1px solid rgba(255,200,150,0.3);
   }
   
   @media (max-width: 500px) {
-    .rotate-hint { bottom: 80px; font-size: 9px; }
+    .rotate-hint { bottom: 80px; font-size: 9px; white-space: nowrap; }
   }
 </style>
 </head>
 <body>
 <div class="ui-panel">
-  <div class="title-25">25 MOIS • NOTRE HISTOIRE</div>
+  <div class="title-25">✦ 25 MOIS • NOTRE HISTOIRE ✦</div>
   <div class="sub">L'AMOUR N'A PAS DE FRONTIÈRES</div>
 </div>
 <div class="music-controls">
@@ -197,7 +199,7 @@
     <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
   </div>
 </div>
-<div class="rotate-hint">〰️ Gira el mensaje con el ratón 〰️</div>
+<div class="rotate-hint">〰️ GIRA EL MENSAJE CON EL RATÓN 〰️</div>
 
 <audio id="bgAudio" loop preload="auto">
   <source src="https://files.catbox.moe/pgafel.mp3" type="audio/mpeg">
@@ -221,11 +223,11 @@
   
   // --- Escena espacial romántica ---
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x050518);
-  scene.fog = new THREE.FogExp2(0x050518, 0.002);
+  scene.background = new THREE.Color(0x030318);
+  scene.fog = new THREE.FogExp2(0x030318, 0.0015);
   
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 0.5, 5.5);
+  camera.position.set(0, 0.3, 5.8);
   camera.lookAt(0, 0, 0);
   
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -233,12 +235,12 @@
   renderer.setPixelRatio(window.devicePixelRatio);
   document.body.appendChild(renderer.domElement);
   
-  // --- Efecto Bloom ---
+  // --- Efecto Bloom (brillo mágico) ---
   const renderScene = new RenderPass(scene, camera);
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.8, 0.3, 0.7);
-  bloomPass.threshold = 0.2;
-  bloomPass.strength = 0.45;
-  bloomPass.radius = 0.4;
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.4, 0.85);
+  bloomPass.threshold = 0.15;
+  bloomPass.strength = 0.55;
+  bloomPass.radius = 0.5;
   const effectComposer = new EffectComposer(renderer);
   effectComposer.addPass(renderScene);
   effectComposer.addPass(bloomPass);
@@ -246,46 +248,118 @@
   // --- Control interactivo ---
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.dampingFactor = 0.06;
-  controls.rotateSpeed = 1.2;
+  controls.dampingFactor = 0.07;
+  controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.0;
   controls.enableZoom = true;
   controls.enablePan = false;
   controls.autoRotate = false;
   controls.target.set(0, 0, 0);
-  controls.maxDistance = 8;
-  controls.minDistance = 2.5;
+  controls.maxDistance = 8.5;
+  controls.minDistance = 2.8;
   
-  // --- Fondo de estrellas ---
-  const starCount = 3500;
+  // ========== ANIMACIONES DE CALIDAD ==========
+  
+  // --- 1. Campo de estrellas profundo con parpadeo ---
+  const starCount = 4000;
   const starGeo = new THREE.BufferGeometry();
-  const starPos = new Float32Array(starCount * 3);
+  const starPositions = new Float32Array(starCount * 3);
+  const starSizes = new Float32Array(starCount);
   for (let i = 0; i < starCount; i++) {
-    starPos[i*3] = (Math.random() - 0.5) * 450;
-    starPos[i*3+1] = (Math.random() - 0.5) * 280;
-    starPos[i*3+2] = (Math.random() - 0.5) * 200 - 80;
+    starPositions[i*3] = (Math.random() - 0.5) * 500;
+    starPositions[i*3+1] = (Math.random() - 0.5) * 300;
+    starPositions[i*3+2] = (Math.random() - 0.5) * 250 - 100;
+    starSizes[i] = 0.08 + Math.random() * 0.15;
   }
-  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.11, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
+  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
   const stars = new THREE.Points(starGeo, starMat);
   scene.add(stars);
   
-  // --- Partículas doradas ---
-  const glowCount = 1200;
-  const glowGeo = new THREE.BufferGeometry();
-  const glowPositions = new Float32Array(glowCount * 3);
-  for (let i = 0; i < glowCount; i++) {
-    glowPositions[i*3] = (Math.random() - 0.5) * 22;
-    glowPositions[i*3+1] = (Math.random() - 0.5) * 16;
-    glowPositions[i*3+2] = (Math.random() - 0.5) * 18 - 5;
+  // --- 2. Estrellas fugaces (partículas con estela) ---
+  const shootingStars = [];
+  const shootingStarCount = 8;
+  for (let i = 0; i < shootingStarCount; i++) {
+    const starObj = {
+      active: false,
+      progress: 0,
+      x: 0, y: 0, z: 0,
+      vx: 0, vy: 0, vz: 0,
+      trail: []
+    };
+    shootingStars.push(starObj);
   }
-  glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPositions, 3));
-  const glowMat = new THREE.PointsMaterial({ color: 0xffaa77, size: 0.03, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-  const glowParticles = new THREE.Points(glowGeo, glowMat);
-  scene.add(glowParticles);
   
-  // ========== TEXTO LADO A (FRANCÉS) - Cara frontal ==========
-  const textA = `✦ 25 MOIS ✦
+  // Crear líneas para las estelas
+  const trailLines = [];
+  for (let i = 0; i < shootingStarCount; i++) {
+    const material = new THREE.LineBasicMaterial({ color: 0xffaa77 });
+    const geometry = new THREE.BufferGeometry();
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
+    trailLines.push(line);
+  }
+  
+  function spawnShootingStar() {
+    for (let star of shootingStars) {
+      if (!star.active && Math.random() < 0.003) {
+        star.active = true;
+        star.progress = 0;
+        star.x = (Math.random() - 0.5) * 30;
+        star.y = (Math.random() - 0.5) * 20 + 5;
+        star.z = (Math.random() - 0.5) * 40 - 20;
+        star.vx = (Math.random() - 0.5) * 0.8 - 0.5;
+        star.vy = (Math.random() - 0.5) * 0.6 - 0.3;
+        star.vz = (Math.random() - 0.5) * 0.7 + 0.5;
+        star.trail = [];
+        break;
+      }
+    }
+  }
+  
+  // --- 3. Polvo estelar brillante (partículas giratorias) ---
+  const dustCount = 2500;
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPositions = new Float32Array(dustCount * 3);
+  const dustColors = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount; i++) {
+    dustPositions[i*3] = (Math.random() - 0.5) * 28;
+    dustPositions[i*3+1] = (Math.random() - 0.5) * 18;
+    dustPositions[i*3+2] = (Math.random() - 0.5) * 22 - 8;
+    const colorWarm = Math.random() > 0.6;
+    dustColors[i*3] = colorWarm ? 1.0 : 0.9;
+    dustColors[i*3+1] = colorWarm ? 0.7 : 0.9;
+    dustColors[i*3+2] = colorWarm ? 0.5 : 1.0;
+  }
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+  dustGeo.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
+  const dustMat = new THREE.PointsMaterial({ size: 0.035, vertexColors: true, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+  const dustParticles = new THREE.Points(dustGeo, dustMat);
+  scene.add(dustParticles);
+  
+  // --- 4. Anillo brillante giratorio alrededor del mensaje ---
+  const ringParticleCount = 400;
+  const ringGeo = new THREE.BufferGeometry();
+  const ringPositions = new Float32Array(ringParticleCount * 3);
+  for (let i = 0; i < ringParticleCount; i++) {
+    const angle = (i / ringParticleCount) * Math.PI * 2;
+    const radius = 2.0;
+    const yOffset = Math.sin(angle * 2) * 0.2;
+    ringPositions[i*3] = Math.cos(angle) * radius;
+    ringPositions[i*3+1] = yOffset;
+    ringPositions[i*3+2] = Math.sin(angle) * radius;
+  }
+  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
+  const ringParticleMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.032, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+  const ringParticlesObj = new THREE.Points(ringGeo, ringParticleMat);
+  scene.add(ringParticlesObj);
+  
+  // ========== MENSAJE DECORADO ==========
+  const messageGroup = new THREE.Group();
+  
+  // Texto para la cara frontal (Francés)
+  const textFront = `✦ 25 MOIS ✦
 
 MON AMOUR, MA CHÉRIE
 
@@ -299,8 +373,8 @@ JE T'AIME PLUS CHAQUE JOUR
 
 ♡ MON TRÉSOR ♡`;
   
-  // ========== TEXTO LADO B (ITALIANO) - Cara trasera ==========
-  const textB = `✦ PER SEMPRE ✦
+  // Texto para la cara trasera (Italiano)
+  const textBack = `✦ PER SEMPRE ✦
 
 AMORE MIO, TESORO MIO
 
@@ -315,31 +389,52 @@ JE T'AIME MON AMOUR
 
 ❤️ AMORE MIO ❤️`;
   
-  // Función para crear textura con texto (mejorada)
-  function createTextTexture(content, bgColor1, bgColor2, borderColor, textColorLight, textColorDark) {
+  // Función mejorada para crear textura decorada
+  function createElegantTexture(content, isFront) {
     const canvas = document.createElement('canvas');
     canvas.width = 1024;
     canvas.height = 1024;
     const ctx = canvas.getContext('2d');
     
-    // Fondo con gradiente radial para dar profundidad
+    // Fondo con gradiente radial estrellado
     const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
-    grad.addColorStop(0, bgColor1);
-    grad.addColorStop(1, bgColor2);
+    if (isFront) {
+      grad.addColorStop(0, '#2a1a40');
+      grad.addColorStop(0.5, '#1a1028');
+      grad.addColorStop(1, '#0e0818');
+    } else {
+      grad.addColorStop(0, '#1a2540');
+      grad.addColorStop(0.5, '#101528');
+      grad.addColorStop(1, '#080c18');
+    }
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Borde decorativo doble
-    ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 8;
+    // Decoración de esquinas con filigrana
+    ctx.strokeStyle = isFront ? '#ffc49b' : '#aac9ff';
+    ctx.lineWidth = 4;
+    for (let i = 0; i < 4; i++) {
+      const cornerX = i % 2 === 0 ? 40 : canvas.width - 40;
+      const cornerY = i < 2 ? 40 : canvas.height - 40;
+      ctx.beginPath();
+      ctx.moveTo(cornerX, cornerY);
+      ctx.lineTo(cornerX + (i % 2 === 0 ? 60 : -60), cornerY);
+      ctx.moveTo(cornerX, cornerY);
+      ctx.lineTo(cornerX, cornerY + (i < 2 ? 60 : -60));
+      ctx.stroke();
+    }
+    
+    // Borde decorativo
+    ctx.strokeStyle = isFront ? '#ffc49b' : '#aac9ff';
+    ctx.lineWidth = 6;
     ctx.strokeRect(35, 35, canvas.width - 70, canvas.height - 70);
     ctx.strokeStyle = '#ffffff30';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.strokeRect(45, 45, canvas.width - 90, canvas.height - 90);
     
     // Dibujar líneas de texto
     const lines = content.split('\n');
-    const lineHeight = 72;
+    const lineHeight = 70;
     const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
     
     ctx.textAlign = 'center';
@@ -349,17 +444,17 @@ JE T'AIME MON AMOUR
       const yPos = startY + idx * lineHeight;
       
       if (line.includes('✦') || line.includes('❤️') || line.includes('♡')) {
-        ctx.font = `56px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.font = `58px "Segoe UI", "Corbel", "Arial", sans-serif`;
         ctx.fillStyle = '#ffcf9a';
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 18;
         ctx.shadowColor = '#ffaa77';
         ctx.fillText(line, canvas.width/2, yPos);
         ctx.shadowBlur = 0;
-      } 
+      }
       else if (line.includes('MON AMOUR') || line.includes('AMORE MIO') || line.includes('MA CHÉRIE') || line.includes('TESORO MIO')) {
-        ctx.font = `48px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.font = `50px "Segoe UI", "Corbel", "Arial", sans-serif`;
         ctx.fillStyle = '#ffaa88';
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 14;
         ctx.shadowColor = '#ff8866';
         ctx.fillText(line, canvas.width/2, yPos);
         ctx.shadowBlur = 0;
@@ -373,172 +468,204 @@ JE T'AIME MON AMOUR
         return;
       }
       else {
-        ctx.font = `34px "Segoe UI", "Corbel", "Arial", sans-serif`;
-        ctx.fillStyle = textColorLight;
+        ctx.font = `35px "Segoe UI", "Corbel", "Arial", sans-serif`;
+        ctx.fillStyle = isFront ? '#ffe3ca' : '#cbe4fe';
         ctx.fillText(line, canvas.width/2, yPos);
-        ctx.fillStyle = textColorDark;
+        ctx.fillStyle = isFront ? '#d4b896' : '#a0b8d4';
         ctx.fillText(line, canvas.width/2 + 2, yPos + 2);
       }
     });
     
-    // Decoraciones en las esquinas
-    ctx.font = `38px "Segoe UI"`;
+    // Decoraciones florales/estelares
+    ctx.font = `36px "Segoe UI"`;
     ctx.fillStyle = '#ffaa88';
-    ctx.fillText("✨", canvas.width/2 - 130, canvas.height - 65);
-    ctx.fillText("✨", canvas.width/2 + 130, canvas.height - 65);
+    ctx.fillText("✨", canvas.width/2 - 140, canvas.height - 65);
+    ctx.fillText("✨", canvas.width/2 + 140, canvas.height - 65);
     ctx.fillStyle = '#ff88aa';
-    ctx.fillText("⭐", canvas.width/2 - 140, 75);
-    ctx.fillText("⭐", canvas.width/2 + 140, 75);
+    ctx.fillText("⭐", canvas.width/2 - 150, 75);
+    ctx.fillText("⭐", canvas.width/2 + 150, 75);
+    
+    // Patrón de puntos decorativos en los bordes
+    ctx.fillStyle = '#ffaa7733';
+    for (let i = 0; i < 30; i++) {
+      ctx.beginPath();
+      ctx.arc(70 + i * 35, canvas.height - 50, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(70 + i * 35, 50, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
     return texture;
   }
   
-  // Crear texturas con colores distintos para cada lado
-  const textureA = createTextTexture(
-    textA,
-    '#2a1a35', '#1a0f25',
-    '#ffc49b',
-    '#ffe3ca', '#d4b896'
-  );
+  const textureFront = createElegantTexture(textFront, true);
+  const textureBack = createElegantTexture(textBack, false);
   
-  const textureB = createTextTexture(
-    textB,
-    '#1a2538', '#0f1520',
-    '#aac9ff',
-    '#cbe4fe', '#a0b8d4'
-  );
+  // Crear el mensaje como una tarjeta flotante con grosor
+  const cardGroup = new THREE.Group();
   
-  // --- Crear el mensaje como un panel plano (para que el texto se vea bien) ---
-  // En lugar de un cubo, usamos un panel delgado con dos caras
-  const messageGroup = new THREE.Group();
-  
-  // Panel frontal (Cara A)
-  const frontGeometry = new THREE.PlaneGeometry(2.8, 2.8);
-  const frontMaterial = new THREE.MeshStandardMaterial({ 
-    map: textureA, 
+  // Panel frontal
+  const frontPlane = new THREE.PlaneGeometry(2.9, 2.9);
+  const frontMat = new THREE.MeshStandardMaterial({ 
+    map: textureFront, 
     side: THREE.DoubleSide,
-    roughness: 0.3,
-    metalness: 0.1,
-    emissive: '#2a1a35',
+    roughness: 0.25,
+    metalness: 0.15,
+    emissive: '#2a1a40',
     emissiveIntensity: 0.2,
     transparent: true
   });
-  const frontPanel = new THREE.Mesh(frontGeometry, frontMaterial);
-  frontPanel.position.z = 0.05;
-  messageGroup.add(frontPanel);
+  const frontCard = new THREE.Mesh(frontPlane, frontMat);
+  frontCard.position.z = 0.06;
+  cardGroup.add(frontCard);
   
-  // Panel trasero (Cara B)
-  const backGeometry = new THREE.PlaneGeometry(2.8, 2.8);
-  const backMaterial = new THREE.MeshStandardMaterial({ 
-    map: textureB, 
+  // Panel trasero
+  const backPlane = new THREE.PlaneGeometry(2.9, 2.9);
+  const backMat = new THREE.MeshStandardMaterial({ 
+    map: textureBack, 
     side: THREE.DoubleSide,
-    roughness: 0.3,
-    metalness: 0.1,
-    emissive: '#1a2538',
+    roughness: 0.25,
+    metalness: 0.15,
+    emissive: '#1a2540',
     emissiveIntensity: 0.2,
     transparent: true
   });
-  const backPanel = new THREE.Mesh(backGeometry, backMaterial);
-  backPanel.position.z = -0.05;
-  backPanel.rotation.y = Math.PI;
-  messageGroup.add(backPanel);
+  const backCard = new THREE.Mesh(backPlane, backMat);
+  backCard.position.z = -0.06;
+  backCard.rotation.y = Math.PI;
+  cardGroup.add(backCard);
   
-  // Borde decorativo del mensaje (marco)
-  const frameGeo = new THREE.BoxGeometry(2.95, 2.95, 0.08);
-  const frameMat = new THREE.MeshStandardMaterial({ color: 0xc98a6e, metalness: 0.6, roughness: 0.4, emissive: '#442200', emissiveIntensity: 0.1 });
+  // Marco dorado elegante
+  const frameGeo = new THREE.BoxGeometry(3.05, 3.05, 0.1);
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0xd49a6a, metalness: 0.7, roughness: 0.3, emissive: '#552200', emissiveIntensity: 0.15 });
   const frame = new THREE.Mesh(frameGeo, frameMat);
-  messageGroup.add(frame);
+  cardGroup.add(frame);
   
-  scene.add(messageGroup);
+  // Pequeños diamantes en las esquinas del marco
+  const diamondMat = new THREE.MeshStandardMaterial({ color: 0xffaa77, metalness: 0.8, roughness: 0.2, emissive: '#ff8844', emissiveIntensity: 0.3 });
+  const corners = [
+    [-1.45, 1.45, 0.08], [1.45, 1.45, 0.08],
+    [-1.45, -1.45, 0.08], [1.45, -1.45, 0.08]
+  ];
+  corners.forEach(pos => {
+    const diamond = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), diamondMat);
+    diamond.position.set(pos[0], pos[1], pos[2]);
+    cardGroup.add(diamond);
+  });
   
-  // --- Partículas alrededor del mensaje (anillo brillante) ---
-  const particleRingCount = 300;
-  const ringGeo = new THREE.BufferGeometry();
-  const ringPositions = new Float32Array(particleRingCount * 3);
-  for (let i = 0; i < particleRingCount; i++) {
-    const angle = (i / particleRingCount) * Math.PI * 2;
-    const radius = 1.9;
-    ringPositions[i*3] = Math.cos(angle) * radius;
-    ringPositions[i*3+1] = Math.sin(angle) * radius * 0.4;
-    ringPositions[i*3+2] = 0;
+  scene.add(cardGroup);
+  
+  // --- Partículas orbitando alrededor del mensaje (corazones y estrellas) ---
+  const orbHeartCount = 150;
+  const orbHearts = [];
+  for (let i = 0; i < orbHeartCount; i++) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgba(0,0,0,0)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${18 + Math.random() * 12}px "Segoe UI"`;
+    ctx.fillStyle = `rgba(255, ${120 + Math.random() * 80}, ${100 + Math.random() * 80}, 0.8)`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const icons = ['❤️', '✨', '⭐', '💫', '🌟'];
+    ctx.fillText(icons[Math.floor(Math.random() * icons.length)], canvas.width/2, canvas.height/2);
+    const texture = new THREE.CanvasTexture(canvas);
+    const mat = new THREE.SpriteMaterial({ map: texture, transparent: true, blending: THREE.AdditiveBlending });
+    const sprite = new THREE.Sprite(mat);
+    const radius = 2.2 + Math.random() * 0.8;
+    const speed = 0.002 + Math.random() * 0.005;
+    const angle = Math.random() * Math.PI * 2;
+    const yOffset = (Math.random() - 0.5) * 1.4;
+    sprite.userData = { radius, speed, angle, yOffset, baseScale: 0.18 + Math.random() * 0.1 };
+    sprite.scale.set(sprite.userData.baseScale, sprite.userData.baseScale, 1);
+    scene.add(sprite);
+    orbHearts.push(sprite);
   }
-  ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPositions, 3));
-  const ringParticleMat = new THREE.PointsMaterial({ color: 0xffaa88, size: 0.025, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
-  const ringParticles = new THREE.Points(ringGeo, ringParticleMat);
-  messageGroup.add(ringParticles);
   
-  // --- Estrellitas orbitando alrededor del mensaje ---
-  const orbCount = 200;
-  const orbPositions = new Float32Array(orbCount * 3);
-  for (let i = 0; i < orbCount; i++) {
-    const r = 2.2 + Math.random() * 0.7;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.random() * Math.PI * 2;
-    orbPositions[i*3] = Math.sin(theta) * Math.cos(phi) * r;
-    orbPositions[i*3+1] = Math.sin(theta) * Math.sin(phi) * r * 0.5;
-    orbPositions[i*3+2] = Math.cos(theta) * r;
-  }
-  const orbBufferGeo = new THREE.BufferGeometry();
-  orbBufferGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
-  const orbMatStars = new THREE.PointsMaterial({ color: 0xffc89c, size: 0.028, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
-  const orbitingStarsObj = new THREE.Points(orbBufferGeo, orbMatStars);
-  scene.add(orbitingStarsObj);
-  
-  const originalOrbPos = orbPositions.slice();
-  
-  // --- Iluminación ---
-  const ambientLight = new THREE.AmbientLight(0x22223b);
-  scene.add(ambientLight);
-  const mainLight = new THREE.DirectionalLight(0xffeedd, 1.0);
-  mainLight.position.set(4, 8, 5);
-  scene.add(mainLight);
-  const fillLight = new THREE.PointLight(0xffaa77, 0.5);
-  fillLight.position.set(1, 1, 2);
-  scene.add(fillLight);
-  const backLight = new THREE.PointLight(0x6688ff, 0.4);
-  backLight.position.set(0, 1, -4);
-  scene.add(backLight);
-  
-  // --- Animación ---
+  // ========== ANIMACIÓN PRINCIPAL ==========
   let time = 0;
   
-  function animateScene() {
-    requestAnimationFrame(animateScene);
+  // Animación de parpadeo de estrellas
+  let starBlink = 0;
+  
+  function animate() {
+    requestAnimationFrame(animate);
     time += 0.012;
+    starBlink += 0.02;
     
-    // Rotación suave del mensaje
-    messageGroup.rotation.y = Math.sin(time * 0.15) * 0.1;
-    messageGroup.rotation.x = Math.sin(time * 0.2) * 0.05;
+    // Rotación suave de la tarjeta
+    cardGroup.rotation.y = Math.sin(time * 0.12) * 0.08;
+    cardGroup.rotation.x = Math.sin(time * 0.18) * 0.04;
     
-    // Rotación de las partículas del anillo
-    ringParticles.rotation.z = time * 0.3;
+    // Rotación del anillo de partículas
+    ringParticlesObj.rotation.y = time * 0.3;
+    ringParticlesObj.rotation.x = Math.sin(time * 0.5) * 0.2;
     
-    // Movimiento orbital de las estrellitas
-    const positions = orbitingStarsObj.geometry.attributes.position.array;
-    for (let i = 0; i < orbCount; i++) {
-      const origX = originalOrbPos[i*3];
-      const origZ = originalOrbPos[i*3+2];
-      const angle = time * 0.5;
-      const newX = origX * Math.cos(angle) + origZ * Math.sin(angle);
-      const newZ = -origX * Math.sin(angle) + origZ * Math.cos(angle);
-      positions[i*3] = newX;
-      positions[i*3+2] = newZ;
-    }
-    orbitingStarsObj.geometry.attributes.position.needsUpdate = true;
+    // Movimiento de las partículas de polvo
+    dustParticles.rotation.y += 0.0005;
+    dustParticles.rotation.x += 0.0003;
     
-    // Movimiento del fondo
+    // Movimiento de las estrellas de fondo
     stars.rotation.y += 0.0002;
     stars.rotation.x += 0.0001;
-    glowParticles.rotation.y += 0.0004;
+    
+    // Estrellas fugaces
+    spawnShootingStar();
+    for (let i = 0; i < shootingStars.length; i++) {
+      const star = shootingStars[i];
+      if (star.active) {
+        star.progress += 0.02;
+        const t = star.progress;
+        
+        const currentX = star.x + star.vx * t * 15;
+        const currentY = star.y + star.vy * t * 15;
+        const currentZ = star.z + star.vz * t * 15;
+        
+        star.trail.unshift({ x: currentX, y: currentY, z: currentZ });
+        if (star.trail.length > 20) star.trail.pop();
+        
+        const points = star.trail.map(p => new THREE.Vector3(p.x, p.y, p.z));
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        trailLines[i].geometry.dispose();
+        trailLines[i].geometry = geometry;
+        
+        if (t >= 1 || Math.abs(currentX) > 25 || Math.abs(currentY) > 18 || Math.abs(currentZ) > 30) {
+          star.active = false;
+          trailLines[i].geometry.dispose();
+          trailLines[i].geometry = new THREE.BufferGeometry();
+        }
+      }
+    }
+    
+    // Actualizar elementos orbitantes (corazones y estrellas)
+    orbHearts.forEach(sprite => {
+      const d = sprite.userData;
+      d.angle += d.speed;
+      const x = Math.cos(d.angle) * d.radius;
+      const z = Math.sin(d.angle) * d.radius;
+      sprite.position.set(x, d.yOffset, z);
+      const scale = d.baseScale + Math.sin(time * 3) * 0.03;
+      sprite.scale.set(scale, scale, 1);
+      if (sprite.material.map) sprite.material.map.needsUpdate = true;
+    });
+    
+    // Efecto de brillo en las texturas
+    if (Math.floor(time * 2) % 30 === 0) {
+      textureFront.needsUpdate = true;
+      textureBack.needsUpdate = true;
+    }
     
     effectComposer.render();
   }
   
-  animateScene();
+  animate();
   
-  // --- Control de música ---
+  // ========== CONTROL DE MÚSICA ==========
   const audioEl = document.getElementById('bgAudio');
   const playBtn = document.getElementById('playBtn');
   const progressFill = document.getElementById('progressFill');
@@ -556,7 +683,7 @@ JE T'AIME MON AMOUR
   
   playBtn.addEventListener('click', () => {
     if (audioEl.paused) {
-      audioEl.play().catch(e => console.log('Error al reproducir:', e));
+      audioEl.play().catch(e => console.log('Error:', e));
     } else {
       audioEl.pause();
     }
@@ -608,12 +735,6 @@ JE T'AIME MON AMOUR
   
   audioEl.pause();
   updateButtonUI();
-  
-  // Refrescar texturas cada segundo para asegurar que se muestren
-  setInterval(() => {
-    textureA.needsUpdate = true;
-    textureB.needsUpdate = true;
-  }, 1000);
   
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
