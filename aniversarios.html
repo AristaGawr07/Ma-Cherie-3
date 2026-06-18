@@ -4,11 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestros Aniversarios - 25 Meses</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="aniversarios.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Estilos adicionales solo para el index */
+        /* ===== TODOS LOS ESTILOS AQUÍ ===== */
+        
+        /* Reset y general */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #fff5f5;
+            font-family: 'Montserrat', sans-serif;
+            color: #5d4037;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== HERO SECTION ===== */
         .hero-section {
             text-align: center;
             padding: 20px 20px 10px 20px;
@@ -29,7 +57,22 @@
             letter-spacing: 2px;
         }
 
-        /* DISEÑO DE CARTA */
+        .dot-decoration {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #d32f2f;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        /* ===== CARTA ===== */
         .letter-container {
             background: linear-gradient(135deg, #fff9f0, #fff5e6);
             border-radius: 20px;
@@ -95,7 +138,7 @@
             transform: rotate(-10deg);
         }
 
-        /* CONTADOR DE TIEMPO */
+        /* ===== CONTADOR ===== */
         .time-counter {
             background: linear-gradient(135deg, #3d1a1a, #5c1a1a);
             border-radius: 25px;
@@ -157,66 +200,90 @@
             padding-top: 10px;
         }
 
-        /* CORAZONES CAYENDO SIN INTERACCIÓN */
-        .falling-hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+        /* ===== BOTONES GRID ===== */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .anniversary-card, .coming-soon-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
         }
 
-        .falling-heart {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0.5;
-            animation: fall linear infinite;
-            color: #e84a5f;
-            pointer-events: none;
+        .anniversary-card {
+            border: 2px solid #ffcdd2;
+            display: block;
+            color: inherit;
         }
 
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh) rotate(0deg);
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0;
-            }
+        .anniversary-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(255, 105, 140, 0.2);
+            border-color: #ff9a9e;
         }
 
-        .dot-decoration {
+        .anniversary-card:hover .date {
+            transform: scale(1.1);
+        }
+
+        .coming-soon-card {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border: 2px dashed #bdbdbd;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin: 15px 0;
         }
 
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: #d32f2f;
-            border-radius: 50%;
-            opacity: 0.4;
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .footer-note {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
-            color: #b89585;
-            border-top: 1px solid rgba(211, 47, 47, 0.2);
+        .date {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #d32f2f;
+            font-family: 'Dancing Script', cursive;
+            line-height: 1;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
         }
 
-        /* ============================================
-           SOLO LA CASILLA 24 DECORADA
-           ============================================ */
+        .label {
+            font-size: 1.1rem;
+            color: #5d4037;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .flowers {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .soon-text {
+            font-size: 1.5rem;
+            color: #757575;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .heart-emoji {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
+        /* ===== CASILLA 24 DECORADA ===== */
         .two-years-card {
             background: linear-gradient(135deg, #3d1a1a, #5c1a1a, #4a0e0e);
             border: 3px solid #c41e3a;
@@ -288,12 +355,132 @@
             0%, 100% { opacity: 0.4; transform: scale(0.8); }
             50% { opacity: 1; transform: scale(1.2); }
         }
+
+        /* ===== CORAZONES CAYENDO ===== */
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .falling-heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.5;
+            animation: fall linear infinite;
+            color: #e84a5f;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ===== BOTÓN FLOTANTE ===== */
+        .floating-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .anniversary-btn {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 105, 140, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .anniversary-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        }
+
+        .heart-icon {
+            margin-right: 8px;
+            font-size: 1.2em;
+            animation: pulse 1.5s infinite;
+        }
+
+        .btn-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3em;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-note {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            color: #b89585;
+            border-top: 1px solid rgba(211, 47, 47, 0.2);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .container {
+                margin-top: 70px;
+                padding: 10px;
+            }
+            .buttons-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 10px;
+            }
+            .date {
+                font-size: 3rem;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .letter-content {
+                font-size: 1.1rem;
+                padding: 10px;
+            }
+            .counter-value {
+                font-size: 1.4rem;
+                min-width: 45px;
+                padding: 4px 8px;
+            }
+            .counter-numbers {
+                gap: 8px;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- CORAZONES CAYENDO -->
     <div class="falling-hearts" id="fallingHearts"></div>
 
+    <!-- BOTÓN FLOTANTE -->
     <div class="floating-button">
         <a href="index.html" class="anniversary-btn">
             <span class="heart-icon">❤️</span>
@@ -303,6 +490,7 @@
 
     <div class="container">
         
+        <!-- HERO -->
         <div class="hero-section">
             <h1 class="hero-title">Nuestros Aniversarios</h1>
             <div class="dot-decoration">
@@ -315,6 +503,7 @@
             <p class="hero-subtitle">CADA MES ES UN MOTIVO PARA CELEBRAR</p>
         </div>
 
+        <!-- CARTA -->
         <div class="letter-container">
             <div class="letter-header">
                 <h2>✧ Para ti ✧</h2>
@@ -324,11 +513,12 @@
                 "Veinticinco meses. Parece mentira. Cada día a tu lado ha sido un capítulo nuevo en esta historia que escribimos juntos. Gracias por seguir aquí, por seguir eligiéndonos, por seguir creyendo. Esto es solo el comienzo de algo más grande."
             </div>
             <div class="letter-signature">
-                — 25 meses. Y los que vienen. <span class="heart-decoration">❤️</span>
+                — 25 meses. Y los que vienen. ❤️
             </div>
             <div class="stamp">💌</div>
         </div>
 
+        <!-- CONTADOR -->
         <div class="time-counter" id="timeCounter">
             <div class="counter-title">❤️ TIEMPO A TU LADO ❤️</div>
             <div class="counter-numbers">
@@ -356,13 +546,9 @@
             <div class="counter-total" id="totalMessage">Cargando...</div>
         </div>
 
+        <!-- BOTONES -->
         <div class="buttons-grid">
             
-            <!-- ========================================== -->
-            <!-- CAMBIA ESTOS ENLACES SEGÚN TU ESTRUCTURA   -->
-            <!-- ========================================== -->
-            
-            <!-- Opción 1: Misma carpeta (sin aniversarios/) -->
             <a href="13-aniversario.html" class="anniversary-card">
                 <div class="card-content">
                     <div class="date">13</div>
@@ -451,7 +637,7 @@
                 </div>
             </a>
 
-            <!-- CASILLA 24 DECORADA (SOLO ESTA) -->
+            <!-- CASILLA 24 DECORADA -->
             <a href="24-aniversario.html" class="anniversary-card two-years-card">
                 <div class="card-content">
                     <div class="date">★ 24 ★</div>
@@ -483,7 +669,7 @@
     </div>
 
     <script>
-        // CONTADOR DE TIEMPO
+        // ===== CONTADOR DE TIEMPO =====
         const startDate = new Date(2024, 4, 14, 0, 0, 0);
         
         function updateCounter() {
@@ -531,8 +717,8 @@
         
         updateCounter();
         setInterval(updateCounter, 1000);
-        
-        // CORAZONES CAYENDO
+
+        // ===== CORAZONES CAYENDO =====
         const fallingContainer = document.getElementById('fallingHearts');
         const heartColors = ['#e84a5f', '#ff6b6b', '#f5a623', '#e84393', '#ff8e8e'];
         
@@ -567,6 +753,5 @@
         }
     </script>
 
-    <script src="aniversarios.js"></script>
 </body>
 </html>
