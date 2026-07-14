@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>26 Meses Juntos</title>
-    <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -14,11 +13,10 @@
             color: #f5e6d3;
             min-height: 100vh;
             font-family: 'Cormorant Garamond', serif;
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative;
         }
 
-        /* Contenedor de la flor 3D */
         #flower-container {
             position: fixed;
             top: 0;
@@ -29,7 +27,6 @@
             pointer-events: none;
         }
 
-        /* Contenido sobre la flor */
         .content-overlay {
             position: relative;
             z-index: 2;
@@ -89,7 +86,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
+            gap: 25px;
             max-width: 700px;
             width: 90%;
             margin: 0 auto;
@@ -99,7 +96,7 @@
         .memory-item {
             position: relative;
             width: 100%;
-            padding: 30px 35px;
+            padding: 25px 30px;
             background: rgba(20, 10, 40, 0.75);
             backdrop-filter: blur(12px);
             border-radius: 24px;
@@ -115,9 +112,7 @@
             color: #f0e0f0;
             line-height: 1.7;
             text-align: center;
-            padding: 15px 10px;
-            border-left: 3px solid rgba(180, 100, 200, 0.4);
-            border-right: 3px solid rgba(180, 100, 200, 0.4);
+            padding: 10px;
             letter-spacing: 0.5px;
         }
 
@@ -131,7 +126,7 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.8rem;
             letter-spacing: 3px;
-            margin-top: 18px;
+            margin-top: 15px;
             opacity: 0.8;
             text-transform: uppercase;
             background: rgba(100, 50, 150, 0.3);
@@ -190,11 +185,11 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.85rem;
             letter-spacing: 1.5px;
-            margin-top: 25px;
+            margin-top: 20px;
             opacity: 0.6;
             text-align: center;
             border-top: 1px dashed rgba(180, 100, 200, 0.3);
-            padding-top: 15px;
+            padding-top: 12px;
             color: #c4a8d0;
         }
 
@@ -213,7 +208,6 @@
             text-shadow: 0 0 10px rgba(180, 100, 200, 0.4);
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .title {
                 font-size: 3rem;
@@ -223,10 +217,9 @@
             }
             .text-memory {
                 font-size: 1.3rem;
-                padding: 15px 5px;
             }
             .memory-item {
-                padding: 20px 15px;
+                padding: 18px 15px;
             }
             .subtitle {
                 font-size: 0.9rem;
@@ -237,20 +230,17 @@
 </head>
 <body>
 
-    <!-- Contenedor de la flor 3D -->
     <div id="flower-container"></div>
 
-    <!-- Botón flotante -->
     <div class="floating-button">
-        <a href="../index.html" class="anniversary-btn">
+        <a href="index.html" class="anniversary-btn">
             <span class="heart-icon">❤️</span>
             <span class="btn-text">Anivermeses</span>
         </a>
     </div>
 
-    <!-- Contenido sobre la flor -->
     <div class="content-overlay">
-        <div class="container" style="max-width:900px; margin:0 auto; width:100%;">
+        <div style="max-width:900px; margin:0 auto; width:100%;">
             <h1 class="title">
                 <span>✦</span> 26 MESES <br>FLORECIENDO <span>✦</span>
             </h1>
@@ -267,10 +257,6 @@
                 </div>
                 
                 <div class="memory-item text-memory">
-                    "No sé cuántas flores más florecerán en nuestro camino, pero <span class="emotional-word">sé que todas ellas llevarán tu nombre</span>."
-                </div>
-
-                <div class="memory-item text-memory">
                     "Gracias por estos <span class="highlight-number">26 meses</span>. Por regar nuestra historia con amor, por podar lo que nos hacía daño y por <span class="emotional-word">dejarnos florecer juntos</span>."
                     <div class="signature-date">— 26 meses. Y los que vienen. ❤️ —</div>
                 </div>
@@ -278,20 +264,19 @@
         </div>
     </div>
 
-    <!-- Three.js CDN -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
     </script>
 
     <script>
         // =============================================
-        // FLOR 3D REALISTA CON THREE.JS
+        // FLOR 3D REALISTA
         // =============================================
 
         const container = document.getElementById('flower-container');
 
-        // Escena, cámara y renderizador
         const scene = new THREE.Scene();
-        scene.background = null; // Transparente
+        scene.background = null;
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(4, 2, 6);
@@ -327,36 +312,23 @@
         backLight.position.set(0, -5, -8);
         scene.add(backLight);
 
-        // ===== CREAR FLOR REALISTA =====
-
         const flowerGroup = new THREE.Group();
 
-        // --- Tallo ---
+        // Tallo
         const stemGeo = new THREE.CylinderGeometry(0.08, 0.12, 2.5, 8, 8);
-        const stemMat = new THREE.MeshStandardMaterial({
-            color: 0x2d7d3d,
-            roughness: 0.8,
-            metalness: 0.0,
-        });
+        const stemMat = new THREE.MeshStandardMaterial({ color: 0x2d7d3d, roughness: 0.8, metalness: 0.0 });
         const stem = new THREE.Mesh(stemGeo, stemMat);
         stem.position.y = -0.8;
         stem.castShadow = true;
         flowerGroup.add(stem);
 
-        // --- Hojas del tallo ---
         function createLeaf(scale, posX, posY, posZ, rotY, rotZ) {
             const leafShape = new THREE.Shape();
             leafShape.moveTo(0, 0);
             leafShape.bezierCurveTo(0.3, 0.4, 0.4, 0.8, 0, 1.0);
             leafShape.bezierCurveTo(-0.4, 0.8, -0.3, 0.4, 0, 0);
-
             const leafGeo = new THREE.ShapeGeometry(leafShape);
-            const leafMat = new THREE.MeshStandardMaterial({
-                color: 0x3a9d4a,
-                roughness: 0.7,
-                metalness: 0.0,
-                side: THREE.DoubleSide,
-            });
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0x3a9d4a, roughness: 0.7, metalness: 0.0, side: THREE.DoubleSide });
             const leaf = new THREE.Mesh(leafGeo, leafMat);
             leaf.scale.set(scale, scale, scale);
             leaf.position.set(posX, posY, posZ);
@@ -369,42 +341,10 @@
         flowerGroup.add(createLeaf(0.6, 0.3, -0.2, 0.1, 0.3, 0.5));
         flowerGroup.add(createLeaf(0.5, -0.25, 0.3, -0.1, -0.4, -0.6));
 
-        // --- Pétalos (capa exterior) ---
-        const petalMat = new THREE.MeshStandardMaterial({
-            color: 0xd47a9a,
-            roughness: 0.3,
-            metalness: 0.05,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.92,
-        });
-
-        const petalMatInner = new THREE.MeshStandardMaterial({
-            color: 0xe8a0b8,
-            roughness: 0.25,
-            metalness: 0.05,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.95,
-        });
-
-        const petalMatLight = new THREE.MeshStandardMaterial({
-            color: 0xf5c0d0,
-            roughness: 0.2,
-            metalness: 0.02,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.9,
-        });
-
-        const petalMatDark = new THREE.MeshStandardMaterial({
-            color: 0x8a4a6a,
-            roughness: 0.4,
-            metalness: 0.05,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.85,
-        });
+        const petalMat = new THREE.MeshStandardMaterial({ color: 0xd47a9a, roughness: 0.3, metalness: 0.05, side: THREE.DoubleSide, transparent: true, opacity: 0.92 });
+        const petalMatInner = new THREE.MeshStandardMaterial({ color: 0xe8a0b8, roughness: 0.25, metalness: 0.05, side: THREE.DoubleSide, transparent: true, opacity: 0.95 });
+        const petalMatLight = new THREE.MeshStandardMaterial({ color: 0xf5c0d0, roughness: 0.2, metalness: 0.02, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+        const petalMatDark = new THREE.MeshStandardMaterial({ color: 0x8a4a6a, roughness: 0.4, metalness: 0.05, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
 
         function createPetal(scale, angle, tilt, colorMat, offsetY) {
             const shape = new THREE.Shape();
@@ -412,7 +352,6 @@
             shape.bezierCurveTo(0.25, 0.3, 0.4, 0.6, 0.3, 0.9);
             shape.bezierCurveTo(0.15, 1.0, -0.15, 1.0, -0.3, 0.9);
             shape.bezierCurveTo(-0.4, 0.6, -0.25, 0.3, 0, 0);
-
             const geo = new THREE.ShapeGeometry(shape);
             const mesh = new THREE.Mesh(geo, colorMat);
             mesh.scale.set(scale, scale * 1.1, scale);
@@ -423,204 +362,97 @@
             return mesh;
         }
 
-        // Capa exterior (8 pétalos grandes)
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
-            const petal = createPetal(0.6, angle, -0.2, petalMat, 0);
-            flowerGroup.add(petal);
+            flowerGroup.add(createPetal(0.6, angle, -0.2, petalMat, 0));
         }
-
-        // Capa media (8 pétalos intermedios)
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2 + 0.2;
-            const petal = createPetal(0.5, angle, -0.1, petalMatInner, 0.05);
-            flowerGroup.add(petal);
+            flowerGroup.add(createPetal(0.5, angle, -0.1, petalMatInner, 0.05));
         }
-
-        // Capa interior (6 pétalos pequeños)
         for (let i = 0; i < 6; i++) {
             const angle = (i / 6) * Math.PI * 2 + 0.3;
-            const petal = createPetal(0.35, angle, 0.1, petalMatLight, 0.1);
-            flowerGroup.add(petal);
+            flowerGroup.add(createPetal(0.35, angle, 0.1, petalMatLight, 0.1));
         }
-
-        // Pétalos oscuros en la base
         for (let i = 0; i < 6; i++) {
             const angle = (i / 6) * Math.PI * 2 + 0.5;
-            const petal = createPetal(0.25, angle, -0.4, petalMatDark, -0.1);
-            flowerGroup.add(petal);
+            flowerGroup.add(createPetal(0.25, angle, -0.4, petalMatDark, -0.1));
         }
 
-        // --- Centro de la flor (estambre) ---
+        // Centro
         const centerGroup = new THREE.Group();
-
-        // Base del centro
         const centerBaseGeo = new THREE.SphereGeometry(0.2, 16, 16);
-        const centerBaseMat = new THREE.MeshStandardMaterial({
-            color: 0xc8a050,
-            roughness: 0.4,
-            metalness: 0.2,
-        });
+        const centerBaseMat = new THREE.MeshStandardMaterial({ color: 0xc8a050, roughness: 0.4, metalness: 0.2 });
         const centerBase = new THREE.Mesh(centerBaseGeo, centerBaseMat);
         centerBase.position.y = 0.75;
         centerBase.scale.set(1, 0.6, 1);
         centerGroup.add(centerBase);
 
-        // Estambres (pequeñas esferas alrededor del centro)
-        const stamenMat = new THREE.MeshStandardMaterial({
-            color: 0xd4b060,
-            roughness: 0.3,
-            metalness: 0.1,
-        });
-
+        const stamenMat = new THREE.MeshStandardMaterial({ color: 0xd4b060, roughness: 0.3, metalness: 0.1 });
         for (let i = 0; i < 20; i++) {
             const angle = (i / 20) * Math.PI * 2;
             const radius = 0.22 + Math.random() * 0.08;
             const height = 0.75 + Math.random() * 0.12;
-
-            const stamen = new THREE.Mesh(
-                new THREE.SphereGeometry(0.035 + Math.random() * 0.015, 6, 6),
-                stamenMat
-            );
-            stamen.position.set(
-                Math.cos(angle) * radius,
-                height,
-                Math.sin(angle) * radius
-            );
+            const stamen = new THREE.Mesh(new THREE.SphereGeometry(0.035 + Math.random() * 0.015, 6, 6), stamenMat);
+            stamen.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
             centerGroup.add(stamen);
         }
-
-        // Estambres más altos en el centro
-        const tallStamenMat = new THREE.MeshStandardMaterial({
-            color: 0xe8c070,
-            roughness: 0.2,
-            metalness: 0.1,
-        });
-
-        for (let i = 0; i < 12; i++) {
-            const angle = (i / 12) * Math.PI * 2 + 0.3;
-            const radius = 0.08 + Math.random() * 0.05;
-            const height = 0.8 + Math.random() * 0.15;
-
-            const stamen = new THREE.Mesh(
-                new THREE.SphereGeometry(0.025 + Math.random() * 0.015, 6, 6),
-                tallStamenMat
-            );
-            stamen.position.set(
-                Math.cos(angle) * radius,
-                height,
-                Math.sin(angle) * radius
-            );
-            centerGroup.add(stamen);
-        }
-
         flowerGroup.add(centerGroup);
 
-        // --- Brillo en el centro (punto de luz) ---
-        const glowMat = new THREE.MeshStandardMaterial({
-            color: 0xffdd88,
-            emissive: 0xffaa44,
-            emissiveIntensity: 0.3,
-            transparent: true,
-            opacity: 0.6,
-        });
-        const glowSphere = new THREE.Mesh(
-            new THREE.SphereGeometry(0.04, 8, 8),
-            glowMat
-        );
+        const glowMat = new THREE.MeshStandardMaterial({ color: 0xffdd88, emissive: 0xffaa44, emissiveIntensity: 0.3, transparent: true, opacity: 0.6 });
+        const glowSphere = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), glowMat);
         glowSphere.position.y = 0.82;
         flowerGroup.add(glowSphere);
 
-        // Pequeñas partículas de polen (puntos brillantes alrededor)
-        const pollenMat = new THREE.PointsMaterial({
-            color: 0xffdd88,
-            size: 0.02,
-            transparent: true,
-            opacity: 0.6,
-            blending: THREE.AdditiveBlending,
-        });
-
+        // Polen
+        const pollenMat = new THREE.PointsMaterial({ color: 0xffdd88, size: 0.02, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
         const pollenPositions = [];
         for (let i = 0; i < 40; i++) {
             const angle = Math.random() * Math.PI * 2;
             const radius = 0.25 + Math.random() * 0.2;
             const height = 0.7 + Math.random() * 0.2;
-            pollenPositions.push(
-                Math.cos(angle) * radius,
-                height,
-                Math.sin(angle) * radius
-            );
+            pollenPositions.push(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
         }
-
         const pollenGeo = new THREE.BufferGeometry();
         pollenGeo.setAttribute('position', new THREE.Float32BufferAttribute(pollenPositions, 3));
         const pollenPoints = new THREE.Points(pollenGeo, pollenMat);
         flowerGroup.add(pollenPoints);
 
-        // Añadir la flor a la escena
         flowerGroup.position.y = -0.5;
-        flowerGroup.scale.set(1, 1, 1);
         scene.add(flowerGroup);
 
-        // ===== PARTÍCULAS DE FONDO (polvo de estrellas) =====
+        // Estrellas
         const starCount = 300;
         const starGeo = new THREE.BufferGeometry();
         const starPositions = new Float32Array(starCount * 3);
-        const starSizes = new Float32Array(starCount);
-
         for (let i = 0; i < starCount; i++) {
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos(2 * Math.random() - 1);
             const radius = 3 + Math.random() * 5;
-
             starPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
             starPositions[i * 3 + 1] = radius * Math.cos(phi) - 1;
             starPositions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
-            starSizes[i] = 0.005 + Math.random() * 0.02;
         }
-
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
-
-        const starMat = new THREE.PointsMaterial({
-            color: 0xcc88ff,
-            size: 0.02,
-            transparent: true,
-            opacity: 0.6,
-            blending: THREE.AdditiveBlending,
-            sizeAttenuation: true,
-        });
-
+        const starMat = new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.02, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, sizeAttenuation: true });
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        // ===== ANIMACIÓN =====
         let clock = new THREE.Clock();
 
         function animate() {
             const time = clock.getElapsedTime();
-
-            // Rotación suave de la flor
             flowerGroup.rotation.y = time * 0.15;
             flowerGroup.rotation.x = Math.sin(time * 0.1) * 0.02;
-
-            // Movimiento suave de la flor (flotando)
             flowerGroup.position.y = -0.5 + Math.sin(time * 0.3) * 0.08;
-
-            // Rotación de las estrellas
             stars.rotation.y = time * 0.02;
-            stars.rotation.x = Math.sin(time * 0.01) * 0.05;
-
-            // Brillo del centro (pulso)
             glowSphere.material.emissiveIntensity = 0.2 + Math.sin(time * 1.5) * 0.15;
-
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
 
         animate();
 
-        // ===== RESPONSIVE =====
         window.addEventListener('resize', () => {
             const width = window.innerWidth;
             const height = window.innerHeight;
@@ -629,7 +461,6 @@
             renderer.setSize(width, height);
         });
 
-        // Ajustar cámara en móvil
         if (window.innerWidth < 600) {
             camera.position.set(3.5, 1.5, 5);
             camera.lookAt(0, 0.5, 0);
