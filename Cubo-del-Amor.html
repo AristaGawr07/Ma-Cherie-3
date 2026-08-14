@@ -24,6 +24,17 @@
         }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 30px #ff0077; } }
 
+        /* Botón volver */
+        #btn-back {
+            display: none; position: fixed;
+            top: 20px; left: 20px;
+            background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; z-index: 1001; backdrop-filter: blur(5px); transition: 0.3s;
+            text-decoration: none;
+        }
+        #btn-back:hover { background: #ff0077; border-color: #ff0077; }
+
         /* FORMULARIO */
         #setup-form {
             z-index: 1000; background: rgba(15, 15, 15, 0.95); padding: 30px; border-radius: 25px;
@@ -64,18 +75,18 @@
         .r { transform: rotateY(90deg) translateZ(130px); } .l { transform: rotateY(-90deg) translateZ(130px); }
         .u { transform: rotateX(90deg) translateZ(130px); } .d { transform: rotateX(-90deg) translateZ(130px); }
 
-        /* --- REPRODUCTOR CON LUZ VIAJERA --- */
+        /* --- REPRODUCTOR MEJORADO --- */
         #player {
             display: none; position: fixed; 
             bottom: 80px; width: 95%; max-width: 450px;
-            padding: 3px; /* Espacio para el borde de luz */
+            padding: 3px;
             border-radius: 25px; 
-            overflow: hidden; /* IMPORTANTE: Recorta la luz */
+            overflow: hidden;
             z-index: 100;
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
 
-        /* La Luz Giratoria */
+        /* Luz Giratoria */
         #player::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, transparent, transparent, #ff0077);
@@ -84,16 +95,24 @@
         }
         @keyframes rotate-border { 100% { transform: rotate(360deg); } }
 
-        /* El fondo real del player (tapa el centro de la luz) */
         .player-inner {
-            background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px);
             width: 100%; height: 100%; border-radius: 23px;
-            display: flex; align-items: center; gap: 15px; padding: 12px 20px;
-            position: relative; z-index: 2; /* Encima de la luz */
+            display: flex; flex-direction: column;
+            padding: 12px 16px;
+            position: relative; z-index: 2;
+            gap: 8px;
+        }
+
+        /* Fila superior: Vinilo + controles */
+        .player-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .vinyl {
-            width: 50px; height: 50px; flex-shrink: 0;
+            width: 45px; height: 45px; flex-shrink: 0;
             border-radius: 50%; border: 2px solid #333; 
             overflow: hidden; box-shadow: 0 0 10px rgba(255,255,255,0.1);
             position: relative; background: #000;
@@ -103,40 +122,118 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         #play-btn {
-            background: white; color: #ff0077; border: none; width: 45px; height: 45px; flex-shrink: 0;
-            border-radius: 50%; font-size: 1.4rem; cursor: pointer; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 20px rgba(255,255,255,0.4); transition: 0.2s; padding-left: 4px;
+            background: white; color: #ff0077; border: none; width: 40px; height: 40px; flex-shrink: 0;
+            border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3); transition: 0.2s; padding-left: 3px;
         }
         #play-btn.playing { padding-left: 0; box-shadow: 0 0 25px #ff0077; background: #ff0077; color: white; }
-        
-        .track-info { flex-grow: 1; display: flex; flex-direction: column; gap: 6px; }
-        .progress-area { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; position: relative; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0077, #ff9900); border-radius: 10px; position: relative; box-shadow: 0 0 15px #ff0077; }
-        .progress-bar::after { content: ''; position: absolute; right: -6px; top: -4px; width: 14px; height: 14px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.9); transform: scale(0); transition: transform 0.2s; }
-        .progress-area:hover .progress-bar::after { transform: scale(1); }
-        .time-display { font-size: 0.7rem; color: #aaa; font-weight: 600; display: flex; justify-content: space-between; letter-spacing: 1px; }
 
-        .visualizer { display: flex; gap: 3px; height: 20px; align-items: flex-end; }
-        .bar { width: 4px; background: #ff0077; border-radius: 2px; height: 3px; transition: 0.1s; }
+        /* Controles de volumen */
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .volume-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .volume-btn:hover {
+            background: rgba(255,0,119,0.3);
+        }
+        .volume-bar-container {
+            width: 60px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        .volume-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff0077, #ff5500);
+            border-radius: 2px;
+            transition: width 0.1s;
+        }
+        .volume-icon {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            min-width: 20px;
+        }
+
+        /* Progreso */
+        .track-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .progress-area {
+            width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; position: relative;
+        }
+        .progress-bar {
+            height: 100%; width: 0%; background: linear-gradient(90deg, #ff0077, #ff9900); border-radius: 10px; position: relative; box-shadow: 0 0 15px #ff0077;
+        }
+        .progress-bar::after {
+            content: ''; position: absolute; right: -5px; top: -4px; width: 12px; height: 12px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.9); transform: scale(0); transition: transform 0.2s;
+        }
+        .progress-area:hover .progress-bar::after { transform: scale(1); }
+
+        .time-display {
+            font-size: 0.6rem; color: #aaa; font-weight: 600; display: flex; justify-content: space-between; letter-spacing: 1px;
+        }
+
+        /* Visualizador */
+        .visualizer {
+            display: flex; gap: 3px; height: 20px; align-items: flex-end;
+        }
+        .bar {
+            width: 3px; background: #ff0077; border-radius: 2px; height: 3px; transition: 0.1s;
+        }
         .playing .bar { animation: bounce 0.5s infinite ease-in-out alternate; }
         .bar:nth-child(2) { animation-delay: 0.1s; } .bar:nth-child(3) { animation-delay: 0.2s; }
-        @keyframes bounce { 0% { height: 3px; opacity: 0.5; } 100% { height: 20px; opacity: 1; box-shadow: 0 0 10px #ff0077; } }
+        .bar:nth-child(4) { animation-delay: 0.3s; } .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.15s; } .bar:nth-child(7) { animation-delay: 0.35s; }
+        @keyframes bounce {
+            0% { height: 3px; opacity: 0.5; }
+            100% { height: 20px; opacity: 1; box-shadow: 0 0 10px #ff0077; }
+        }
 
         #btn-download {
             display: none; position: fixed; 
-            bottom: 160px; /* Arriba del player */
+            bottom: 160px;
             background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2);
             padding: 10px 25px; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
             cursor: pointer; z-index: 1001; backdrop-filter: blur(5px); transition: 0.3s;
         }
         #btn-download:hover { background: #ff0077; border-color: #ff0077; }
 
-        /* Estado de carga para el botón sorpresa */
         .status-surprise {
             margin-top: 5px;
             font-size: 0.8rem;
             color: #ff0077;
             min-height: 20px;
+        }
+
+        .song-title {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.6rem;
+            text-align: center;
+            margin-top: 2px;
+            letter-spacing: 1px;
+            font-weight: 300;
         }
     </style>
 </head>
@@ -144,6 +241,8 @@
 
     <canvas id="cv"></canvas>
     <div id="love-message">💖 Para ti, con amor 💖</div>
+
+    <a href="index.html" id="btn-back">📚 Volver al Libro</a>
 
     <div id="setup-form">
         <h2 style="color: #ff0077; margin-bottom:10px;">💝 Crea tu Regalo Especial 💝</h2>
@@ -169,13 +268,39 @@
     
     <div id="player">
         <div class="player-inner">
-            <div class="vinyl" id="vinyl"><img id="vinyl-img" alt="cover"></div>
-            <button id="play-btn">▶</button>
-            <div class="track-info">
-                <div class="progress-area" id="progress-area"><div class="progress-bar" id="progress-bar"></div></div>
-                <div class="time-display"><span id="curr-time">0:00</span><span id="dur-time">0:00</span></div>
+            <!-- Fila superior -->
+            <div class="player-top">
+                <div class="vinyl" id="vinyl"><img id="vinyl-img" alt="cover"></div>
+                <button id="play-btn">▶</button>
+                <div class="volume-controls">
+                    <button class="volume-btn" id="vol-down">🔉</button>
+                    <div class="volume-bar-container" id="volume-container">
+                        <div class="volume-bar" id="volume-bar"></div>
+                    </div>
+                    <button class="volume-btn" id="vol-up">🔊</button>
+                    <span class="volume-icon" id="volume-icon">100%</span>
+                </div>
             </div>
-            <div class="visualizer" id="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            
+            <!-- Barra de progreso -->
+            <div class="track-info">
+                <div class="progress-area" id="progress-area">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="curr-time">0:00</span>
+                    <span id="dur-time">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Visualizador -->
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            
+            <div class="song-title" id="song-title">🎵 Canción de amor</div>
         </div>
     </div>
 
@@ -188,6 +313,13 @@
             'https://files.catbox.moe/pgafel.mp3',
             'https://voca.ro/1bHR9tEGL03i',
             'https://files.catbox.moe/3py8bs.mp3'
+        ];
+
+        const SONG_NAMES = [
+            '🎵 Canción 1',
+            '🎵 Canción 2',
+            '🎵 Canción 3',
+            '🎵 Canción 4'
         ];
 
         const canvas = document.getElementById('cv'), ctx = canvas.getContext('2d');
@@ -203,11 +335,21 @@
         const visualizer = document.getElementById('visualizer');
         const surpriseBtn = document.getElementById('surprise-btn');
         const surpriseStatus = document.getElementById('surprise-status');
+        const songTitle = document.getElementById('song-title');
+
+        // Controles de volumen
+        const volDown = document.getElementById('vol-down');
+        const volUp = document.getElementById('vol-up');
+        const volumeBar = document.getElementById('volume-bar');
+        const volumeContainer = document.getElementById('volume-container');
+        const volumeIcon = document.getElementById('volume-icon');
 
         let compressedImages = [], audioBase64 = "", particles = [];
         let isDragging = false, rotX = -15, rotY = 15, lastX, lastY, vx = 0;
         let imgReady = false, audReady = false;
         let selectedSongUrl = '';
+        let selectedSongIndex = 0;
+        let currentVolume = 1;
 
         // --- PARTÍCULAS ---
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -240,21 +382,77 @@
 
         // --- AUDIO UI ---
         function formatTime(s) { const m = Math.floor(s/60), se = Math.floor(s%60); return m+":"+(se<10?'0'+se:se); }
+        
         function togglePlay() {
-            if(audio.paused) { audio.play(); playBtn.innerHTML = "⏸"; playBtn.classList.add('playing'); vinyl.classList.add('spinning'); visualizer.classList.add('playing'); }
-            else { audio.pause(); playBtn.innerHTML = "▶"; playBtn.classList.remove('playing'); vinyl.classList.remove('spinning'); visualizer.classList.remove('playing'); }
+            if(audio.paused) { 
+                audio.play(); 
+                playBtn.innerHTML = "⏸"; 
+                playBtn.classList.add('playing'); 
+                vinyl.classList.add('spinning'); 
+                visualizer.classList.add('playing'); 
+            } else { 
+                audio.pause(); 
+                playBtn.innerHTML = "▶"; 
+                playBtn.classList.remove('playing'); 
+                vinyl.classList.remove('spinning'); 
+                visualizer.classList.remove('playing'); 
+            }
         }
+        
         playBtn.addEventListener('click', togglePlay);
-        progressArea.addEventListener('click', (e) => { const w = progressArea.clientWidth; const cx = e.offsetX; const d = audio.duration; audio.currentTime = (cx / w) * d; });
-        audio.addEventListener('loadedmetadata', () => durTime.innerText = formatTime(audio.duration));
-        audio.addEventListener('ended', () => { playBtn.innerHTML = "▶"; playBtn.classList.remove('playing'); vinyl.classList.remove('spinning'); visualizer.classList.remove('playing'); });
+        
+        // --- Barra de progreso ---
+        progressArea.addEventListener('click', (e) => { 
+            const w = progressArea.clientWidth; 
+            const cx = e.offsetX; 
+            const d = audio.duration; 
+            if(d) audio.currentTime = (cx / w) * d; 
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            durTime.innerText = formatTime(audio.duration);
+            volumeBar.style.width = '100%';
+            currentVolume = 1;
+            audio.volume = 1;
+            volumeIcon.textContent = '100%';
+        });
+        
+        audio.addEventListener('ended', () => { 
+            playBtn.innerHTML = "▶"; 
+            playBtn.classList.remove('playing'); 
+            vinyl.classList.remove('spinning'); 
+            visualizer.classList.remove('playing'); 
+        });
+
+        // --- Control de Volumen ---
+        function updateVolume(value) {
+            currentVolume = Math.max(0, Math.min(1, value));
+            audio.volume = currentVolume;
+            volumeBar.style.width = (currentVolume * 100) + '%';
+            volumeIcon.textContent = Math.round(currentVolume * 100) + '%';
+        }
+
+        volDown.addEventListener('click', () => {
+            updateVolume(currentVolume - 0.1);
+        });
+
+        volUp.addEventListener('click', () => {
+            updateVolume(currentVolume + 0.1);
+        });
+
+        volumeContainer.addEventListener('click', (e) => {
+            const rect = volumeContainer.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            updateVolume(x);
+        });
 
         // --- FUNCIÓN SORPRESA ---
         function selectRandomSong() {
-            const randomIndex = Math.floor(Math.random() * SONG_URLS.length);
-            selectedSongUrl = SONG_URLS[randomIndex];
-            surpriseStatus.innerText = `🎵 Canción sorpresa lista (${randomIndex + 1}/${SONG_URLS.length})`;
+            selectedSongIndex = Math.floor(Math.random() * SONG_URLS.length);
+            selectedSongUrl = SONG_URLS[selectedSongIndex];
+            surpriseStatus.innerText = `🎵 Canción sorpresa lista (${selectedSongIndex + 1}/${SONG_URLS.length})`;
             surpriseStatus.style.color = '#00ff66';
+            songTitle.textContent = SONG_NAMES[selectedSongIndex] || '🎵 Canción de amor';
             audReady = true;
             check();
         }
@@ -288,15 +486,21 @@
             }
             compressedImages.forEach((s, i) => document.getElementById(`img${i}`).src = s);
             vinylImg.src = compressedImages[0];
-            // Cargar la canción seleccionada
             audio.src = selectedSongUrl;
             
             document.getElementById('setup-form').style.display = "none";
             document.getElementById('escena').style.display = "block";
             document.getElementById('btn-download').style.display = "block";
+            document.getElementById('btn-back').style.display = "block";
             document.getElementById('love-message').style.display = "block";
             document.getElementById('player').style.display = "block";
-            togglePlay(); 
+            
+            // Restaurar volumen
+            audio.volume = currentVolume;
+            
+            setTimeout(() => {
+                togglePlay();
+            }, 500);
         });
 
         // --- INTERACCIÓN 3D ---
@@ -309,7 +513,6 @@
 
         // --- DESCARGA ---
         document.getElementById('btn-download').addEventListener('click', () => {
-            // Nota: Las canciones se descargarán desde las URLs originales, no se incrustan en el HTML.
             const template = `<!DOCTYPE html>
 <html>
 <head>
@@ -329,27 +532,35 @@
         .cara img{width:100%;height:100%;object-fit:cover;pointer-events:none}
         .f{transform:rotateY(0deg) translateZ(130px)}.b{transform:rotateY(180deg) translateZ(130px)}.r{transform:rotateY(90deg) translateZ(130px)}.l{transform:rotateY(-90deg) translateZ(130px)}.u{transform:rotateX(90deg) translateZ(130px)}.d{transform:rotateX(-90deg) translateZ(130px)}
         
-        /* PLAYER STYLES */
         #pl{display:block;position:fixed;bottom:80px;width:95%;max-width:450px;padding:3px;border-radius:25px;overflow:hidden;z-index:100;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
         #pl::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,transparent,transparent,#ff0077);animation:rb 4s linear infinite;z-index:1}
         @keyframes rb{100%{transform:rotate(360deg)}}
-        .pi{background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);width:100%;height:100%;border-radius:23px;display:flex;align-items:center;gap:15px;padding:12px 20px;position:relative;z-index:2}
-        
-        .vin{width:50px;height:50px;flex-shrink:0;border-radius:50%;border:3px solid #222;overflow:hidden;position:relative;box-shadow:0 0 10px rgba(255,255,255,0.1);background:#000}
-        .vin img{width:100%;height:100%;object-fit:cover}
+        .pi{background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);width:100%;height:100%;border-radius:23px;display:flex;flex-direction:column;padding:12px 16px;position:relative;z-index:2;gap:8px}
+        .pt{display:flex;align-items:center;gap:12px}
+        .vin{width:45px;height:45px;flex-shrink:0;border-radius:50%;border:2px solid #333;overflow:hidden;box-shadow:0 0 10px rgba(255,255,255,0.1);position:relative;background:#000}
+        .vin img{width:100%;height:100%;object-fit:cover;display:block}
         .vin.sp{animation:sp 4s linear infinite;border-color:#ff0077;box-shadow:0 0 15px #ff0077}@keyframes sp{100%{transform:rotate(360deg)}}
-        #pb{background:white;color:#ff0077;border:none;width:45px;height:45px;flex-shrink:0;border-radius:50%;font-size:1.4rem;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow:0 0 20px rgba(255,255,255,0.4);transition:0.2s;padding-left:4px}
+        #pb{background:white;color:#ff0077;border:none;width:40px;height:40px;flex-shrink:0;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow:0 0 20px rgba(255,255,255,0.3);transition:0.2s;padding-left:3px}
         #pb.pg{padding-left:0;box-shadow:0 0 25px #ff0077;background:#ff0077;color:white}
-        .ti{flex-grow:1;display:flex;flex-direction:column;gap:6px}
-        .pa{width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;position:relative}
+        .vc{display:flex;align-items:center;gap:6px;margin-left:auto}
+        .vb{background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .vb:hover{background:rgba(255,0,119,0.3)}
+        .vbc{width:60px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;cursor:pointer;position:relative}
+        .vbb{height:100%;width:100%;background:linear-gradient(90deg,#ff0077,#ff5500);border-radius:2px;transition:width 0.1s}
+        .vi{color:rgba(255,255,255,0.6);font-size:14px;min-width:20px}
+        .ti{flex-grow:1;display:flex;flex-direction:column;gap:4px}
+        .pa{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;position:relative}
         .bar{height:100%;width:0%;background:linear-gradient(90deg,#ff0077,#ff9900);border-radius:10px;position:relative;box-shadow:0 0 15px #ff0077}
-        .bar::after{content:'';position:absolute;right:-6px;top:-4px;width:14px;height:14px;background:white;border-radius:50%;box-shadow:0 0 10px rgba(255,255,255,0.9);transform:scale(0);transition:transform 0.2s}
-        .td{font-size:0.7rem;color:#aaa;font-weight:600;display:flex;justify-content:space-between;letter-spacing:1px}
+        .bar::after{content:'';position:absolute;right:-5px;top:-4px;width:12px;height:12px;background:white;border-radius:50%;box-shadow:0 0 10px rgba(255,255,255,0.9);transform:scale(0);transition:transform 0.2s}
+        .td{font-size:0.6rem;color:#aaa;font-weight:600;display:flex;justify-content:space-between;letter-spacing:1px}
         .vz{display:flex;gap:3px;height:20px;align-items:flex-end}
-        .vzb{width:4px;background:#ff0077;border-radius:2px;height:3px;transition:0.1s}
+        .vzb{width:3px;background:#ff0077;border-radius:2px;height:3px;transition:0.1s}
         .vz.pg .vzb{animation:bn 0.5s infinite ease-in-out alternate}
         .vzb:nth-child(2){animation-delay:0.1s}.vzb:nth-child(3){animation-delay:0.2s}
+        .vzb:nth-child(4){animation-delay:0.3s}.vzb:nth-child(5){animation-delay:0.4s}
+        .vzb:nth-child(6){animation-delay:0.15s}.vzb:nth-child(7){animation-delay:0.35s}
         @keyframes bn{0%{height:3px;opacity:0.5}100%{height:20px;opacity:1;box-shadow:0 0 10px #ff0077}}
+        .st{color:rgba(255,255,255,0.5);font-size:0.6rem;text-align:center;margin-top:2px;letter-spacing:1px;font-weight:300}
     </style>
 </head>
 <body>
@@ -360,15 +571,27 @@
     <audio id="au" loop src="${selectedSongUrl}"></audio>
     <div id="pl">
         <div class="pi">
-            <div class="vin" id="vin"><img src="${compressedImages[0]}"></div>
-            <button id="pb">▶</button>
-            <div class="ti"><div class="pa" id="pa"><div class="bar" id="bar"></div></div><div class="td"><span id="ct">0:00</span><span id="dt">0:00</span></div></div>
-            <div class="vz" id="vz"><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div></div>
+            <div class="pt">
+                <div class="vin" id="vin"><img src="${compressedImages[0]}"></div>
+                <button id="pb">▶</button>
+                <div class="vc">
+                    <button class="vb" id="vd">🔉</button>
+                    <div class="vbc" id="vc"><div class="vbb" id="vbb"></div></div>
+                    <button class="vb" id="vu">🔊</button>
+                    <span class="vi" id="vi">100%</span>
+                </div>
+            </div>
+            <div class="ti">
+                <div class="pa" id="pa"><div class="bar" id="bar"></div></div>
+                <div class="td"><span id="ct">0:00</span><span id="dt">0:00</span></div>
+            </div>
+            <div class="vz" id="vz"><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div></div>
+            <div class="st" id="st">${SONG_NAMES[selectedSongIndex] || '🎵 Canción de amor'}</div>
         </div>
     </div>
     <script>
-        const c=document.getElementById('cv'),x=c.getContext('2d'),cb=document.getElementById('cubo'),au=document.getElementById('au'),pb=document.getElementById('pb'),bar=document.getElementById('bar'),pa=document.getElementById('pa'),ct=document.getElementById('ct'),dt=document.getElementById('dt'),vin=document.getElementById('vin'),vz=document.getElementById('vz');
-        let ps=[],id=false,rx=-15,ry=15,lx,ly,vx=0;
+        const c=document.getElementById('cv'),x=c.getContext('2d'),cb=document.getElementById('cubo'),au=document.getElementById('au'),pb=document.getElementById('pb'),bar=document.getElementById('bar'),pa=document.getElementById('pa'),ct=document.getElementById('ct'),dt=document.getElementById('dt'),vin=document.getElementById('vin'),vz=document.getElementById('vz'),vd=document.getElementById('vd'),vu=document.getElementById('vu'),vbb=document.getElementById('vbb'),vc=document.getElementById('vc'),vi=document.getElementById('vi');
+        let ps=[],id=false,rx=-15,ry=15,lx,ly,vx=0,vol=1;
         function rs(){c.width=window.innerWidth;c.height=window.innerHeight}window.addEventListener('resize',rs);rs();
         class P{constructor(){this.i();this.y=Math.random()*c.height}i(){this.x=Math.random()*c.width;this.y=c.height+50;this.s=Math.random()*15+10;this.v=Math.random()*1.5+0.5;this.t=Math.random()>0.5?'❤️':'🌸';this.o=Math.random()*0.5+0.1}d(){this.x+=vx*0.4;this.y-=this.v;if(this.y<-50||this.x<-50||this.x>c.width+50)this.i();x.globalAlpha=this.o;x.font=this.s+"px serif";x.fillText(this.t,this.x,this.y)}}for(let i=0;i<100;i++)ps.push(new P());
         function fmt(s){const m=Math.floor(s/60),se=Math.floor(s%60);return m+":"+(se<10?'0'+se:se)}
@@ -378,10 +601,13 @@
             if(!au.paused){bar.style.width=(au.currentTime/au.duration)*100+"%";ct.innerText=fmt(au.currentTime)}
             requestAnimationFrame(an)
         }
-        au.addEventListener('loadedmetadata',()=>dt.innerText=fmt(au.duration));
+        au.addEventListener('loadedmetadata',()=>{dt.innerText=fmt(au.duration);vbb.style.width='100%';vol=1;au.volume=1;vi.textContent='100%'});
+        function updVol(v){vol=Math.max(0,Math.min(1,v));au.volume=vol;vbb.style.width=(vol*100)+'%';vi.textContent=Math.round(vol*100)+'%'}
+        vd.addEventListener('click',()=>updVol(vol-0.1));vu.addEventListener('click',()=>updVol(vol+0.1));
+        vc.addEventListener('click',(e)=>{const r=vc.getBoundingClientRect();updVol((e.clientX-r.left)/r.width)});
         function tgl(){if(au.paused){au.play();pb.innerText="⏸";pb.classList.add('pg');vin.classList.add('sp');vz.classList.add('pg')}else{au.pause();pb.innerText="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg')}}
         pb.addEventListener('click',tgl);
-        pa.addEventListener('click',(e)=>{const w=pa.clientWidth,ck=e.offsetX,d=au.duration;au.currentTime=(ck/w)*d});
+        pa.addEventListener('click',(e)=>{const w=pa.clientWidth,ck=e.offsetX,d=au.duration;if(d)au.currentTime=(ck/w)*d});
         const st=(e)=>{id=true;lx=e.pageX||e.touches[0].pageX;ly=e.pageY||e.touches[0].pageY};const en=()=>{id=false};const mv=(e)=>{if(!id)return;let nx=e.pageX||e.touches[0].pageX,ny=e.pageY||e.touches[0].pageY;vx=nx-lx;ry+=vx*0.5;rx-=(ny-ly)*0.5;lx=nx;ly=ny};
         window.addEventListener('mousedown',st);window.addEventListener('touchstart',st);window.addEventListener('mousemove',mv);window.addEventListener('touchmove',mv);window.addEventListener('mouseup',en);window.addEventListener('touchend',en);an();
     <\/script>
