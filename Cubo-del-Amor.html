@@ -2,2963 +2,397 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestro Aniversario - Libro Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💖 Cubo del Amor - Para Ti 💖</title>
     <style>
-        /* ===== RESET Y BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;500;700&display=swap');
 
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #1a0a2e;
-            font-family: 'Georgia', serif;
-            overflow: hidden;
-            height: 100vh;
+            background: #000; color: white; font-family: 'Montserrat', sans-serif;
+            height: 100vh; width: 100vw; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; overflow: hidden; perspective: 1200px;
         }
 
-        /* ===== CONTENEDOR DEL LIBRO ===== */
-        .book-wrapper {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 2500px;
-            padding: 20px;
-        }
+        canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-        .book {
-            position: relative;
-            width: 95%;
-            max-width: 1200px;
-            height: 90vh;
-            max-height: 800px;
-            transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
+        #love-message {
+            position: fixed; top: 40px; font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem; color: #ff0077; text-shadow: 0 0 20px #ff0077;
+            animation: pulse 2s infinite; display: none; z-index: 10; width: 100%; text-align: center;
         }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 30px #ff0077; } }
 
-        /* ===== PÁGINAS ===== */
-        .page {
+        /* FORMULARIO */
+        #setup-form {
+            z-index: 1000; background: rgba(15, 15, 15, 0.95); padding: 30px; border-radius: 25px;
+            border: 1px solid #ff0077; text-align: center; width: 90%; max-width: 400px;
+            box-shadow: 0 0 50px rgba(255, 0, 119, 0.2); backdrop-filter: blur(10px);
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            transform-origin: left center;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #fef9f0;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
+        }
+        .section-title { font-size: 0.8rem; margin-top: 15px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; }
+        .upload-box {
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.05); border: 2px dashed #ff0077;
+            padding: 15px; border-radius: 12px; cursor: pointer; margin: 10px 0; transition: 0.3s;
+        }
+        .upload-box.done { border-style: solid; background: rgba(0, 255, 100, 0.1); border-color: #00ff66; }
+        input[type="file"] { display: none; }
+        .btn {
+            background: linear-gradient(45deg, #ff0077, #ff5500); color: white; border: none; padding: 15px; margin-top: 20px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%;
+            box-shadow: 0 5px 20px rgba(255, 0, 119, 0.4); opacity: 0.5; pointer-events: none; transition: 0.3s;
+        }
+        .btn-surprise {
+            background: linear-gradient(45deg, #ff0077, #ff5500); color: white; border: none; padding: 15px; margin-top: 10px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%;
+            box-shadow: 0 5px 20px rgba(255, 0, 119, 0.4); transition: 0.3s;
+        }
+        .btn-surprise:hover { transform: scale(1.02); }
+
+        /* CUBO 3D */
+        #escena { display: none; width: 260px; height: 260px; margin: 0; }
+        #cubo { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(15deg); }
+        .cara {
+            position: absolute; width: 260px; height: 260px;
+            border: 2px solid rgba(255, 0, 119, 0.6); box-shadow: 0 0 15px rgba(255,0,119,0.2);
+            background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .cara img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .f { transform: rotateY(0deg) translateZ(130px); } .b { transform: rotateY(180deg) translateZ(130px); }
+        .r { transform: rotateY(90deg) translateZ(130px); } .l { transform: rotateY(-90deg) translateZ(130px); }
+        .u { transform: rotateX(90deg) translateZ(130px); } .d { transform: rotateX(-90deg) translateZ(130px); }
+
+        /* --- REPRODUCTOR CON LUZ VIAJERA --- */
+        #player {
+            display: none; position: fixed; 
+            bottom: 80px; width: 95%; max-width: 450px;
+            padding: 3px; /* Espacio para el borde de luz */
+            border-radius: 25px; 
+            overflow: hidden; /* IMPORTANTE: Recorta la luz */
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
 
-        .page::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, transparent 20%);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .page.active {
-            transform: rotateY(0deg);
-            z-index: 10;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .page.flipped {
-            transform: rotateY(-180deg);
+        /* La Luz Giratoria */
+        #player::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, #ff0077);
+            animation: rotate-border 4s linear infinite;
             z-index: 1;
         }
+        @keyframes rotate-border { 100% { transform: rotate(360deg); } }
 
-        .page.hidden-page {
-            display: none;
-        }
-
-        /* ===== FONDOS DE PÁGINAS ===== */
-        .page-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
+        /* El fondo real del player (tapa el centro de la luz) */
+        .player-inner {
+            background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px);
+            width: 100%; height: 100%; border-radius: 23px;
+            display: flex; align-items: center; gap: 15px; padding: 12px 20px;
+            position: relative; z-index: 2; /* Encima de la luz */
         }
 
-        /* Portada */
-        .bg-portada {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        .vinyl {
+            width: 50px; height: 50px; flex-shrink: 0;
+            border-radius: 50%; border: 2px solid #333; 
+            overflow: hidden; box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            position: relative; background: #000;
         }
+        .vinyl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .vinyl.spinning { animation: spin 4s linear infinite; border-color: #ff0077; box-shadow: 0 0 15px #ff0077; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Estrellas */
-        .bg-estrellas {
-            background: radial-gradient(ellipse at center, #0a0015 0%, #1a0033 50%, #2d004d 100%);
+        #play-btn {
+            background: white; color: #ff0077; border: none; width: 45px; height: 45px; flex-shrink: 0;
+            border-radius: 50%; font-size: 1.4rem; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4); transition: 0.2s; padding-left: 4px;
         }
-        .bg-estrellas::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
-                radial-gradient(2px 2px at 50px 160px, #fff, transparent),
-                radial-gradient(2px 2px at 90px 40px, #fff, transparent),
-                radial-gradient(2px 2px at 130px 80px, #fff, transparent),
-                radial-gradient(2px 2px at 160px 30px, #fff, transparent),
-                radial-gradient(1px 1px at 30px 120px, #fff, transparent),
-                radial-gradient(1px 1px at 70px 90px, #fff, transparent),
-                radial-gradient(1px 1px at 110px 140px, #fff, transparent),
-                radial-gradient(1px 1px at 150px 110px, #fff, transparent),
-                radial-gradient(3px 3px at 60px 60px, #ff69b4, transparent),
-                radial-gradient(3px 3px at 140px 150px, #ff69b4, transparent);
-            background-size: 200px 200px;
-            animation: twinkle 4s ease-in-out infinite alternate;
-            opacity: 0.7;
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.5; transform: translate(0, 0) scale(1); }
-            100% { opacity: 1; transform: translate(-20px, -10px) scale(1.1); }
-        }
+        #play-btn.playing { padding-left: 0; box-shadow: 0 0 25px #ff0077; background: #ff0077; color: white; }
+        
+        .track-info { flex-grow: 1; display: flex; flex-direction: column; gap: 6px; }
+        .progress-area { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; position: relative; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff0077, #ff9900); border-radius: 10px; position: relative; box-shadow: 0 0 15px #ff0077; }
+        .progress-bar::after { content: ''; position: absolute; right: -6px; top: -4px; width: 14px; height: 14px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.9); transform: scale(0); transition: transform 0.2s; }
+        .progress-area:hover .progress-bar::after { transform: scale(1); }
+        .time-display { font-size: 0.7rem; color: #aaa; font-weight: 600; display: flex; justify-content: space-between; letter-spacing: 1px; }
 
-        /* Galaxia */
-        .bg-galaxia {
-            background: linear-gradient(135deg, #0c0033 0%, #1a004d 30%, #2d0066 60%, #4d0099 100%);
-        }
-        .bg-galaxia::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(100, 50, 255, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.1) 0%, transparent 70%);
-            animation: galaxiaGirar 20s linear infinite;
-        }
-        @keyframes galaxiaGirar {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.5); }
-        }
-        .bg-galaxia::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-                radial-gradient(1px 1px at 30% 60%, #fff, transparent),
-                radial-gradient(1px 1px at 50% 10%, #fff, transparent),
-                radial-gradient(1px 1px at 70% 80%, #fff, transparent),
-                radial-gradient(1px 1px at 90% 40%, #fff, transparent),
-                radial-gradient(2px 2px at 15% 80%, #ff69b4, transparent),
-                radial-gradient(2px 2px at 85% 15%, #ff69b4, transparent);
-            background-size: 300px 300px;
-            animation: twinkle 3s ease-in-out infinite alternate;
-            opacity: 0.6;
-        }
+        .visualizer { display: flex; gap: 3px; height: 20px; align-items: flex-end; }
+        .bar { width: 4px; background: #ff0077; border-radius: 2px; height: 3px; transition: 0.1s; }
+        .playing .bar { animation: bounce 0.5s infinite ease-in-out alternate; }
+        .bar:nth-child(2) { animation-delay: 0.1s; } .bar:nth-child(3) { animation-delay: 0.2s; }
+        @keyframes bounce { 0% { height: 3px; opacity: 0.5; } 100% { height: 20px; opacity: 1; box-shadow: 0 0 10px #ff0077; } }
 
-        /* Fuegos artificiales */
-        .bg-fuegos {
-            background: linear-gradient(135deg, #1a0000 0%, #2d0000 30%, #4d0000 60%, #6d0000 100%);
+        #btn-download {
+            display: none; position: fixed; 
+            bottom: 160px; /* Arriba del player */
+            background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 25px; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; z-index: 1001; backdrop-filter: blur(5px); transition: 0.3s;
         }
-        .bg-fuegos::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, #ff6b00 0%, transparent 30%),
-                radial-gradient(circle at 50% 60%, #ffaa00 0%, transparent 30%),
-                radial-gradient(circle at 80% 20%, #ff4400 0%, transparent 30%),
-                radial-gradient(circle at 30% 80%, #ffcc00 0%, transparent 30%),
-                radial-gradient(circle at 70% 50%, #ff8800 0%, transparent 30%);
-            animation: fuegosAnim 3s ease-in-out infinite alternate;
-        }
-        @keyframes fuegosAnim {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
+        #btn-download:hover { background: #ff0077; border-color: #ff0077; }
 
-        /* Espacio profundo */
-        .bg-espacio {
-            background: radial-gradient(ellipse at center, #000000 0%, #0a0015 40%, #15002a 70%, #20003d 100%);
-        }
-        .bg-espacio::before {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, #1a0033 0%, #000000 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 100px rgba(100, 0, 200, 0.3), inset 0 0 100px rgba(100, 0, 200, 0.1);
-            animation: agujeroNegro 8s ease-in-out infinite alternate;
-        }
-        @keyframes agujeroNegro {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-        }
-        .bg-espacio::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-                radial-gradient(1px 1px at 30% 60%, #fff, transparent),
-                radial-gradient(1px 1px at 50% 10%, #fff, transparent),
-                radial-gradient(1px 1px at 70% 80%, #fff, transparent),
-                radial-gradient(1px 1px at 90% 40%, #fff, transparent);
-            background-size: 200px 200px;
-            animation: twinkle 4s ease-in-out infinite alternate;
-            opacity: 0.4;
-        }
-
-        /* Aurora boreal */
-        .bg-aurora {
-            background: linear-gradient(180deg, #000033 0%, #001a4d 30%, #003366 60%, #004080 100%);
-        }
-        .bg-aurora::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: 
-                linear-gradient(45deg, rgba(0, 255, 100, 0.2) 0%, transparent 30%),
-                linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, transparent 40%),
-                linear-gradient(225deg, rgba(150, 0, 255, 0.2) 0%, transparent 35%),
-                linear-gradient(315deg, rgba(255, 0, 150, 0.1) 0%, transparent 30%);
-            animation: auroraAnim 10s ease-in-out infinite alternate;
-            filter: blur(30px);
-        }
-        @keyframes auroraAnim {
-            0% { transform: translate(-10%, -10%) rotate(0deg) scale(1); }
-            100% { transform: translate(10%, 10%) rotate(5deg) scale(1.2); }
-        }
-
-        /* Atardecer romántico */
-        .bg-atardecer {
-            background: linear-gradient(180deg, #ff6b35 0%, #ff8c42 20%, #ffb347 40%, #ffd700 60%, #ffcc80 80%, #ffe0b2 100%);
-        }
-        .bg-atardecer::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 40%, rgba(255, 200, 100, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(255, 150, 50, 0.3) 0%, transparent 50%);
-            animation: atardecerAnim 6s ease-in-out infinite alternate;
-        }
-        @keyframes atardecerAnim {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.1); }
-        }
-        .bg-atardecer::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 80%, rgba(255, 100, 50, 0.2) 0%, transparent 50%);
-            animation: sol 8s ease-in-out infinite alternate;
-        }
-        @keyframes sol {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-            100% { transform: translate(-20px, -20px) scale(1.2); opacity: 0.8; }
-        }
-
-        /* Arcoíris */
-        .bg-arcoiris {
-            background: linear-gradient(135deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
-            background-size: 400% 400%;
-            animation: arcoirisAnim 6s ease-in-out infinite alternate;
-        }
-        @keyframes arcoirisAnim {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-        .bg-arcoiris::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.2) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.2) 0%, transparent 50%);
-            animation: arcoirisBrillo 3s ease-in-out infinite alternate;
-        }
-        @keyframes arcoirisBrillo {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.7; transform: scale(1.1); }
-        }
-
-        /* Cubo */
-        .bg-cubo {
-            background: linear-gradient(135deg, #0a0015 0%, #1a0033 30%, #2d004d 60%, #4d0099 100%);
-        }
-        .bg-cubo::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(100, 50, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.1) 0%, transparent 70%);
-            animation: cuboBgGirar 15s linear infinite;
-        }
-        @keyframes cuboBgGirar {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.2); }
-        }
-        .bg-cubo::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-                radial-gradient(1px 1px at 30% 60%, #fff, transparent),
-                radial-gradient(1px 1px at 50% 10%, #fff, transparent),
-                radial-gradient(1px 1px at 70% 80%, #fff, transparent),
-                radial-gradient(1px 1px at 90% 40%, #fff, transparent),
-                radial-gradient(2px 2px at 15% 80%, #ff69b4, transparent),
-                radial-gradient(2px 2px at 85% 15%, #ff69b4, transparent);
-            background-size: 300px 300px;
-            animation: twinkle 3s ease-in-out infinite alternate;
-            opacity: 0.5;
-        }
-
-        /* Próximamente */
-        .bg-proximamente {
-            background: linear-gradient(135deg, #1a0033 0%, #2d004d 30%, #4d0099 60%, #7b2fbe 100%);
-        }
-        .bg-proximamente::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 40%, rgba(255, 105, 180, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(100, 50, 255, 0.2) 0%, transparent 50%);
-            animation: proximamentePulse 4s ease-in-out infinite alternate;
-        }
-        @keyframes proximamentePulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.1); }
-        }
-        .bg-proximamente::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: radial-gradient(2px 2px at 10% 20%, #fff, transparent),
-                radial-gradient(2px 2px at 30% 60%, #fff, transparent),
-                radial-gradient(2px 2px at 50% 10%, #fff, transparent),
-                radial-gradient(2px 2px at 70% 80%, #fff, transparent),
-                radial-gradient(2px 2px at 90% 40%, #fff, transparent),
-                radial-gradient(3px 3px at 25% 50%, #ff69b4, transparent),
-                radial-gradient(3px 3px at 75% 30%, #ff69b4, transparent);
-            background-size: 200px 200px;
-            animation: twinkle 3s ease-in-out infinite alternate;
-            opacity: 0.6;
-        }
-
-        /* ===== CONTENIDO DE LAS PÁGINAS ===== */
-        .page-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .page-title {
-            font-size: 2.2rem;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-            font-family: 'Georgia', serif;
-            text-align: center;
-            z-index: 2;
-        }
-
-        .page-title.dark {
-            color: #5d4037;
-            text-shadow: none;
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            width: 100%;
-            max-width: 900px;
-            padding: 10px;
-            z-index: 2;
-        }
-
-        .link-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 120px;
-            position: relative;
-        }
-
-        /* ===== ESTILO PARA "PENDIENTE" ===== */
-        .pendiente-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 2px dashed rgba(255, 255, 255, 0.4);
-            width: 100%;
-            min-height: 120px;
-            transition: all 0.3s ease;
-            animation: pendientePulse 2s ease-in-out infinite;
-        }
-
-        .pendiente-item:hover {
-            transform: scale(1.05);
-            border-color: rgba(255, 105, 180, 0.8);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        @keyframes pendientePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        .pendiente-corazon {
-            font-size: 3rem;
-            animation: latidoPendiente 1.5s ease-in-out infinite;
-            display: inline-block;
-            filter: drop-shadow(0 0 20px rgba(255, 0, 100, 0.3));
-        }
-
-        @keyframes latidoPendiente {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.2) rotate(-5deg); }
-            50% { transform: scale(1.1) rotate(0deg); }
-            75% { transform: scale(1.3) rotate(5deg); }
-        }
-
-        .pendiente-corazon.flor {
-            font-size: 3.5rem;
-            animation: florGirar 4s ease-in-out infinite;
-        }
-
-        @keyframes florGirar {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.1); }
-        }
-
-        .pendiente-texto {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .pendiente-subtexto {
-            color: rgba(255, 255, 255, 0.5);
+        /* Estado de carga para el botón sorpresa */
+        .status-surprise {
+            margin-top: 5px;
             font-size: 0.8rem;
-            font-style: italic;
-        }
-
-        /* ===== ESTILO PARA CUBO DEL AMOR ===== */
-        .cubo-link {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            text-decoration: none;
-            position: relative;
-            perspective: 800px;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .cubo-link:hover {
-            transform: scale(1.1);
-        }
-
-        .cubo {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: cuboGirar 8s linear infinite;
-        }
-
-        .cubo-link:hover .cubo {
-            animation: cuboGirarRapido 3s linear infinite;
-        }
-
-        @keyframes cuboGirar {
-            0% { transform: rotateX(-20deg) rotateY(0deg); }
-            100% { transform: rotateX(-20deg) rotateY(360deg); }
-        }
-
-        @keyframes cuboGirarRapido {
-            0% { transform: rotateX(-20deg) rotateY(0deg) scale(1.1); }
-            100% { transform: rotateX(-20deg) rotateY(360deg) scale(1.1); }
-        }
-
-        .cubo .cara {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 2px solid rgba(255, 105, 180, 0.6);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            background: rgba(255, 105, 180, 0.15);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
-            left: 10px;
-            top: 10px;
-            backface-visibility: visible;
-            transition: all 0.3s ease;
-        }
-
-        .cubo .cara::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), rgba(255, 20, 147, 0.05));
-            pointer-events: none;
-        }
-
-        .cubo .cara:hover {
-            border-color: rgba(255, 105, 180, 0.9);
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
-        }
-
-        .cubo .cara-frontal {
-            transform: translateZ(40px);
-            background: rgba(255, 105, 180, 0.2);
-        }
-
-        .cubo .cara-trasera {
-            transform: rotateY(180deg) translateZ(40px);
-            background: rgba(255, 20, 147, 0.2);
-        }
-
-        .cubo .cara-izquierda {
-            transform: rotateY(-90deg) translateZ(40px);
-            background: rgba(200, 50, 255, 0.2);
-        }
-
-        .cubo .cara-derecha {
-            transform: rotateY(90deg) translateZ(40px);
-            background: rgba(50, 200, 255, 0.2);
-        }
-
-        .cubo .cara-superior {
-            transform: rotateX(90deg) translateZ(40px);
-            background: rgba(255, 200, 50, 0.2);
-        }
-
-        .cubo .cara-inferior {
-            transform: rotateX(-90deg) translateZ(40px);
-            background: rgba(50, 255, 200, 0.2);
-        }
-
-        .cubo-texto {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Georgia', serif;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-            letter-spacing: 1px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* ===== PÁGINA DE PRÓXIMAMENTE ===== */
-        .proximamente-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            height: 100%;
-            z-index: 2;
-            position: relative;
-        }
-
-        .proximamente-title {
-            font-size: 4rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
-            animation: proximamenteBrillo 2s ease-in-out infinite alternate;
-            font-family: 'Georgia', serif;
-        }
-
-        @keyframes proximamenteBrillo {
-            0% { transform: scale(1); filter: brightness(1); }
-            100% { transform: scale(1.05); filter: brightness(1.3); }
-        }
-
-        .proximamente-sub {
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-            line-height: 1.8;
-            max-width: 600px;
-        }
-
-        .proximamente-corazones {
-            font-size: 3rem;
-            animation: latidoPuzzle 1.5s ease-in-out infinite;
-        }
-
-        /* ===== NAVEGACIÓN ===== */
-        .nav-controls {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            background: rgba(0,0,0,0.8);
-            padding: 12px 25px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 30px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Georgia', serif;
-            min-width: 90px;
-        }
-
-        .nav-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(238, 90, 36, 0.4);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .page-indicator {
-            color: white;
-            font-size: 16px;
-            font-family: 'Georgia', serif;
-            min-width: 80px;
-            text-align: center;
-        }
-
-        /* ===== ESTILOS EXISTENTES (MANTENIDOS) ===== */
-        .heart-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-        }
-
-        .heart {
-            position: absolute;
-            width: 130px;
-            height: 117px;
-            animation: heartbeat 1.5s infinite;
-        }
-
-        .heart::before,
-        .heart::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 68px;
-            height: 104px;
-            background: linear-gradient(45deg, #ff5252 0%, #d32f2f 100%);
-            border-radius: 75px 75px 0 0;
-            box-shadow: 0 0 20px rgba(211, 47, 47, 0.6);
-        }
-
-        .heart::before {
-            left: 65px;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
-        }
-
-        .heart::after {
-            left: 0;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-        }
-
-        .initial-message {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #d32f2f;
-            text-align: center;
-            z-index: 3;
-            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
-            animation: pulse 2s infinite alternate;
-        }
-
-        .falling-hearts {
-            position: absolute;
-            top: -50px;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .falling-hearts span {
-            position: absolute;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(45deg, #ff5252 0%, #d32f2f 100%);
-            clip-path: path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z');
-            animation: fall 8s linear infinite;
-            opacity: 0.8;
-            border-radius: 50%;
-        }
-
-        .hidden {
-            display: none;
-            opacity: 0;
-        }
-
-        .main-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
-            line-height: 1.6;
-            color: #5d4037;
-            text-align: center;
-            width: 80%;
-            max-width: 550px;
-            padding: 25px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            animation: fadeInUp 2s forwards 4s;
-            z-index: 3;
-        }
-
-        .signature {
-            font-style: italic;
-            margin-top: 15px;
-            font-size: 20px;
-            color: #d32f2f;
-        }
-
-        .romantic-phrase {
-            position: absolute;
-            width: 200px;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            font-size: 14px;
-            line-height: 1.4;
-            text-align: center;
-            color: #5d4037;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1s ease;
-            z-index: 5;
-        }
-
-        .romantic-phrase.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .romantic-phrase::before {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            background-color: #ff5252;
-            border-radius: 50%;
-            top: -12px;
-            left: -12px;
-            z-index: -1;
-        }
-
-        .romantic-phrase::after {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background-color: #ffeb3b;
-            border-radius: 50%;
-            bottom: -8px;
-            right: -8px;
-            z-index: -1;
-        }
-
-        /* ===== ENLACES EXISTENTES ===== */
-        .fancy-link {
-            display: inline-block;
-            padding: 10px 20px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.9em;
-            color: #ff55ff;
-            text-decoration: none;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 2px solid #ff55ff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px #ff00ff, inset 0 0 5px #ff00ff;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .fancy-link:hover {
-            background-color: rgba(255, 85, 255, 0.2);
-            transform: scale(1.05);
-            box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #ff00ff;
-        }
-
-        .heart-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .heart-link:hover {
-            background-color: #c0392b;
-            transform: scale(1.05);
-        }
-
-        .floating-promise-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #ff758c, #ff7eb3);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.2rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 105, 140, 0.3);
-            position: relative;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .floating-promise-btn::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border: 2px dashed white;
-            border-radius: 35px;
-            animation: pulseBorder 2s infinite;
-            pointer-events: none;
-        }
-
-        .floating-promise-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 105, 140, 0.4);
-        }
-
-        @keyframes pulseBorder {
-            0% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.05); }
-            100% { opacity: 0.7; transform: scale(1); }
-        }
-
-        .game-link-container {
-            position: relative;
-            width: 260px;
-            height: 100px;
-        }
-
-        #heartsCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            border-radius: 15px;
-        }
-
-        .romantic-game-link {
-            position: relative;
-            z-index: 2;
-            display: block;
-            width: 100%;
-            height: 100%;
-            padding: 15px;
-            background: rgba(255, 192, 203, 0.3);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            border: 2px solid #ff69b4;
-            text-decoration: none;
-            color: #d23369;
-            font-family: 'Brush Script MT', cursive;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .romantic-game-link:hover {
-            background: rgba(255, 192, 203, 0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
-        }
-
-        .link-text {
-            display: block;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .link-subtext {
-            display: block;
-            font-size: 12px;
-            font-style: italic;
-        }
-
-        .flower-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #ffeb3b;
-            color: #333;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            border: 1px solid #fbc02d;
-            text-align: center;
-        }
-
-        .flower-link:hover {
-            background-color: #fdd835;
-            transform: scale(1.05);
-        }
-
-        .partic-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background: linear-gradient(45deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #9900ff);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            border: none;
-            background-size: 400% 400%;
-            animation: rainbow 3s ease infinite;
-            text-align: center;
-        }
-
-        .partic-link:hover {
-            transform: scale(1.05);
-            animation: rainbow 1s ease infinite;
-        }
-
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .anivermes-link {
-            display: inline-block;
-            padding: 12px 25px;
-            background: linear-gradient(45deg, #ff6b6b, #ff8e8e, #ffafbd);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            font-family: 'Arial', sans-serif;
-            font-size: 14px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-            border: 2px solid #ff4757;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .anivermes-link:hover {
-            transform: scale(1.05);
-            background: linear-gradient(45deg, #ff4757, #ff6b6b, #ff8e8e);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
-        }
-
-        .anivermes-link::before {
-            content: "❤️ ";
-            margin-right: 5px;
-        }
-
-        .anivermes-link::after {
-            content: " ❤️";
-            margin-left: 5px;
-        }
-
-        .Cumple-link {
-            display: inline-block;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffafbd);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            font-family: 'Arial', sans-serif;
-            font-size: 16px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-            background-image: linear-gradient(90deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
-                linear-gradient(0deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%);
-            background-size: 100% 100%, 100% 100%;
-            background-repeat: no-repeat;
-            border: 2px solid #ff4757;
-            text-align: center;
-        }
-
-        .Cumple-link:hover {
-            transform: scale(1.05);
-            background: linear-gradient(135deg, #ff4757, #ff6b6b, #ff8e8e);
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
-        }
-
-        .Cumple-link::before {
-            content: "🎁 ";
-            margin-right: 8px;
-            font-size: 18px;
-        }
-
-        .Cumple-link::after {
-            content: " 💝";
-            margin-left: 8px;
-            font-size: 18px;
-        }
-
-        .Mensaje-link {
-            display: inline-block;
-            padding: 15px 28px;
-            background: linear-gradient(135deg, #87CEEB, #B0E0E6, #E0F7FA);
-            color: #2c3e50;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            font-family: 'Georgia', serif;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
-            border-radius: 5px 5px 0 5px;
-            border: 2px solid #5D8AA8;
-            border-top: 15px solid #5D8AA8;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 85%, 0% 100%);
-            text-align: center;
-        }
-
-        .Mensaje-link:hover {
-            transform: scale(1.05);
-            background: linear-gradient(135deg, #5D8AA8, #87CEEB, #B0E0E6);
-            box-shadow: 0 8px 20px rgba(135, 206, 235, 0.6);
-            color: white;
-        }
-
-        .Mensaje-link::before {
-            content: "✉️ ";
-            margin-right: 5px;
-            font-size: 16px;
-        }
-
-        .Mensaje-link::after {
-            content: " 💌";
-            margin-left: 5px;
-            font-size: 16px;
-        }
-
-        .blackhole-link {
-            display: inline-block;
-            padding: 12px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8em;
-            color: #ff69b4;
-            text-decoration: none;
-            text-align: center;
-            line-height: 1.3;
-            background: radial-gradient(circle at center, #000 0%, #330033 30%, #660066 70%, #990099 100%);
-            border: none;
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 10;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3), inset 0 0 20px rgba(255, 20, 147, 0.2);
-            transition: all 0.5s ease;
-            animation: cosmic-pulse 4s infinite alternate;
-            overflow: hidden;
-        }
-
-        .blackhole-link:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 50px rgba(255, 105, 180, 0.6), inset 0 0 30px rgba(255, 20, 147, 0.4);
-        }
-
-        .blackhole-link::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg,
-                    transparent 0deg,
-                    #ff1493 60deg,
-                    #ff69b4 120deg,
-                    #ffb6c1 180deg,
-                    #ff69b4 240deg,
-                    #ff1493 300deg,
-                    transparent 360deg);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: scale(0.8);
-        }
-
-        .blackhole-link:hover::before {
-            opacity: 0.8;
-            transform: scale(1.2);
-            animation: vortex-spin 2s linear infinite;
-        }
-
-        @keyframes vortex-spin {
-            0% { transform: scale(1.2) rotate(0deg); }
-            100% { transform: scale(1.2) rotate(360deg); }
-        }
-
-        .blackhole-link::after {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, #000 0%, #ff1493 50%, transparent 100%);
-            z-index: 1;
-            opacity: 0;
-            transition: all 0.5s ease;
-            filter: blur(10px);
-        }
-
-        .blackhole-link:hover::after {
-            opacity: 0.6;
-            animation: absorb-pulse 1.5s infinite alternate;
-            transform: scale(1.1);
-        }
-
-        @keyframes absorb-pulse {
-            0% { transform: scale(1); opacity: 0.4; }
-            100% { transform: scale(1.2); opacity: 0.8; }
-        }
-
-        @keyframes cosmic-pulse {
-            0% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.2), inset 0 0 15px rgba(255, 20, 147, 0.1); }
-            100% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.5), inset 0 0 25px rgba(255, 20, 147, 0.3); }
-        }
-
-        .teamo-link {
-            display: inline-block;
-            width: 55px;
-            height: 55px;
-            background: #ff1744;
-            clip-path: path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z');
-            animation: cambioColores 3s infinite alternate;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .teamo-link::after {
-            content: '❤️';
-            color: white;
-            font-size: 22px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .teamo-link:hover {
-            transform: scale(1.2);
-            animation: cambioColores 1s infinite alternate;
-        }
-
-        @keyframes cambioColores {
-            0% { background: #ff1744; box-shadow: 0 0 15px #ff1744; }
-            20% { background: #f50057; box-shadow: 0 0 15px #f50057; }
-            40% { background: #d5006a; box-shadow: 0 0 15px #d5006a; }
-            60% { background: #aa00ff; box-shadow: 0 0 15px #aa00ff; }
-            80% { background: #6200ea; box-shadow: 0 0 15px #6200ea; }
-            100% { background: #304ffe; box-shadow: 0 0 20px #304ffe; }
-        }
-
-        .mensajeocult {
-            display: inline-block;
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(135deg, #9c27b0, #673ab7, #3f51b5);
-            clip-path: path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z');
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            animation: aparecerDesaparecer 4s infinite;
-        }
-
-        @keyframes aparecerDesaparecer {
-            0% { opacity: 0; transform: scale(0.5); }
-            20% { opacity: 1; transform: scale(1); }
-            40% { opacity: 1; transform: scale(1.1); }
-            60% { opacity: 1; transform: scale(1); }
-            80% { opacity: 0.5; transform: scale(0.8); }
-            100% { opacity: 0; transform: scale(0.5); }
-        }
-
-        .mensajeocult::after {
-            content: '💌';
-            position: absolute;
-            font-size: 24px;
-            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
-            animation: flotar 2s ease-in-out infinite;
-        }
-
-        @keyframes flotar {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .mensajeocult::before {
-            content: 'Mensaje Oculto';
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 10px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .mensajeocult:hover::before {
-            opacity: 1;
-        }
-
-        .mensajeocult:hover {
-            animation: none;
-            opacity: 1 !important;
-            transform: scale(1.2);
-            box-shadow: 0 0 30px rgba(156, 39, 176, 0.8);
-        }
-
-        .libroA-simple {
-            display: inline-block;
-            width: 55px;
-            height: 55px;
-            background: #8B4513;
-            border-radius: 5px;
-            border-left: 8px solid #A0522D;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .libroA-simple span {
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .libroA-simple:hover {
-            transform: scale(1.1);
-            background: #9C5315;
-        }
-
-        .artemis-11 {
-            display: inline-block;
-            width: 45px;
-            height: 80px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            animation: flotarCohete 3s ease-in-out infinite;
-            position: relative;
-        }
-
-        .artemis-11::before {
-            content: '';
-            position: absolute;
-            width: 26px;
-            height: 52px;
-            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
-            border-radius: 13px 13px 4px 4px;
-            left: 9px;
-            top: 0;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .artemis-11::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 13px solid transparent;
-            border-right: 13px solid transparent;
-            border-bottom: 18px solid #f44336;
-            left: 9px;
-            top: -12px;
-            transform: rotate(180deg);
-        }
-
-        .artemis-11 .ventana {
-            position: absolute;
-            width: 13px;
-            height: 13px;
-            background: #4fc3f7;
-            border-radius: 50%;
-            left: 15px;
-            top: 17px;
-            border: 2px solid #ffffff;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-            animation: parpadear 2s ease-in-out infinite;
-        }
-
-        .artemis-11 .ala-izquierda {
-            position: absolute;
-            width: 12px;
-            height: 16px;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            border-radius: 0 0 0 8px;
-            left: 0;
-            bottom: 4px;
-            transform: skewX(20deg);
-        }
-
-        .artemis-11 .ala-derecha {
-            position: absolute;
-            width: 12px;
-            height: 16px;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            border-radius: 0 0 8px 0;
-            right: 0;
-            bottom: 4px;
-            transform: skewX(-20deg);
-        }
-
-        .artemis-11 .llama {
-            position: absolute;
-            width: 10px;
-            height: 12px;
-            background: linear-gradient(135deg, #ff9800, #ff5722, #f44336);
-            border-radius: 0 0 4px 4px;
-            left: 17px;
-            bottom: -10px;
-            animation: fuego 0.3s ease-in-out infinite alternate;
-        }
-
-        .artemis-11 .llama::before {
-            content: '';
-            position: absolute;
-            width: 6px;
-            height: 8px;
-            background: #ffeb3b;
-            border-radius: 0 0 2px 2px;
-            left: 2px;
-            bottom: -4px;
-            animation: fuego 0.2s ease-in-out infinite alternate;
-        }
-
-        .artemis-11 span {
-            position: absolute;
-            bottom: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Orbitron', monospace;
-            font-size: 8px;
-            font-weight: bold;
-            color: #ff9800;
-            text-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
-            white-space: nowrap;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 2px 5px;
-            border-radius: 8px;
-            letter-spacing: 1px;
-        }
-
-        .artemis-11:hover {
-            animation: despegar 0.5s ease-in-out forwards;
-        }
-
-        @keyframes flotarCohete {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        @keyframes fuego {
-            0% { height: 10px; opacity: 0.8; }
-            100% { height: 16px; opacity: 1; }
-        }
-
-        @keyframes parpadear {
-            0%, 100% { background: #4fc3f7; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3); }
-            50% { background: #81d4fa; box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 5px #4fc3f7; }
-        }
-
-        @keyframes despegar {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-40px); opacity: 0; }
-        }
-
-        .rompecabeza {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            animation: flotarPuzzle 4s ease-in-out infinite;
-            position: relative;
-        }
-
-        .rompecabeza .pieza {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffb6b6);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .rompecabeza .pieza::before {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: inherit;
-            border-radius: 50%;
-            top: -8px;
-            left: 22px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .rompecabeza .pieza::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: inherit;
-            border-radius: 50%;
-            bottom: -8px;
-            right: 22px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .rompecabeza .hueco {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background: transparent;
-            border-radius: 50%;
-            box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.5);
-            pointer-events: none;
-        }
-
-        .rompecabeza .hueco-1 {
-            top: 22px;
-            left: -7px;
-        }
-
-        .rompecabeza .hueco-2 {
-            bottom: 22px;
-            right: -7px;
-        }
-
-        .rompecabeza .corazon-puzzle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            animation: latidoPuzzle 1.5s ease-in-out infinite;
-            z-index: 2;
-        }
-
-        .rompecabeza span {
-            position: absolute;
-            bottom: -26px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Georgia', serif;
-            font-size: 9px;
-            font-weight: bold;
-            color: #ff6b6b;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            white-space: nowrap;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2px 6px;
-            border-radius: 15px;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .rompecabeza:hover {
-            transform: scale(1.1);
-        }
-
-        .rompecabeza:hover .pieza {
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
-            background: linear-gradient(135deg, #ff5252, #ff6b6b, #ff8e8e);
-        }
-
-        .rompecabeza:hover .corazon-puzzle {
-            animation: latidoPuzzle 0.8s ease-in-out infinite;
-        }
-
-        @keyframes flotarPuzzle {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        @keyframes latidoPuzzle {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        .saturno-a {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            animation: flotarSaturno 4s ease-in-out infinite;
-            position: relative;
-        }
-
-        .saturno-a .planeta {
-            position: absolute;
-            width: 38px;
-            height: 38px;
-            background: radial-gradient(circle at 30% 30%, #f5c542, #e6a817, #d4920a);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: rotarPlaneta 8s linear infinite;
-        }
-
-        .saturno-a .anillo {
-            position: absolute;
-            width: 65px;
-            height: 20px;
-            border: 3px solid rgba(255, 215, 100, 0.8);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            background: transparent;
-            pointer-events: none;
-        }
-
-        .saturno-a .anillo-atras {
-            position: absolute;
-            width: 65px;
-            height: 20px;
-            border: 3px solid rgba(255, 215, 100, 0.6);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg);
-            background: transparent;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .saturno-a .corazon-saturno {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-            z-index: 2;
-            animation: latidoSaturno 1.5s ease-in-out infinite;
-            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-        }
-
-        .saturno-a span {
-            position: absolute;
-            bottom: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Orbitron', monospace;
-            font-size: 8px;
-            font-weight: bold;
-            color: #d4920a;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            white-space: nowrap;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 2px 6px;
-            border-radius: 15px;
-            letter-spacing: 1px;
-            backdrop-filter: blur(5px);
-        }
-
-        .saturno-a:hover {
-            transform: scale(1.15);
-        }
-
-        .saturno-a:hover .planeta {
-            box-shadow: 0 0 20px rgba(230, 168, 23, 0.6);
-            animation: rotarPlaneta 4s linear infinite;
-        }
-
-        .saturno-a:hover .anillo {
-            border-color: rgba(255, 215, 100, 1);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-        }
-
-        .saturno-a:hover .corazon-saturno {
-            animation: latidoSaturno 0.8s ease-in-out infinite;
-        }
-
-        @keyframes flotarSaturno {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        @keyframes rotarPlaneta {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes latidoSaturno {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.3); }
-        }
-
-        /* ===== ENLACE DE GALAXIA ===== */
-        .galaxia-link {
-            display: inline-block;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #0c0033, #1a004d, #2d0066, #4d0099);
-            color: #ff69b4;
-            text-decoration: none;
-            border-radius: 15px;
-            font-family: 'Georgia', serif;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.2), inset 0 0 30px rgba(255, 105, 180, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 105, 180, 0.3);
-            position: relative;
-            overflow: hidden;
-            animation: galaxiaBrillo 3s ease-in-out infinite alternate;
-            cursor: pointer;
-        }
-
-        .galaxia-link:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 50px rgba(255, 105, 180, 0.4), inset 0 0 50px rgba(255, 105, 180, 0.2);
-            border-color: rgba(255, 105, 180, 0.8);
-        }
-
-        @keyframes galaxiaBrillo {
-            0% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.1), inset 0 0 20px rgba(255, 105, 180, 0.05); }
-            100% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.3), inset 0 0 40px rgba(255, 105, 180, 0.15); }
-        }
-
-        .galaxia-link::before {
-            content: '✨';
-            margin-right: 8px;
-        }
-
-        .galaxia-link::after {
-            content: ' ✨';
-            margin-left: 8px;
-        }
-
-        .galaxia-link .corazon-galaxia {
-            display: inline-block;
-            animation: latidoGalaxia 1.5s ease-in-out infinite;
-        }
-
-        @keyframes latidoGalaxia {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        /* ===== ANIMACIONES BASE ===== */
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.05); }
-            50% { transform: scale(1.15); }
-            75% { transform: scale(1.05); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.9; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-50px) rotate(0deg) scale(0.5); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(100vh) rotate(360deg) scale(1); opacity: 0; }
-        }
-
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translate(-50%, -40%); }
-            100% { opacity: 1; transform: translate(-50%, -50%); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        /* ===== EFECTOS ADICIONALES ===== */
-        .firework-particle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 5;
-            animation: firework-anim 1s forwards;
-        }
-
-        @keyframes firework-anim {
-            0% { transform: translate(0, 0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-        }
-
-        .libroA-particle {
-            position: fixed;
-            pointer-events: none;
-            z-index: 181;
-            font-family: 'Georgia', serif;
-            font-weight: bold;
-            opacity: 0;
-            animation: volarLetra 4s ease-out forwards;
-        }
-
-        @keyframes volarLetra {
-            0% { opacity: 0; transform: translate(0, 0) scale(0.5) rotate(0deg); }
-            20% { opacity: 1; }
-            100% { opacity: 0; transform: translate(calc(var(--tx) * 100px), calc(var(--ty) * 100px)) scale(1.5) rotate(720deg); }
-        }
-
-        .estrella {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 146;
-            animation: estrellaAnim 1s ease-out forwards;
-        }
-
-        @keyframes estrellaAnim {
-            0% { opacity: 1; transform: translate(0, 0) scale(1); }
-            100% { opacity: 0; transform: translate(calc(var(--tx) * 50px), calc(var(--ty) * 50px)) scale(0); }
-        }
-
-        .pieza-flotante {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            pointer-events: none;
-            z-index: 176;
-            opacity: 0;
-            animation: flotarPiezaAnim 3s ease-out forwards;
-        }
-
-        @keyframes flotarPiezaAnim {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.6; }
-            100% { transform: translate(calc(var(--tx) * 60px), calc(var(--ty) * 60px)) rotate(360deg); opacity: 0; }
-        }
-
-        .estrella-saturno {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #ffeb3b;
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-            animation: brillarEstrella 3s ease-in-out infinite;
-        }
-
-        @keyframes brillarEstrella {
-            0%, 100% { opacity: 0; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
-        }
-
-        /* ===== IMÁGENES EXPANDIBLES ===== */
-        .image-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            background-color: rgba(0, 0, 0, 0.8);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .image-container.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .expanded-image {
-            max-width: 90%;
-            max-height: 90%;
-            border: 5px solid white;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-            transform: scale(0.9);
-            transition: transform 0.5s ease;
-            object-fit: contain;
-            border-radius: 5px;
-        }
-
-        .image-container.active .expanded-image {
-            transform: scale(1);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-            z-index: 11;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
-
-        .close-btn:hover {
-            transform: rotate(90deg);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 992px) {
-            .book { width: 98%; height: 85vh; max-height: 700px; }
-            .links-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .page-title { font-size: 1.8rem; }
-            .nav-controls { padding: 10px 18px; gap: 12px; bottom: 20px; }
-            .nav-btn { padding: 8px 16px; font-size: 14px; min-width: 70px; }
-            .heart-container { width: 200px; height: 200px; }
-            .heart { width: 100px; height: 90px; }
-            .heart::before, .heart::after { width: 52px; height: 80px; }
-            .heart::before { left: 50px; }
-            .initial-message { font-size: 20px; }
-            .main-message { font-size: 16px; padding: 20px; max-width: 450px; }
-            .signature { font-size: 18px; }
-            .romantic-phrase { width: 180px; font-size: 14px; padding: 12px; }
-            .blackhole-link { width: 120px; height: 120px; font-size: 0.7em; }
-            .game-link-container { width: 220px; height: 85px; }
-            .romantic-game-link .link-text { font-size: 18px; }
-            .romantic-game-link .link-subtext { font-size: 10px; }
-            .proximamente-title { font-size: 3rem; }
-            .proximamente-sub { font-size: 1.2rem; }
-            .artemis-11, .rompecabeza, .saturno-a { transform: scale(0.8); }
-            .artemis-11:hover, .rompecabeza:hover, .saturno-a:hover { transform: scale(0.9); }
-            .cubo-link { width: 80px; height: 80px; }
-            .cubo .cara { width: 65px; height: 65px; font-size: 2rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(32px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(32px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(32px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(32px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(32px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(32px); }
-        }
-
-        @media (max-width: 768px) {
-            .book { height: 80vh; max-height: 600px; padding: 10px; }
-            .page { padding: 15px; }
-            .links-grid { grid-template-columns: 1fr; gap: 12px; max-width: 350px; }
-            .page-title { font-size: 1.4rem; margin-bottom: 5px; }
-            .nav-controls { padding: 8px 14px; gap: 8px; bottom: 15px; border-radius: 30px; }
-            .nav-btn { padding: 6px 12px; font-size: 12px; min-width: 55px; }
-            .page-indicator { font-size: 12px; min-width: 50px; }
-            .heart-container { width: 160px; height: 160px; }
-            .heart { width: 80px; height: 72px; }
-            .heart::before, .heart::after { width: 42px; height: 64px; }
-            .heart::before { left: 40px; }
-            .initial-message { font-size: 16px; }
-            .main-message { font-size: 14px; padding: 15px; max-width: 350px; }
-            .signature { font-size: 16px; }
-            .romantic-phrase { width: 150px; font-size: 12px; padding: 10px; }
-            .game-link-container { width: 200px; height: 75px; }
-            .romantic-game-link .link-text { font-size: 16px; }
-            .romantic-game-link .link-subtext { font-size: 9px; }
-            .blackhole-link { width: 100px; height: 100px; font-size: 0.6em; }
-            .proximamente-title { font-size: 2.5rem; }
-            .proximamente-sub { font-size: 1rem; padding: 0 20px; }
-            .Cumple-link { padding: 12px 20px; font-size: 14px; }
-            .Mensaje-link { padding: 12px 20px; font-size: 12px; border-top: 12px solid #5D8AA8; }
-            .anivermes-link { padding: 10px 18px; font-size: 12px; }
-            .fancy-link { padding: 8px 15px; font-size: 0.8em; }
-            .heart-link { padding: 8px 15px; font-size: 14px; }
-            .floating-promise-btn { padding: 10px 20px; font-size: 1rem; }
-            .partic-link { padding: 8px 15px; font-size: 12px; }
-            .flower-link { padding: 8px 15px; font-size: 12px; }
-            .teamo-link { width: 45px; height: 45px; }
-            .teamo-link::after { font-size: 18px; }
-            .mensajeocult { width: 45px; height: 45px; }
-            .mensajeocult::after { font-size: 20px; }
-            .libroA-simple { width: 45px; height: 45px; }
-            .artemis-11, .rompecabeza, .saturno-a { transform: scale(0.7); }
-            .artemis-11:hover, .rompecabeza:hover, .saturno-a:hover { transform: scale(0.8); }
-            .galaxia-link { padding: 12px 20px; font-size: 14px; }
-            .cubo-link { width: 70px; height: 70px; }
-            .cubo .cara { width: 55px; height: 55px; font-size: 1.6rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(28px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(28px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(28px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(28px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(28px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(28px); }
-            .cubo-texto { font-size: 0.7rem; bottom: -30px; }
-            .pendiente-item { min-height: 80px; padding: 15px; }
-            .pendiente-corazon { font-size: 2rem; }
-            .pendiente-corazon.flor { font-size: 2.5rem; }
-            .pendiente-texto { font-size: 0.8rem; }
-            .pendiente-subtexto { font-size: 0.7rem; }
-        }
-
-        @media (max-width: 480px) {
-            .book { height: 75vh; max-height: 500px; padding: 5px; }
-            .page { padding: 10px; }
-            .links-grid { max-width: 280px; gap: 10px; }
-            .page-title { font-size: 1.2rem; }
-            .heart-container { width: 130px; height: 130px; }
-            .heart { width: 65px; height: 58px; }
-            .heart::before, .heart::after { width: 34px; height: 52px; }
-            .heart::before { left: 32px; }
-            .initial-message { font-size: 14px; }
-            .main-message { font-size: 12px; padding: 12px; max-width: 280px; }
-            .signature { font-size: 14px; }
-            .romantic-phrase { width: 120px; font-size: 10px; padding: 8px; }
-            .nav-controls { padding: 6px 10px; gap: 5px; bottom: 10px; }
-            .nav-btn { padding: 4px 10px; font-size: 10px; min-width: 45px; }
-            .page-indicator { font-size: 10px; min-width: 40px; }
-            .proximamente-title { font-size: 2rem; }
-            .proximamente-sub { font-size: 0.9rem; }
-            .game-link-container { width: 180px; height: 65px; }
-            .romantic-game-link .link-text { font-size: 14px; }
-            .romantic-game-link .link-subtext { font-size: 8px; }
-            .blackhole-link { width: 80px; height: 80px; font-size: 0.5em; }
-            .galaxia-link { padding: 10px 15px; font-size: 12px; }
-            .cubo-link { width: 60px; height: 60px; }
-            .cubo .cara { width: 45px; height: 45px; font-size: 1.2rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(22px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(22px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(22px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(22px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(22px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(22px); }
-            .cubo-texto { font-size: 0.6rem; bottom: -25px; }
-            .pendiente-item { min-height: 70px; padding: 12px; }
-            .pendiente-corazon { font-size: 1.8rem; }
-            .pendiente-corazon.flor { font-size: 2rem; }
-            .pendiente-texto { font-size: 0.7rem; }
-            .pendiente-subtexto { font-size: 0.6rem; }
+            color: #ff0077;
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== CONTENEDOR DEL LIBRO ===== -->
-    <div class="book-wrapper">
-        <div class="book" id="book">
+    <canvas id="cv"></canvas>
+    <div id="love-message">💖 Para ti, con amor 💖</div>
 
-            <!-- ===== HOJA 0: PORTADA ===== -->
-            <div class="page active" id="page-0" data-index="0">
-                <div class="page-background bg-portada"></div>
-                <div class="page-content">
-                    <div class="heart-container">
-                        <div class="heart"></div>
-                        <div class="initial-message">Feliz Aniversario <br>Mi vida</div>
-                    </div>
-                    <div class="falling-hearts">
-                        <span style="left: 5%; animation-delay: 0.5s;"></span>
-                        <span style="left: 15%; animation-delay: 1.5s;"></span>
-                        <span style="left: 25%; animation-delay: 2s;"></span>
-                        <span style="left: 35%; animation-delay: 3.5s;"></span>
-                        <span style="left: 45%; animation-delay: 1s;"></span>
-                        <span style="left: 55%; animation-delay: 2.5s;"></span>
-                        <span style="left: 65%; animation-delay: 0.8s;"></span>
-                        <span style="left: 75%; animation-delay: 3s;"></span>
-                        <span style="left: 85%; animation-delay: 1.8s;"></span>
-                        <span style="left: 95%; animation-delay: 4s;"></span>
-                    </div>
-                    <div class="main-message hidden" id="mainMessage">
-                        Mi vida, Mi amor, Mi princesa
-                        <br> Cada día a tu lado es lo que me mantiene en vida, todo tu ser y todos tus encantos.<br><br>
-                        Tú eres la luz que ilumina mis días con tu sonrisa,<br>
-                        la calma en mis tormentas y la razón de que mi corazón siga latiendo.<br><br>
-                        Mi vida, te haré ver cuánto anhelo y cuánto haré por que sigas a mi lado,<br>
-                        y no puedo esperar para descubrir qué más nos depara el futuro juntos.
-                        <div class="signature">Contigo siempre y para siempre, Cherie</div>
-                    </div>
-                    <div id="romantic-phrases-container"></div>
-                </div>
-            </div>
+    <div id="setup-form">
+        <h2 style="color: #ff0077; margin-bottom:10px;">💝 Crea tu Regalo Especial 💝</h2>
+        <div class="section-title">📸 1. Selecciona 6 Fotos</div>
+        <label class="upload-box" id="box-img" for="file-input"><span id="status-img">📁 Abrir Galería</span><input type="file" id="file-input" accept="image/*" multiple></label>
+        
+        <div class="section-title">🎵 2. Canción Sorpresa</div>
+        <button id="surprise-btn" class="btn-surprise">🎁 ¡Sorpresa!</button>
+        <div id="surprise-status" class="status-surprise">Haz clic para elegir una canción al azar</div>
+        
+        <button id="start-btn" class="btn">✨ CREAR MAGIA ✨</button>
+    </div>
 
-            <!-- ===== HOJA 1: AMOR Y PROMESAS ===== -->
-            <div class="page" id="page-1" data-index="1">
-                <div class="page-background bg-estrellas"></div>
-                <div class="page-content">
-                    <h2 class="page-title">✨ Amor y Promesas ✨</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="promesa.html" class="floating-promise-btn">Mi Promesa</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Carta.html" class="heart-link">Haz clic para ver algo especial</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="un-destello-de-mi-amor-por-ti.html" class="fancy-link">Un Destello de Mi Amor por Ti</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 2: JUEGOS Y DIVERSIÓN ===== -->
-            <div class="page" id="page-2" data-index="2">
-                <div class="page-background bg-galaxia"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🎮 Juegos y Diversión 🎮</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <div class="game-link-container">
-                                <canvas id="heartsCanvas"></canvas>
-                                <a href="love-game.html" class="romantic-game-link">
-                                    <span class="link-text">Es hora de jugar</span>
-                                    <span class="link-subtext">A romantic adventure</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="corazon_particulas.html" class="partic-link">Da click para ver las partículas</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="floresamarillas.html" class="flower-link">Ve crecer nuestro amor</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 3: REGALOS Y SORPRESAS ===== -->
-            <div class="page" id="page-3" data-index="3">
-                <div class="page-background bg-fuegos"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🎁 Regalos y Sorpresas 🎁</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="Cumpleaños.html" class="Cumple-link">Feliz cumpleaños</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="LoveCard.html" class="Mensaje-link">Una carta para ti</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="aniversarios.html" class="anivermes-link">Anivermeses</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 4: MISTERIO Y ESPACIO ===== -->
-            <div class="page" id="page-4" data-index="4">
-                <div class="page-background bg-espacio"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🌌 Misterio y Espacio 🌌</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="AgujerodeAmor.html" class="blackhole-link">Absorbiendo todo tu amor</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Te-Amo.html" class="teamo-link" title="Te amo"></a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Mensaje-Oculto-❤️.html" class="mensajeocult" title="❤️ Mensaje Oculto ❤️"></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 5: AVENTURA Y VIAJE ===== -->
-            <div class="page" id="page-5" data-index="5">
-                <div class="page-background bg-aurora"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🚀 Aventura y Viaje 🚀</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="Artemis.html" class="artemis-11" title="Artemis-11 - Viaje Espacial">
-                                <div class="ventana"></div>
-                                <div class="ala-izquierda"></div>
-                                <div class="ala-derecha"></div>
-                                <div class="llama"></div>
-                                <span>PROMETEO</span>
-                            </a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Puzzle-del-Amor.html" class="rompecabeza" title="Rompecabezas del Amor">
-                                <div class="pieza"></div>
-                                <div class="hueco hueco-1"></div>
-                                <div class="hueco hueco-2"></div>
-                                <div class="corazon-puzzle">❤️</div>
-                                <span>PUZZLE DEL AMOR</span>
-                            </a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Saturno-de-Amor.html" class="saturno-a" title="Saturno de Amor">
-                                <div class="anillo-atras"></div>
-                                <div class="planeta">
-                                    <div class="corazon-saturno">❤️</div>
-                                </div>
-                                <div class="anillo"></div>
-                                <span>SATURNO DE AMOR</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 6: RECUERDOS Y GALAXIA ===== -->
-            <div class="page" id="page-6" data-index="6">
-                <div class="page-background bg-arcoiris"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🌈 Recuerdos y Galaxia 🌈</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="mensaje-especial.html" style="display:inline-block; padding:10px 20px; background:#ff5252; color:white; text-decoration:none; border-radius:30px; font-weight:bold; box-shadow:0 4px 8px rgba(0,0,0,0.2); transition:all 0.3s ease; text-align:center;">Ver mensaje especial</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="para-ti.html" style="display:inline-block; padding:10px 20px; background:#ff5252; color:white; text-decoration:none; border-radius:30px; font-weight:bold; box-shadow:0 4px 8px rgba(0,0,0,0.2); transition:all 0.3s ease; text-align:center;">Para ti</a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Generador-de-Galaxia (1).html" class="galaxia-link">
-                                <span class="corazon-galaxia">❤️</span> Un corazón lleno de palabras por ti <span class="corazon-galaxia">❤️</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 7: CUBO DEL AMOR ===== -->
-            <div class="page" id="page-7" data-index="7">
-                <div class="page-background bg-cubo"></div>
-                <div class="page-content">
-                    <h2 class="page-title">🧊 Cubo del Amor 🧊</h2>
-                    <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="Cubo-del-Amor-❤️.html" class="cubo-link" title="Cubo del Amor">
-                                <div class="cubo">
-                                    <div class="cara cara-frontal">❤️</div>
-                                    <div class="cara cara-trasera">💕</div>
-                                    <div class="cara cara-izquierda">💖</div>
-                                    <div class="cara cara-derecha">💗</div>
-                                    <div class="cara cara-superior">💓</div>
-                                    <div class="cara cara-inferior">💝</div>
-                                </div>
-                                <span class="cubo-texto">CUBO DEL AMOR</span>
-                            </a>
-                        </div>
-                        <div class="link-wrapper">
-                            <a href="Libro-del-Amor.html" class="libroA-simple" style="display:flex; align-items:center; justify-content:center; width:55px; height:55px; background:#8B4513; border-radius:5px; border-left:8px solid #A0522D; text-decoration:none;">
-                                <span style="color:white; font-size:11px; font-weight:bold; background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px;">❤️</span>
-                            </a>
-                        </div>
-                        <div class="link-wrapper">
-                            <div class="pendiente-item">
-                                <span class="pendiente-corazon flor">♥</span>
-                                <span class="pendiente-texto">PENDIENTE</span>
-                                <span class="pendiente-subtexto">Próximamente...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== HOJA 8: PRÓXIMAMENTE ===== -->
-            <div class="page" id="page-8" data-index="8">
-                <div class="page-background bg-proximamente"></div>
-                <div class="page-content">
-                    <div class="proximamente-content">
-                        <div class="proximamente-corazones">💕</div>
-                        <div class="proximamente-title">✨ Próximamente ✨</div>
-                        <div class="proximamente-sub">
-                            Nuevas aventuras te esperan<br>
-                            <span style="font-size: 0.8em; opacity: 0.7;">Más amor, más magia, más momentos especiales</span>
-                        </div>
-                        <div style="display: flex; gap: 20px; font-size: 2.5rem; animation: latidoPuzzle 1.5s ease-in-out infinite;">
-                            <span>💖</span>
-                            <span style="animation-delay: 0.3s;">💗</span>
-                            <span style="animation-delay: 0.6s;">💕</span>
-                        </div>
-                        <div style="margin-top: 20px; color: rgba(255,255,255,0.5); font-size: 0.9rem; letter-spacing: 2px;">
-                            ❤️ Hasta pronto ❤️
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <div id="escena">
+        <div id="cubo">
+            <div class="cara f"><img id="img0"></div><div class="cara b"><img id="img1"></div>
+            <div class="cara r"><img id="img2"></div><div class="cara l"><img id="img3"></div>
+            <div class="cara u"><img id="img4"></div><div class="cara d"><img id="img5"></div>
         </div>
     </div>
 
-    <!-- ===== NAVEGACIÓN ===== -->
-    <div class="nav-controls">
-        <button class="nav-btn" id="prevPage" disabled>◀ Anterior</button>
-        <span class="page-indicator" id="pageIndicator">1 / 9</span>
-        <button class="nav-btn" id="nextPage">Siguiente ▶</button>
+    <audio id="audio-element" loop></audio>
+    
+    <div id="player">
+        <div class="player-inner">
+            <div class="vinyl" id="vinyl"><img id="vinyl-img" alt="cover"></div>
+            <button id="play-btn">▶</button>
+            <div class="track-info">
+                <div class="progress-area" id="progress-area"><div class="progress-bar" id="progress-bar"></div></div>
+                <div class="time-display"><span id="curr-time">0:00</span><span id="dur-time">0:00</span></div>
+            </div>
+            <div class="visualizer" id="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
     </div>
 
-    <!-- ===== IMÁGENES EXPANDIBLES ===== -->
-    <div class="image-container" id="imageContainer">
-        <span class="close-btn" id="closeBtn">&times;</span>
-        <img class="expanded-image" id="expandedImage" src="" alt="Nuestras fotos">
-    </div>
+    <button id="btn-download">💾 GUARDAR REGALO</button>
 
     <script>
-        // ==========================================
-        // 0. CONFIGURACIÓN DE PÁGINAS
-        // ==========================================
-        const pages = document.querySelectorAll('.page');
-        let currentPage = 0;
-        const totalPages = pages.length;
-
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        const indicator = document.getElementById('pageIndicator');
-
-        function updatePage() {
-            pages.forEach((page, index) => {
-                page.classList.remove('active', 'flipped');
-                if (index < currentPage) {
-                    page.classList.add('flipped');
-                } else if (index === currentPage) {
-                    page.classList.add('active');
-                }
-            });
-
-            indicator.textContent = `${currentPage + 1} / ${totalPages}`;
-            prevBtn.disabled = currentPage === 0;
-            nextBtn.disabled = currentPage === totalPages - 1;
-
-            triggerPageAnimations(currentPage);
-        }
-
-        function goToPage(index) {
-            if (index < 0 || index >= totalPages) return;
-            currentPage = index;
-            updatePage();
-        }
-
-        prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-        nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
-            if (e.key === 'ArrowRight') goToPage(currentPage + 1);
-        });
-
-        // ==========================================
-        // 1. FRASES ROMÁNTICAS (Portada)
-        // ==========================================
-        const romanticPhrases = [{
-            text: "Te amo demasiado, como para ver todos mis futuros junto a ti de la mejor manera, mi vida.",
-            style: {
-                top: '15%',
-                left: '8%',
-                backgroundColor: 'rgba(255, 235, 205, 0.9)',
-                border: '2px dashed #ff5252',
-                animation: 'float 4s ease-in-out infinite'
-            }
-        }, {
-            text: "Eres mi vida entera, la dueña de mis tierras, la reina de mi vida, mi princesa hermosa, Te amoooo.",
-            style: {
-                top: '70%',
-                right: '8%',
-                backgroundColor: 'rgba(230, 255, 230, 0.9)',
-                border: '2px dotted #4caf50',
-                transform: 'rotate(3deg)',
-                animation: 'float 5s ease-in-out infinite 1s'
-            }
-        }, {
-            text: "Eres mi ser perfecto lo que más necesitaba Cherie, contigo el mundo aunque difícil no será imposible.",
-            style: {
-                bottom: '15%',
-                left: '10%',
-                backgroundColor: 'rgba(240, 240, 255, 0.9)',
-                border: '2px solid #9c27b0',
-                transform: 'rotate(-2deg)',
-                animation: 'float 6s ease-in-out infinite 0.5s'
-            }
-        }, {
-            text: "Tu cuerpo me encanta, tenerte al lado de mi me alivia el alma.",
-            style: {
-                top: '25%',
-                right: '12%',
-                backgroundColor: 'rgba(255, 240, 240, 0.9)',
-                border: '2px wavy #ff9800',
-                animation: 'float 5.5s ease-in-out infinite 1.5s'
-            }
-        }, {
-            text: "Te amo demasiado como para decir que daría mi vida entera solo para ti.",
-            style: {
-                bottom: '25%',
-                right: '15%',
-                backgroundColor: 'rgba(255, 255, 240, 0.9)',
-                border: '2px double #2196f3',
-                transform: 'rotate(5deg)',
-                animation: 'float 4.5s ease-in-out infinite'
-            }
-        }, {
-            text: "Te amo mucho, me das tanta paz y alegría cuando estás conmigo.",
-            style: {
-                bottom: '15%',
-                left: '12%',
-                backgroundColor: 'rgba(240, 240, 255, 0.9)',
-                border: '2px solid #9c27b0',
-                transform: 'rotate(-2deg)',
-                animation: 'float 4s ease-in-out infinite 0.5s'
-            }
-        }, {
-            text: "Espera, olvidé besarte.",
-            style: {
-                bottom: '15%',
-                left: '12%',
-                backgroundColor: 'rgba(240, 240, 255, 0.9)',
-                border: '2px solid #9c27b0',
-                transform: 'rotate(-2deg)',
-                animation: 'float 7s ease-in-out infinite 1.5s'
-            }
-        }];
-
-        const container = document.getElementById('romantic-phrases-container');
-        if (container) {
-            romanticPhrases.forEach((phraseData, index) => {
-                const phraseElement = document.createElement('div');
-                phraseElement.className = 'romantic-phrase';
-                phraseElement.textContent = phraseData.text;
-
-                Object.entries(phraseData.style).forEach(([key, value]) => {
-                    phraseElement.style[key] = value;
-                });
-
-                phraseElement.style.position = 'absolute';
-                phraseElement.style.width = '200px';
-                phraseElement.style.padding = '15px';
-                phraseElement.style.borderRadius = '12px';
-                phraseElement.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                phraseElement.style.fontSize = '14px';
-                phraseElement.style.lineHeight = '1.4';
-                phraseElement.style.textAlign = 'center';
-                phraseElement.style.color = '#5d4037';
-                phraseElement.style.opacity = '0';
-                phraseElement.style.transform = 'scale(0.8)';
-                phraseElement.style.transition = 'all 1s ease';
-                phraseElement.style.zIndex = '5';
-
-                container.appendChild(phraseElement);
-
-                setTimeout(() => {
-                    phraseElement.classList.add('visible');
-                }, 8000 + index * 1000);
-
-                setTimeout(() => {
-                    phraseElement.classList.remove('visible');
-                    setTimeout(() => {
-                        phraseElement.classList.add('visible');
-                    }, 1500);
-                }, 15000 + index * 2000);
-            });
-        }
-
-        // ==========================================
-        // 2. IMÁGENES DE GOOGLE DRIVE
-        // ==========================================
-        const driveImageIds = [
-            '14QYvE5g32pzUBkBbTfSKrQU9Kfm6dnXH',
-            '14QnW74nMItiTg8ZFF7WtdLyxLugugrlT'
+        // --- TUS CANCIONES (Sorpresa) ---
+        const SONG_URLS = [
+            'https://voca.ro/13bZbGNbYCwL',
+            'https://files.catbox.moe/pgafel.mp3',
+            'https://voca.ro/1bHR9tEGL03i',
+            'https://files.catbox.moe/3py8bs.mp3'
         ];
 
-        const imageUrls = driveImageIds.map(id =>
-            `https://drive.google.com/uc?export=view&id=${id}`
-        );
+        const canvas = document.getElementById('cv'), ctx = canvas.getContext('2d');
+        const cubo = document.getElementById('cubo');
+        const audio = document.getElementById('audio-element');
+        const playBtn = document.getElementById('play-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressArea = document.getElementById('progress-area');
+        const currTime = document.getElementById('curr-time');
+        const durTime = document.getElementById('dur-time');
+        const vinyl = document.getElementById('vinyl');
+        const vinylImg = document.getElementById('vinyl-img');
+        const visualizer = document.getElementById('visualizer');
+        const surpriseBtn = document.getElementById('surprise-btn');
+        const surpriseStatus = document.getElementById('surprise-status');
 
-        let currentImageIndex = 0;
-        const imageContainer = document.getElementById('imageContainer');
-        const expandedImage = document.getElementById('expandedImage');
-        const closeBtn = document.getElementById('closeBtn');
+        let compressedImages = [], audioBase64 = "", particles = [];
+        let isDragging = false, rotX = -15, rotY = 15, lastX, lastY, vx = 0;
+        let imgReady = false, audReady = false;
+        let selectedSongUrl = '';
 
-        function showCurrentImage() {
-            if (imageUrls.length === 0) return;
+        // --- PARTÍCULAS ---
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Particle {
+            constructor() { this.init(); this.y = Math.random() * canvas.height; }
+            init() { this.x = Math.random() * canvas.width; this.y = canvas.height + 50; this.s = Math.random() * 15 + 10; this.v = Math.random() * 1.5 + 0.5; this.t = Math.random() > 0.5 ? '❤️' : '🌸'; this.o = Math.random() * 0.5 + 0.1; }
+            draw() {
+                this.x += vx * 0.4; this.y -= this.v; 
+                if(this.y < -50 || this.x < -50 || this.x > canvas.width + 50) this.init();
+                ctx.globalAlpha = this.o; ctx.font = `${this.s}px serif`; ctx.fillText(this.t, this.x, this.y);
+            }
+        }
+        for(let i=0; i<100; i++) particles.push(new Particle());
 
-            const url = imageUrls[currentImageIndex];
-            expandedImage.onload = function() {
-                imageContainer.classList.add('active');
-            };
-            expandedImage.onerror = function() {
-                advanceToNextImage();
-            };
-            expandedImage.src = url;
+        function loop() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            particles.forEach(p => p.draw());
+            if (!isDragging && document.getElementById('escena').style.display === 'block') { rotY += 0.2; vx *= 0.95; }
+            if (document.getElementById('escena').style.display === 'block') cubo.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+            
+            if(!audio.paused && audio.duration) {
+                const pct = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = `${pct}%`;
+                currTime.innerText = formatTime(audio.currentTime);
+            }
+            requestAnimationFrame(loop);
+        }
+        loop();
 
-            setTimeout(() => {
-                if (imageContainer.classList.contains('active')) {
-                    imageContainer.classList.remove('active');
-                    setTimeout(advanceToNextImage, 2000);
-                }
-            }, 15000);
+        // --- AUDIO UI ---
+        function formatTime(s) { const m = Math.floor(s/60), se = Math.floor(s%60); return m+":"+(se<10?'0'+se:se); }
+        function togglePlay() {
+            if(audio.paused) { audio.play(); playBtn.innerHTML = "⏸"; playBtn.classList.add('playing'); vinyl.classList.add('spinning'); visualizer.classList.add('playing'); }
+            else { audio.pause(); playBtn.innerHTML = "▶"; playBtn.classList.remove('playing'); vinyl.classList.remove('spinning'); visualizer.classList.remove('playing'); }
+        }
+        playBtn.addEventListener('click', togglePlay);
+        progressArea.addEventListener('click', (e) => { const w = progressArea.clientWidth; const cx = e.offsetX; const d = audio.duration; audio.currentTime = (cx / w) * d; });
+        audio.addEventListener('loadedmetadata', () => durTime.innerText = formatTime(audio.duration));
+        audio.addEventListener('ended', () => { playBtn.innerHTML = "▶"; playBtn.classList.remove('playing'); vinyl.classList.remove('spinning'); visualizer.classList.remove('playing'); });
+
+        // --- FUNCIÓN SORPRESA ---
+        function selectRandomSong() {
+            const randomIndex = Math.floor(Math.random() * SONG_URLS.length);
+            selectedSongUrl = SONG_URLS[randomIndex];
+            surpriseStatus.innerText = `🎵 Canción sorpresa lista (${randomIndex + 1}/${SONG_URLS.length})`;
+            surpriseStatus.style.color = '#00ff66';
+            audReady = true;
+            check();
         }
 
-        function advanceToNextImage() {
-            currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
-            showCurrentImage();
-        }
+        surpriseBtn.addEventListener('click', selectRandomSong);
 
-        closeBtn.addEventListener('click', () => {
-            imageContainer.classList.remove('active');
-            setTimeout(advanceToNextImage, 1000);
+        // --- ARCHIVOS (Solo imágenes) ---
+        function check() { if(imgReady && audReady) { const b = document.getElementById('start-btn'); b.style.opacity="1"; b.style.pointerEvents="all"; } }
+        document.getElementById('file-input').addEventListener('change', async (e) => {
+            if(e.target.files.length !== 6) return alert("Selecciona 6 fotos");
+            document.getElementById('status-img').innerText = "Procesando...";
+            compressedImages = [];
+            for(let f of e.target.files) compressedImages.push(await compress(f));
+            document.getElementById('status-img').innerText = "¡Fotos Listas!"; document.getElementById('box-img').classList.add('done'); imgReady = true; check();
         });
-
-        // ==========================================
-        // 3. ANIMACIONES INICIALES
-        // ==========================================
-        setTimeout(() => {
-            const initialMsg = document.querySelector('.initial-message');
-            if (initialMsg) {
-                initialMsg.style.animation = 'fadeOut 1s forwards';
-                setTimeout(() => {
-                    initialMsg.style.display = 'none';
-                }, 1000);
-            }
-        }, 3000);
-
-        setTimeout(() => {
-            const mainMsg = document.getElementById('mainMessage');
-            if (mainMsg) mainMsg.classList.remove('hidden');
-        }, 4000);
-
-        let hue = 0;
-        setInterval(() => {
-            hue = (hue + 0.5) % 360;
-            const portada = document.querySelector('.bg-portada');
-            if (portada) {
-                portada.style.background =
-                    `linear-gradient(135deg, hsl(${hue}, 100%, 95%) 0%, hsl(${hue}, 100%, 90%) 100%)`;
-            }
-        }, 100);
-
-        setTimeout(() => {
-            if (imageUrls.length > 0) {
-                showCurrentImage();
-            }
-        }, 6000);
-
-        // ==========================================
-        // 4. EFECTO FUEGOS ARTIFICIALES
-        // ==========================================
-        function createLinkFireworks(e) {
-            const link = e.target;
-            const rect = link.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const colors = ['#ff55ff', '#ff00ff', '#ff66aa', '#ff0088', '#ff3377'];
-
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 20 + Math.random() * 50;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-
-                particle.style.left = `${centerX}px`;
-                particle.style.top = `${centerY}px`;
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.setProperty('--tx', `${tx}px`);
-                particle.style.setProperty('--ty', `${ty}px`);
-
-                const size = 3 + Math.random() * 4;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-
-                document.body.appendChild(particle);
-
-                setTimeout(() => {
-                    particle.remove();
-                }, 1000);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const fancyLink = document.querySelector('.fancy-link');
-            if (fancyLink) {
-                fancyLink.addEventListener('mouseenter', createLinkFireworks);
-                fancyLink.addEventListener('touchstart', createLinkFireworks);
-            }
-        });
-
-        // ==========================================
-        // 5. CANVAS DE CORAZONES
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('heartsCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const container = document.querySelector('.game-link-container');
-
-            function resizeCanvas() {
-                canvas.width = container.offsetWidth;
-                canvas.height = container.offsetHeight;
-            }
-
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            const hearts = [];
-            const heartColors = ['#ff69b4', '#ff1493', '#db7093', '#ffb6c1', '#d23369'];
-
-            class Heart {
-                constructor() {
-                    this.reset();
-                    this.y = Math.random() * canvas.height;
-                }
-
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = -20;
-                    this.size = Math.random() * 12 + 4;
-                    this.speed = Math.random() * 2 + 1;
-                    this.color = heartColors[Math.floor(Math.random() * heartColors.length)];
-                    this.opacity = Math.random() * 0.6 + 0.4;
-                    this.wobble = Math.random() * 5;
-                    this.wobbleSpeed = Math.random() * 0.02 + 0.01;
-                    this.wobbleOffset = Math.random() * Math.PI * 2;
-                }
-
-                update() {
-                    this.y += this.speed;
-                    this.wobbleOffset += this.wobbleSpeed;
-                    this.x += Math.sin(this.wobbleOffset) * this.wobble * 0.5;
-
-                    if (this.y > canvas.height + 20) {
-                        this.reset();
-                    }
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fillStyle = this.color;
-
-                    ctx.beginPath();
-                    const topCurveHeight = this.size * 0.3;
-                    ctx.moveTo(this.x, this.y + topCurveHeight);
-                    ctx.bezierCurveTo(
-                        this.x, this.y,
-                        this.x - this.size / 2, this.y,
-                        this.x - this.size / 2, this.y + topCurveHeight
-                    );
-                    ctx.bezierCurveTo(
-                        this.x - this.size / 2, this.y + this.size,
-                        this.x, this.y + this.size,
-                        this.x, this.y + this.size - topCurveHeight
-                    );
-                    ctx.bezierCurveTo(
-                        this.x, this.y + this.size,
-                        this.x + this.size / 2, this.y + this.size,
-                        this.x + this.size / 2, this.y + topCurveHeight
-                    );
-                    ctx.bezierCurveTo(
-                        this.x + this.size / 2, this.y,
-                        this.x, this.y,
-                        this.x, this.y + topCurveHeight
-                    );
-
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            for (let i = 0; i < 12; i++) {
-                hearts.push(new Heart());
-            }
-
-            let animationId;
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                for (const heart of hearts) {
-                    heart.update();
-                    heart.draw();
-                }
-
-                animationId = requestAnimationFrame(animate);
-            }
-
-            animate();
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        if (!animationId) animate();
-                    } else {
-                        if (animationId) {
-                            cancelAnimationFrame(animationId);
-                            animationId = null;
-                        }
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            if (canvas) observer.observe(canvas.parentElement);
-        });
-
-        // ==========================================
-        // 6. LETRAS VOLADORAS DEL LIBRO
-        // ==========================================
-        function crearLetrasVoladoras() {
-            const libro = document.querySelector('.libroA-simple');
-            if (!libro) return;
-
-            const letras = ['❤️', 'A', 'M', 'O', 'R', '💕', 'Tú', 'Yo', 'Siempre', '💌'];
-
-            setInterval(() => {
-                const letra = document.createElement('div');
-                letra.className = 'libroA-particle';
-
-                const angulo = Math.random() * Math.PI * 2;
-                const distancia = 0.5 + Math.random() * 1.5;
-
-                const rect = libro.getBoundingClientRect();
-                letra.style.left = (rect.left + rect.width / 2) + 'px';
-                letra.style.top = (rect.top + rect.height / 2) + 'px';
-                letra.style.setProperty('--tx', Math.cos(angulo) * distancia);
-                letra.style.setProperty('--ty', Math.sin(angulo) * distancia);
-                letra.textContent = letras[Math.floor(Math.random() * letras.length)];
-
-                const colores = ['#DAA520', '#FFD700', '#8B4513', '#CD853F'];
-                letra.style.color = colores[Math.floor(Math.random() * colores.length)];
-                letra.style.fontSize = (12 + Math.random() * 20) + 'px';
-
-                document.body.appendChild(letra);
-
-                setTimeout(() => letra.remove(), 4000);
-            }, 500);
-        }
-
-        document.addEventListener('DOMContentLoaded', crearLetrasVoladoras);
-
-        // ==========================================
-        // 7. ESTRELLAS DEL COHETE
-        // ==========================================
-        function crearEstrellasCohete() {
-            const cohete = document.querySelector('.artemis-11');
-            if (!cohete) return;
-
-            cohete.addEventListener('mouseenter', function(e) {
-                for (let i = 0; i < 8; i++) {
-                    const estrella = document.createElement('div');
-                    estrella.className = 'estrella';
-
-                    const angulo = Math.random() * Math.PI * 2;
-                    const distancia = 0.5 + Math.random() * 1.5;
-
-                    const rect = this.getBoundingClientRect();
-                    estrella.style.left = (rect.left + rect.width / 2) + 'px';
-                    estrella.style.top = (rect.top + rect.height * 0.7) + 'px';
-                    estrella.style.setProperty('--tx', Math.cos(angulo) * distancia);
-                    estrella.style.setProperty('--ty', Math.sin(angulo) * distancia);
-
-                    const colores = ['#ffeb3b', '#ff9800', '#ff5722', '#ffffff'];
-                    estrella.style.background = colores[Math.floor(Math.random() * colores.length)];
-                    estrella.style.width = (2 + Math.random() * 3) + 'px';
-                    estrella.style.height = estrella.style.width;
-
-                    document.body.appendChild(estrella);
-
-                    setTimeout(() => estrella.remove(), 1000);
+        function compress(file) {
+            return new Promise((res) => {
+                const r = new FileReader(); r.readAsDataURL(file);
+                r.onload = (e) => {
+                    const i = new Image(); i.src = e.target.result;
+                    i.onload = () => { const c = document.createElement('canvas'); c.width = 500; c.height = 500; const x = c.getContext('2d'); const s = Math.max(500/i.width, 500/i.height); x.drawImage(i, (500-i.width*s)/2, (500-i.height*s)/2, i.width*s, i.height*s); res(c.toDataURL('image/jpeg', 0.7)); }
                 }
             });
         }
 
-        document.addEventListener('DOMContentLoaded', crearEstrellasCohete);
-
-        // ==========================================
-        // 8. PIEZAS FLOTANTES DEL PUZZLE
-        // ==========================================
-        function crearPiezasFlotantes() {
-            const puzzle = document.querySelector('.rompecabeza');
-            if (!puzzle) return;
-
-            setInterval(() => {
-                const piezaFlotante = document.createElement('div');
-                piezaFlotante.className = 'pieza-flotante';
-
-                const angulo = Math.random() * Math.PI * 2;
-                const distancia = 0.3 + Math.random() * 1;
-
-                const rect = puzzle.getBoundingClientRect();
-                piezaFlotante.style.left = (rect.left + rect.width / 2) + 'px';
-                piezaFlotante.style.top = (rect.top + rect.height / 2) + 'px';
-                piezaFlotante.style.setProperty('--tx', Math.cos(angulo) * distancia);
-                piezaFlotante.style.setProperty('--ty', Math.sin(angulo) * distancia);
-
-                const colores = ['#ff6b6b', '#ff8e8e', '#ffb6b6', '#ff5252'];
-                piezaFlotante.style.background =
-                    `linear-gradient(135deg, ${colores[Math.floor(Math.random() * colores.length)]}, ${colores[Math.floor(Math.random() * colores.length)]})`;
-
-                document.body.appendChild(piezaFlotante);
-
-                setTimeout(() => piezaFlotante.remove(), 3000);
-            }, 800);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            crearPiezasFlotantes();
-
-            const puzzle = document.querySelector('.rompecabeza');
-            if (puzzle) {
-                puzzle.addEventListener('click', function(e) {
-                    for (let i = 0; i < 5; i++) {
-                        const chispa = document.createElement('div');
-                        chispa.textContent = '💕';
-                        chispa.style.position = 'fixed';
-                        chispa.style.left = e.clientX + 'px';
-                        chispa.style.top = e.clientY + 'px';
-                        chispa.style.fontSize = '18px';
-                        chispa.style.pointerEvents = 'none';
-                        chispa.style.animation = 'flotarPieza 0.5s ease-out forwards';
-                        document.body.appendChild(chispa);
-
-                        setTimeout(() => chispa.remove(), 500);
-                    }
-                });
+        // --- INICIAR MAGIA ---
+        document.getElementById('start-btn').addEventListener('click', () => {
+            if (!selectedSongUrl) {
+                alert('Primero elige una canción sorpresa con el botón "¡Sorpresa!"');
+                return;
             }
+            compressedImages.forEach((s, i) => document.getElementById(`img${i}`).src = s);
+            vinylImg.src = compressedImages[0];
+            // Cargar la canción seleccionada
+            audio.src = selectedSongUrl;
+            
+            document.getElementById('setup-form').style.display = "none";
+            document.getElementById('escena').style.display = "block";
+            document.getElementById('btn-download').style.display = "block";
+            document.getElementById('love-message').style.display = "block";
+            document.getElementById('player').style.display = "block";
+            togglePlay(); 
         });
 
-        // ==========================================
-        // 9. ESTRELLAS DE SATURNO
-        // ==========================================
-        function crearEstrellasSaturno() {
-            const saturno = document.querySelector('.saturno-a');
-            if (!saturno) return;
+        // --- INTERACCIÓN 3D ---
+        const start = (e) => { isDragging = true; lastX = e.pageX || e.touches[0].pageX; lastY = e.pageY || e.touches[0].pageY; };
+        const end = () => { isDragging = false; };
+        const move = (e) => { if (!isDragging) return; const x = e.pageX || e.touches[0].pageX; const y = e.pageY || e.touches[0].pageY; vx = x - lastX; rotY += vx * 0.5; rotX -= (y - lastY) * 0.5; lastX = x; lastY = y; };
+        window.addEventListener('mousedown', start); window.addEventListener('touchstart', start);
+        window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
+        window.addEventListener('mouseup', end); window.addEventListener('touchend', end);
 
-            for (let i = 0; i < 8; i++) {
-                const estrella = document.createElement('div');
-                estrella.className = 'estrella-saturno';
-
-                const angulo = (i / 8) * Math.PI * 2;
-                const radio = 40;
-
-                estrella.style.left = `calc(50% + ${Math.cos(angulo) * radio}px)`;
-                estrella.style.top = `calc(50% + ${Math.sin(angulo) * radio}px)`;
-                estrella.style.animationDelay = `${i * 0.5}s`;
-
-                saturno.appendChild(estrella);
-            }
-
-            setInterval(() => {
-                const estrellaExtra = document.createElement('div');
-                estrellaExtra.className = 'estrella-saturno';
-
-                const angulo = Math.random() * Math.PI * 2;
-                const radio = 30 + Math.random() * 30;
-
-                estrellaExtra.style.left = `calc(50% + ${Math.cos(angulo) * radio}px)`;
-                estrellaExtra.style.top = `calc(50% + ${Math.sin(angulo) * radio}px)`;
-                estrellaExtra.style.animation = 'brillarEstrella 1.5s ease-in-out';
-
-                saturno.appendChild(estrellaExtra);
-
-                setTimeout(() => estrellaExtra.remove(), 1500);
-            }, 2000);
+        // --- DESCARGA ---
+        document.getElementById('btn-download').addEventListener('click', () => {
+            // Nota: Las canciones se descargarán desde las URLs originales, no se incrustan en el HTML.
+            const template = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💖 Para Ti con Amor 💖</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;500;700&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+        body{background:#000;color:white;font-family:'Montserrat',sans-serif;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;perspective:1200px}
+        canvas{position:fixed;inset:0;z-index:-1}
+        #msg{position:fixed;top:40px;font-family:'Dancing Script',cursive;font-size:2.8rem;color:#ff0077;text-shadow:0 0 20px #ff0077;animation:p 2s infinite;z-index:10;width:100%;text-align:center;}
+        @keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        #escena{width:260px;height:260px;margin:0}
+        #cubo{width:100%;height:100%;position:relative;transform-style:preserve-3d}
+        .cara{position:absolute;width:260px;height:260px;border:2px solid rgba(255,0,119,0.6);box-shadow:0 0 15px rgba(255,0,119,0.2);background:#000;display:flex;justify-content:center;align-items:center;overflow:hidden}
+        .cara img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+        .f{transform:rotateY(0deg) translateZ(130px)}.b{transform:rotateY(180deg) translateZ(130px)}.r{transform:rotateY(90deg) translateZ(130px)}.l{transform:rotateY(-90deg) translateZ(130px)}.u{transform:rotateX(90deg) translateZ(130px)}.d{transform:rotateX(-90deg) translateZ(130px)}
+        
+        /* PLAYER STYLES */
+        #pl{display:block;position:fixed;bottom:80px;width:95%;max-width:450px;padding:3px;border-radius:25px;overflow:hidden;z-index:100;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+        #pl::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,transparent,transparent,#ff0077);animation:rb 4s linear infinite;z-index:1}
+        @keyframes rb{100%{transform:rotate(360deg)}}
+        .pi{background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);width:100%;height:100%;border-radius:23px;display:flex;align-items:center;gap:15px;padding:12px 20px;position:relative;z-index:2}
+        
+        .vin{width:50px;height:50px;flex-shrink:0;border-radius:50%;border:3px solid #222;overflow:hidden;position:relative;box-shadow:0 0 10px rgba(255,255,255,0.1);background:#000}
+        .vin img{width:100%;height:100%;object-fit:cover}
+        .vin.sp{animation:sp 4s linear infinite;border-color:#ff0077;box-shadow:0 0 15px #ff0077}@keyframes sp{100%{transform:rotate(360deg)}}
+        #pb{background:white;color:#ff0077;border:none;width:45px;height:45px;flex-shrink:0;border-radius:50%;font-size:1.4rem;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow:0 0 20px rgba(255,255,255,0.4);transition:0.2s;padding-left:4px}
+        #pb.pg{padding-left:0;box-shadow:0 0 25px #ff0077;background:#ff0077;color:white}
+        .ti{flex-grow:1;display:flex;flex-direction:column;gap:6px}
+        .pa{width:100%;height:6px;background:rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;position:relative}
+        .bar{height:100%;width:0%;background:linear-gradient(90deg,#ff0077,#ff9900);border-radius:10px;position:relative;box-shadow:0 0 15px #ff0077}
+        .bar::after{content:'';position:absolute;right:-6px;top:-4px;width:14px;height:14px;background:white;border-radius:50%;box-shadow:0 0 10px rgba(255,255,255,0.9);transform:scale(0);transition:transform 0.2s}
+        .td{font-size:0.7rem;color:#aaa;font-weight:600;display:flex;justify-content:space-between;letter-spacing:1px}
+        .vz{display:flex;gap:3px;height:20px;align-items:flex-end}
+        .vzb{width:4px;background:#ff0077;border-radius:2px;height:3px;transition:0.1s}
+        .vz.pg .vzb{animation:bn 0.5s infinite ease-in-out alternate}
+        .vzb:nth-child(2){animation-delay:0.1s}.vzb:nth-child(3){animation-delay:0.2s}
+        @keyframes bn{0%{height:3px;opacity:0.5}100%{height:20px;opacity:1;box-shadow:0 0 10px #ff0077}}
+    </style>
+</head>
+<body>
+    <canvas id="cv"></canvas><div id="msg">💖 Para ti, con amor 💖</div>
+    <div id="escena"><div id="cubo">
+        <div class="cara f"><img src="${compressedImages[0]}"></div><div class="cara b"><img src="${compressedImages[1]}"></div><div class="cara r"><img src="${compressedImages[2]}"></div><div class="cara l"><img src="${compressedImages[3]}"></div><div class="cara u"><img src="${compressedImages[4]}"></div><div class="cara d"><img src="${compressedImages[5]}"></div>
+    </div></div>
+    <audio id="au" loop src="${selectedSongUrl}"></audio>
+    <div id="pl">
+        <div class="pi">
+            <div class="vin" id="vin"><img src="${compressedImages[0]}"></div>
+            <button id="pb">▶</button>
+            <div class="ti"><div class="pa" id="pa"><div class="bar" id="bar"></div></div><div class="td"><span id="ct">0:00</span><span id="dt">0:00</span></div></div>
+            <div class="vz" id="vz"><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div></div>
+        </div>
+    </div>
+    <script>
+        const c=document.getElementById('cv'),x=c.getContext('2d'),cb=document.getElementById('cubo'),au=document.getElementById('au'),pb=document.getElementById('pb'),bar=document.getElementById('bar'),pa=document.getElementById('pa'),ct=document.getElementById('ct'),dt=document.getElementById('dt'),vin=document.getElementById('vin'),vz=document.getElementById('vz');
+        let ps=[],id=false,rx=-15,ry=15,lx,ly,vx=0;
+        function rs(){c.width=window.innerWidth;c.height=window.innerHeight}window.addEventListener('resize',rs);rs();
+        class P{constructor(){this.i();this.y=Math.random()*c.height}i(){this.x=Math.random()*c.width;this.y=c.height+50;this.s=Math.random()*15+10;this.v=Math.random()*1.5+0.5;this.t=Math.random()>0.5?'❤️':'🌸';this.o=Math.random()*0.5+0.1}d(){this.x+=vx*0.4;this.y-=this.v;if(this.y<-50||this.x<-50||this.x>c.width+50)this.i();x.globalAlpha=this.o;x.font=this.s+"px serif";x.fillText(this.t,this.x,this.y)}}for(let i=0;i<100;i++)ps.push(new P());
+        function fmt(s){const m=Math.floor(s/60),se=Math.floor(s%60);return m+":"+(se<10?'0'+se:se)}
+        function an(){
+            x.clearRect(0,0,c.width,c.height);ps.forEach(p=>p.d());
+            if(!id){ry+=0.2;vx*=0.95} cb.style.transform="rotateX("+rx+"deg) rotateY("+ry+"deg)";
+            if(!au.paused){bar.style.width=(au.currentTime/au.duration)*100+"%";ct.innerText=fmt(au.currentTime)}
+            requestAnimationFrame(an)
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            crearEstrellasSaturno();
-
-            const saturno = document.querySelector('.saturno-a');
-            if (saturno) {
-                saturno.addEventListener('click', function(e) {
-                    for (let i = 0; i < 10; i++) {
-                        const particula = document.createElement('div');
-                        particula.textContent = ['❤️', '💕', '💖', '💗', '💓'][Math.floor(Math.random() * 5)];
-                        particula.style.position = 'fixed';
-                        particula.style.left = e.clientX + (Math.random() - 0.5) * 50 + 'px';
-                        particula.style.top = e.clientY + (Math.random() - 0.5) * 50 + 'px';
-                        particula.style.fontSize = (15 + Math.random() * 10) + 'px';
-                        particula.style.pointerEvents = 'none';
-                        particula.style.zIndex = '1000';
-                        particula.style.animation = 'flotarPieza 1s ease-out forwards';
-                        document.body.appendChild(particula);
-
-                        setTimeout(() => particula.remove(), 1000);
-                    }
-                });
-            }
+        au.addEventListener('loadedmetadata',()=>dt.innerText=fmt(au.duration));
+        function tgl(){if(au.paused){au.play();pb.innerText="⏸";pb.classList.add('pg');vin.classList.add('sp');vz.classList.add('pg')}else{au.pause();pb.innerText="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg')}}
+        pb.addEventListener('click',tgl);
+        pa.addEventListener('click',(e)=>{const w=pa.clientWidth,ck=e.offsetX,d=au.duration;au.currentTime=(ck/w)*d});
+        const st=(e)=>{id=true;lx=e.pageX||e.touches[0].pageX;ly=e.pageY||e.touches[0].pageY};const en=()=>{id=false};const mv=(e)=>{if(!id)return;let nx=e.pageX||e.touches[0].pageX,ny=e.pageY||e.touches[0].pageY;vx=nx-lx;ry+=vx*0.5;rx-=(ny-ly)*0.5;lx=nx;ly=ny};
+        window.addEventListener('mousedown',st);window.addEventListener('touchstart',st);window.addEventListener('mousemove',mv);window.addEventListener('touchmove',mv);window.addEventListener('mouseup',en);window.addEventListener('touchend',en);an();
+    <\/script>
+</body>
+</html>`;
+            const blob = new Blob([template], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "Cubo de Amor 💖.html";
+            link.click();
         });
-
-        // ==========================================
-        // 10. FUNCIONES PARA ANIMACIONES DE PÁGINA
-        // ==========================================
-        function triggerPageAnimations(pageIndex) {
-            if (pageIndex === 2) {
-                const canvas = document.getElementById('heartsCanvas');
-                if (canvas) {}
-            }
-            if (pageIndex === 8) {}
-        }
-
-        // ==========================================
-        // 11. INICIALIZAR
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePage();
-
-            const portada = document.getElementById('page-0');
-            if (portada) {
-                portada.addEventListener('click', function(e) {
-                    if (e.target.closest('a')) return;
-                    if (currentPage === 0) {
-                        goToPage(1);
-                    }
-                });
-            }
-        });
-
-        console.log('✨ Libro digital cargado correctamente ✨');
-        console.log(`📖 Total de páginas: ${totalPages}`);
-        console.log('🧊 Cubo del Amor agregado como subcarpeta 🧊');
-        console.log('💕 ¡Disfruta de tu libro del amor! 💕');
     </script>
-
 </body>
 </html>
