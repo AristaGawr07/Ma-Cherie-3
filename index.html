@@ -312,43 +312,6 @@
             100% { opacity: 0.7; transform: scale(1.1); }
         }
 
-        /* Cubo */
-        .bg-cubo {
-            background: linear-gradient(135deg, #0a0015 0%, #1a0033 30%, #2d004d 60%, #4d0099 100%);
-        }
-        .bg-cubo::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(100, 50, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(255, 200, 100, 0.1) 0%, transparent 70%);
-            animation: cuboBgGirar 15s linear infinite;
-        }
-        @keyframes cuboBgGirar {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.2); }
-        }
-        .bg-cubo::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-                radial-gradient(1px 1px at 30% 60%, #fff, transparent),
-                radial-gradient(1px 1px at 50% 10%, #fff, transparent),
-                radial-gradient(1px 1px at 70% 80%, #fff, transparent),
-                radial-gradient(1px 1px at 90% 40%, #fff, transparent),
-                radial-gradient(2px 2px at 15% 80%, #ff69b4, transparent),
-                radial-gradient(2px 2px at 85% 15%, #ff69b4, transparent);
-            background-size: 300px 300px;
-            animation: twinkle 3s ease-in-out infinite alternate;
-            opacity: 0.5;
-        }
-
         /* Próximamente */
         .bg-proximamente {
             background: linear-gradient(135deg, #1a0033 0%, #2d004d 30%, #4d0099 60%, #7b2fbe 100%);
@@ -496,262 +459,6 @@
             color: rgba(255, 255, 255, 0.5);
             font-size: 0.8rem;
             font-style: italic;
-        }
-
-        /* ===== ESTILO PARA CUBO DEL AMOR (BOTÓN) ===== */
-        .cubo-link {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            text-decoration: none;
-            position: relative;
-            perspective: 800px;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .cubo-link:hover {
-            transform: scale(1.1);
-        }
-
-        .cubo {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: cuboGirar 8s linear infinite;
-        }
-
-        .cubo-link:hover .cubo {
-            animation: cuboGirarRapido 3s linear infinite;
-        }
-
-        @keyframes cuboGirar {
-            0% { transform: rotateX(-20deg) rotateY(0deg); }
-            100% { transform: rotateX(-20deg) rotateY(360deg); }
-        }
-
-        @keyframes cuboGirarRapido {
-            0% { transform: rotateX(-20deg) rotateY(0deg) scale(1.1); }
-            100% { transform: rotateX(-20deg) rotateY(360deg) scale(1.1); }
-        }
-
-        .cubo .cara {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 2px solid rgba(255, 105, 180, 0.6);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            background: rgba(255, 105, 180, 0.15);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
-            left: 10px;
-            top: 10px;
-            backface-visibility: visible;
-            transition: all 0.3s ease;
-        }
-
-        .cubo .cara::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), rgba(255, 20, 147, 0.05));
-            pointer-events: none;
-        }
-
-        .cubo .cara:hover {
-            border-color: rgba(255, 105, 180, 0.9);
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
-        }
-
-        .cubo .cara-frontal {
-            transform: translateZ(40px);
-            background: rgba(255, 105, 180, 0.2);
-        }
-
-        .cubo .cara-trasera {
-            transform: rotateY(180deg) translateZ(40px);
-            background: rgba(255, 20, 147, 0.2);
-        }
-
-        .cubo .cara-izquierda {
-            transform: rotateY(-90deg) translateZ(40px);
-            background: rgba(200, 50, 255, 0.2);
-        }
-
-        .cubo .cara-derecha {
-            transform: rotateY(90deg) translateZ(40px);
-            background: rgba(50, 200, 255, 0.2);
-        }
-
-        .cubo .cara-superior {
-            transform: rotateX(90deg) translateZ(40px);
-            background: rgba(255, 200, 50, 0.2);
-        }
-
-        .cubo .cara-inferior {
-            transform: rotateX(-90deg) translateZ(40px);
-            background: rgba(50, 255, 200, 0.2);
-        }
-
-        .cubo-texto {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Georgia', serif;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-            letter-spacing: 1px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* ===== ESTILO PARA LA PÁGINA DEL CUBO (CONTENIDO) ===== */
-        .cubo-page-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            height: 100%;
-            z-index: 2;
-            position: relative;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .cubo-page-content .cubo-grande {
-            width: 200px;
-            height: 200px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: cuboGirarGrande 10s linear infinite;
-        }
-
-        @keyframes cuboGirarGrande {
-            0% { transform: rotateX(-25deg) rotateY(0deg); }
-            100% { transform: rotateX(-25deg) rotateY(360deg); }
-        }
-
-        .cubo-page-content .cubo-grande .cara-grande {
-            position: absolute;
-            width: 160px;
-            height: 160px;
-            border: 3px solid rgba(255, 105, 180, 0.8);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            background: rgba(255, 105, 180, 0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 40px rgba(255, 105, 180, 0.3);
-            left: 20px;
-            top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .cubo-page-content .cubo-grande .cara-grande::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 15px;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), rgba(255, 20, 147, 0.05));
-            pointer-events: none;
-        }
-
-        .cubo-page-content .cubo-grande .cara-frontal-grande {
-            transform: translateZ(80px);
-            background: rgba(255, 105, 180, 0.25);
-        }
-
-        .cubo-page-content .cubo-grande .cara-trasera-grande {
-            transform: rotateY(180deg) translateZ(80px);
-            background: rgba(255, 20, 147, 0.25);
-        }
-
-        .cubo-page-content .cubo-grande .cara-izquierda-grande {
-            transform: rotateY(-90deg) translateZ(80px);
-            background: rgba(200, 50, 255, 0.25);
-        }
-
-        .cubo-page-content .cubo-grande .cara-derecha-grande {
-            transform: rotateY(90deg) translateZ(80px);
-            background: rgba(50, 200, 255, 0.25);
-        }
-
-        .cubo-page-content .cubo-grande .cara-superior-grande {
-            transform: rotateX(90deg) translateZ(80px);
-            background: rgba(255, 200, 50, 0.25);
-        }
-
-        .cubo-page-content .cubo-grande .cara-inferior-grande {
-            transform: rotateX(-90deg) translateZ(80px);
-            background: rgba(50, 255, 200, 0.25);
-        }
-
-        .cubo-page-content .cubo-titulo {
-            font-size: 3rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
-            animation: tituloBrillo 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes tituloBrillo {
-            0% { transform: scale(1); filter: brightness(1); }
-            100% { transform: scale(1.05); filter: brightness(1.3); }
-        }
-
-        .cubo-page-content .cubo-descripcion {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
-            max-width: 600px;
-            line-height: 1.8;
-        }
-
-        .cubo-page-content .cubo-corazones {
-            font-size: 2.5rem;
-            animation: latidoPuzzle 1.5s ease-in-out infinite;
-            display: flex;
-            gap: 20px;
-        }
-
-        .cubo-page-content .btn-volver {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            font-family: 'Georgia', serif;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
-            margin-top: 20px;
-        }
-
-        .cubo-page-content .btn-volver:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(238, 90, 36, 0.5);
         }
 
         /* ===== PÁGINA DE PRÓXIMAMENTE ===== */
@@ -1880,7 +1587,7 @@
             50% { transform: translate(-50%, -50%) scale(1.3); }
         }
 
-        /* ===== ENLACE DE GALAXIA ===== */
+        /* ===== ENLACE DE GALAXIA (NUEVO) ===== */
         .galaxia-link {
             display: inline-block;
             padding: 15px 25px;
@@ -1930,6 +1637,72 @@
         @keyframes latidoGalaxia {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
+        }
+
+        /* ===== NUEVO ENLACE: CUBO DEL AMOR ===== */
+        .cubo-amor-link {
+            display: inline-block;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #ff1493, #ff6b6b, #ff1493);
+            background-size: 300% 300%;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
+            transition: all 0.4s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: cuboBrillo 3s ease-in-out infinite alternate;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .cubo-amor-link:hover {
+            transform: scale(1.10) rotate(2deg);
+            box-shadow: 0 0 60px rgba(255, 20, 147, 0.7), 0 0 120px rgba(255, 20, 147, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+            animation: cuboBrillo 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes cuboBrillo {
+            0% { background-position: 0% 50%; box-shadow: 0 0 20px rgba(255, 20, 147, 0.3); }
+            100% { background-position: 100% 50%; box-shadow: 0 0 50px rgba(255, 20, 147, 0.6); }
+        }
+
+        .cubo-amor-link::before {
+            content: '🔲';
+            margin-right: 8px;
+            display: inline-block;
+            animation: cuboGirar 4s linear infinite;
+        }
+
+        @keyframes cuboGirar {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .cubo-amor-link::after {
+            content: ' ❤️';
+            margin-left: 5px;
+            display: inline-block;
+            animation: latidoCubo 1s ease-in-out infinite;
+        }
+
+        @keyframes latidoCubo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .cubo-amor-link .texto-cubo {
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         /* ===== ANIMACIONES BASE ===== */
@@ -2117,23 +1890,7 @@
             .proximamente-sub { font-size: 1.2rem; }
             .artemis-11, .rompecabeza, .saturno-a { transform: scale(0.8); }
             .artemis-11:hover, .rompecabeza:hover, .saturno-a:hover { transform: scale(0.9); }
-            .cubo-link { width: 80px; height: 80px; }
-            .cubo .cara { width: 65px; height: 65px; font-size: 2rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(32px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(32px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(32px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(32px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(32px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(32px); }
-            .cubo-page-content .cubo-grande { width: 160px; height: 160px; }
-            .cubo-page-content .cubo-grande .cara-grande { width: 130px; height: 130px; font-size: 3rem; left: 15px; top: 15px; }
-            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(65px); }
-            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(65px); }
-            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(65px); }
-            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(65px); }
-            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(65px); }
-            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(65px); }
-            .cubo-page-content .cubo-titulo { font-size: 2.5rem; }
+            .cubo-amor-link { font-size: 14px; padding: 12px 16px; min-width: 120px; }
         }
 
         @media (max-width: 768px) {
@@ -2174,30 +1931,13 @@
             .artemis-11, .rompecabeza, .saturno-a { transform: scale(0.7); }
             .artemis-11:hover, .rompecabeza:hover, .saturno-a:hover { transform: scale(0.8); }
             .galaxia-link { padding: 12px 20px; font-size: 14px; }
-            .cubo-link { width: 70px; height: 70px; }
-            .cubo .cara { width: 55px; height: 55px; font-size: 1.6rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(28px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(28px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(28px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(28px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(28px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(28px); }
-            .cubo-texto { font-size: 0.7rem; bottom: -30px; }
-            .cubo-page-content .cubo-grande { width: 140px; height: 140px; }
-            .cubo-page-content .cubo-grande .cara-grande { width: 110px; height: 110px; font-size: 2.5rem; left: 15px; top: 15px; }
-            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(55px); }
-            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(55px); }
-            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(55px); }
-            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(55px); }
-            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(55px); }
-            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(55px); }
-            .cubo-page-content .cubo-titulo { font-size: 2rem; }
-            .cubo-page-content .cubo-descripcion { font-size: 1rem; }
             .pendiente-item { min-height: 80px; padding: 15px; }
             .pendiente-corazon { font-size: 2rem; }
             .pendiente-corazon.flor { font-size: 2.5rem; }
             .pendiente-texto { font-size: 0.8rem; }
             .pendiente-subtexto { font-size: 0.7rem; }
+            .cubo-amor-link { font-size: 12px; padding: 10px 14px; min-width: 100px; }
+            .cubo-amor-link::before { font-size: 14px; }
         }
 
         @media (max-width: 480px) {
@@ -2223,31 +1963,14 @@
             .romantic-game-link .link-subtext { font-size: 8px; }
             .blackhole-link { width: 80px; height: 80px; font-size: 0.5em; }
             .galaxia-link { padding: 10px 15px; font-size: 12px; }
-            .cubo-link { width: 60px; height: 60px; }
-            .cubo .cara { width: 45px; height: 45px; font-size: 1.2rem; left: 7px; top: 7px; }
-            .cubo .cara-frontal { transform: translateZ(22px); }
-            .cubo .cara-trasera { transform: rotateY(180deg) translateZ(22px); }
-            .cubo .cara-izquierda { transform: rotateY(-90deg) translateZ(22px); }
-            .cubo .cara-derecha { transform: rotateY(90deg) translateZ(22px); }
-            .cubo .cara-superior { transform: rotateX(90deg) translateZ(22px); }
-            .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(22px); }
-            .cubo-texto { font-size: 0.6rem; bottom: -25px; }
-            .cubo-page-content .cubo-grande { width: 120px; height: 120px; }
-            .cubo-page-content .cubo-grande .cara-grande { width: 90px; height: 90px; font-size: 2rem; left: 15px; top: 15px; }
-            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(45px); }
-            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(45px); }
-            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(45px); }
-            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(45px); }
-            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(45px); }
-            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(45px); }
-            .cubo-page-content .cubo-titulo { font-size: 1.8rem; }
-            .cubo-page-content .cubo-descripcion { font-size: 0.9rem; }
-            .cubo-page-content .btn-volver { padding: 10px 20px; font-size: 0.9rem; }
             .pendiente-item { min-height: 70px; padding: 12px; }
             .pendiente-corazon { font-size: 1.8rem; }
             .pendiente-corazon.flor { font-size: 2rem; }
             .pendiente-texto { font-size: 0.7rem; }
             .pendiente-subtexto { font-size: 0.6rem; }
+            .cubo-amor-link { font-size: 10px; padding: 8px 10px; min-width: 80px; }
+            .cubo-amor-link::before { font-size: 12px; margin-right: 4px; }
+            .cubo-amor-link::after { font-size: 12px; margin-left: 4px; }
         }
     </style>
 </head>
@@ -2406,6 +2129,12 @@
                                 <span>SATURNO DE AMOR</span>
                             </a>
                         </div>
+                        <!-- ===== NUEVO ENLACE: CUBO DEL AMOR ===== -->
+                        <div class="link-wrapper" style="grid-column: 1 / -1; margin-top: 5px;">
+                            <a href="Cubo-del-Amor-❤️.html" class="cubo-amor-link">
+                                <span class="texto-cubo">Cubo del Amor</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2431,29 +2160,23 @@
                 </div>
             </div>
 
-            <!-- ===== HOJA 7: CUBO DEL AMOR ===== -->
+            <!-- ===== HOJA 7: LIBRO Y PRÓXIMAMENTE ===== -->
             <div class="page" id="page-7" data-index="7">
-                <div class="page-background bg-cubo"></div>
+                <div class="page-background bg-atardecer"></div>
                 <div class="page-content">
-                    <h2 class="page-title">🧊 Cubo del Amor 🧊</h2>
+                    <h2 class="page-title" style="color:#5d4037; text-shadow:none;">📖 Libro y más... 📖</h2>
                     <div class="links-grid">
-                        <div class="link-wrapper">
-                            <a href="Cubo-del-Amor-❤️.html" class="cubo-link" title="Cubo del Amor">
-                                <div class="cubo">
-                                    <div class="cara cara-frontal">❤️</div>
-                                    <div class="cara cara-trasera">💕</div>
-                                    <div class="cara cara-izquierda">💖</div>
-                                    <div class="cara cara-derecha">💗</div>
-                                    <div class="cara cara-superior">💓</div>
-                                    <div class="cara cara-inferior">💝</div>
-                                </div>
-                                <span class="cubo-texto">CUBO DEL AMOR</span>
-                            </a>
-                        </div>
                         <div class="link-wrapper">
                             <a href="Libro-del-Amor.html" class="libroA-simple" style="display:flex; align-items:center; justify-content:center; width:55px; height:55px; background:#8B4513; border-radius:5px; border-left:8px solid #A0522D; text-decoration:none;">
                                 <span style="color:white; font-size:11px; font-weight:bold; background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px;">❤️</span>
                             </a>
+                        </div>
+                        <div class="link-wrapper">
+                            <div class="pendiente-item">
+                                <span class="pendiente-corazon">🌸</span>
+                                <span class="pendiente-texto">PENDIENTE</span>
+                                <span class="pendiente-subtexto">Próximamente...</span>
+                            </div>
                         </div>
                         <div class="link-wrapper">
                             <div class="pendiente-item">
@@ -3103,25 +2826,7 @@
         }
 
         // ==========================================
-        // 11. REDIRECCIÓN PARA EL CUBO DEL AMOR
-        // ==========================================
-        // Esta función maneja el clic en el enlace del Cubo del Amor
-        // y redirige a la página correspondiente
-        document.addEventListener('click', function(e) {
-            const cuboLink = e.target.closest('.cubo-link');
-            if (cuboLink) {
-                e.preventDefault();
-                // Crear una ventana o redirigir a la página del Cubo del Amor
-                // Como no tenemos un archivo separado, mostramos un modal o redirigimos
-                // a una versión embebida de la página del cubo
-                window.location.href = 'Cubo-del-Amor-❤️.html';
-                // Alternativa: mostrar un mensaje si el archivo no existe
-                // alert('🧊 Bienvenido al Cubo del Amor 🧊\n\nCrea el archivo Cubo-del-Amor-❤️.html para ver el contenido completo.');
-            }
-        });
-
-        // ==========================================
-        // 12. INICIALIZAR
+        // 11. INICIALIZAR
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             updatePage();
@@ -3135,14 +2840,11 @@
                     }
                 });
             }
-
-            // Verificar si la página actual es la del Cubo del Amor (redirigida)
-            // Si el archivo Cubo-del-Amor-❤️.html existe, se cargará normalmente
-            console.log('✨ Libro digital cargado correctamente ✨');
-            console.log(`📖 Total de páginas: ${totalPages}`);
-            console.log('🧊 Cubo del Amor: haz clic en el cubo para ir a la página');
-            console.log('💕 ¡Disfruta de tu libro del amor! 💕');
         });
+
+        console.log('✨ Libro digital cargado correctamente ✨');
+        console.log(`📖 Total de páginas: ${totalPages}`);
+        console.log('💕 ¡Disfruta de tu libro del amor! 💕');
     </script>
 
 </body>
