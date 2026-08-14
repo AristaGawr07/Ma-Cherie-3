@@ -235,6 +235,49 @@
             letter-spacing: 1px;
             font-weight: 300;
         }
+
+        .audio-error {
+            color: #ff4444;
+            font-size: 0.6rem;
+            text-align: center;
+            display: none;
+            margin-top: 2px;
+        }
+
+        /* Botón para cambiar canción */
+        #change-song-btn {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 4px;
+        }
+        #change-song-btn:hover {
+            background: rgba(255,0,119,0.3);
+            border-color: #ff0077;
+        }
+
+        /* Spinner de carga */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid #ff0077;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -301,6 +344,9 @@
             </div>
             
             <div class="song-title" id="song-title">🎵 Canción de amor</div>
+            <div class="audio-error" id="audio-error">⚠️ Error al cargar la canción. Intenta con otra.</div>
+            <div id="loading-spinner" class="loading-spinner"></div>
+            <button id="change-song-btn">🔄 Cambiar canción</button>
         </div>
     </div>
 
@@ -336,6 +382,9 @@
         const surpriseBtn = document.getElementById('surprise-btn');
         const surpriseStatus = document.getElementById('surprise-status');
         const songTitle = document.getElementById('song-title');
+        const audioError = document.getElementById('audio-error');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const changeSongBtn = document.getElementById('change-song-btn');
 
         // Controles de volumen
         const volDown = document.getElementById('vol-down');
@@ -344,12 +393,14 @@
         const volumeContainer = document.getElementById('volume-container');
         const volumeIcon = document.getElementById('volume-icon');
 
-        let compressedImages = [], audioBase64 = "", particles = [];
+        let compressedImages = [], particles = [];
         let isDragging = false, rotX = -15, rotY = 15, lastX, lastY, vx = 0;
         let imgReady = false, audReady = false;
         let selectedSongUrl = '';
         let selectedSongIndex = 0;
         let currentVolume = 1;
+        let isPlaying = false;
+        let audioLoaded = false;
 
         // --- PARTÍCULAS ---
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -384,18 +435,28 @@
         function formatTime(s) { const m = Math.floor(s/60), se = Math.floor(s%60); return m+":"+(se<10?'0'+se:se); }
         
         function togglePlay() {
+            if (!audioLoaded) {
+                // Intentar cargar de nuevo
+                loadAudio();
+                return;
+            }
             if(audio.paused) { 
-                audio.play(); 
+                audio.play().catch(() => {
+                    audioError.style.display = 'block';
+                    audioError.textContent = '⚠️ No se pudo reproducir. Intenta con otra canción.';
+                });
                 playBtn.innerHTML = "⏸"; 
                 playBtn.classList.add('playing'); 
                 vinyl.classList.add('spinning'); 
                 visualizer.classList.add('playing'); 
+                isPlaying = true;
             } else { 
                 audio.pause(); 
                 playBtn.innerHTML = "▶"; 
                 playBtn.classList.remove('playing'); 
                 vinyl.classList.remove('spinning'); 
                 visualizer.classList.remove('playing'); 
+                isPlaying = false;
             }
         }
         
@@ -409,55 +470,86 @@
             if(d) audio.currentTime = (cx / w) * d; 
         });
 
-        audio.addEventListener('loadedmetadata', () => {
-            durTime.innerText = formatTime(audio.duration);
-            volumeBar.style.width = '100%';
-            currentVolume = 1;
-            audio.volume = 1;
-            volumeIcon.textContent = '100%';
-        });
-        
-        audio.addEventListener('ended', () => { 
-            playBtn.innerHTML = "▶"; 
-            playBtn.classList.remove('playing'); 
-            vinyl.classList.remove('spinning'); 
-            visualizer.classList.remove('playing'); 
-        });
-
-        // --- Control de Volumen ---
-        function updateVolume(value) {
-            currentVolume = Math.max(0, Math.min(1, value));
-            audio.volume = currentVolume;
-            volumeBar.style.width = (currentVolume * 100) + '%';
-            volumeIcon.textContent = Math.round(currentVolume * 100) + '%';
+        // --- Cargar audio con manejo de errores ---
+        function loadAudio() {
+            if (!selectedSongUrl) return;
+            
+            audioError.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            audioLoaded = false;
+            
+            // Detener cualquier reproducción actual
+            audio.pause();
+            playBtn.innerHTML = "▶";
+            playBtn.classList.remove('playing');
+            vinyl.classList.remove('spinning');
+            visualizer.classList.remove('playing');
+            isPlaying = false;
+            
+            // Establecer la fuente
+            audio.src = selectedSongUrl;
+            audio.load();
+            
+            // Intentar reproducir automáticamente después de cargar
+            audio.onloadedmetadata = function() {
+                durTime.innerText = formatTime(audio.duration);
+                audioLoaded = true;
+                loadingSpinner.style.display = 'none';
+                audioError.style.display = 'none';
+                songTitle.textContent = SONG_NAMES[selectedSongIndex] || '🎵 Canción de amor';
+                console.log('✅ Canción cargada correctamente');
+                
+                // Reproducir automáticamente
+                setTimeout(() => {
+                    if (!isPlaying) {
+                        togglePlay();
+                    }
+                }, 500);
+            };
+            
+            audio.onerror = function(e) {
+                loadingSpinner.style.display = 'none';
+                audioError.style.display = 'block';
+                audioError.textContent = '⚠️ No se pudo cargar la canción. Haz clic en "Cambiar canción" para probar otra.';
+                console.error('❌ Error al cargar audio:', e);
+                audioLoaded = false;
+            };
         }
-
-        volDown.addEventListener('click', () => {
-            updateVolume(currentVolume - 0.1);
-        });
-
-        volUp.addEventListener('click', () => {
-            updateVolume(currentVolume + 0.1);
-        });
-
-        volumeContainer.addEventListener('click', (e) => {
-            const rect = volumeContainer.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width;
-            updateVolume(x);
-        });
 
         // --- FUNCIÓN SORPRESA ---
         function selectRandomSong() {
             selectedSongIndex = Math.floor(Math.random() * SONG_URLS.length);
             selectedSongUrl = SONG_URLS[selectedSongIndex];
-            surpriseStatus.innerText = `🎵 Canción sorpresa lista (${selectedSongIndex + 1}/${SONG_URLS.length})`;
+            surpriseStatus.innerText = `🎵 Canción seleccionada (${selectedSongIndex + 1}/${SONG_URLS.length})`;
             surpriseStatus.style.color = '#00ff66';
-            songTitle.textContent = SONG_NAMES[selectedSongIndex] || '🎵 Canción de amor';
+            songTitle.textContent = '🎵 Cargando...';
             audReady = true;
             check();
+            
+            // Pre-cargar el audio en segundo plano
+            const testAudio = new Audio();
+            testAudio.src = selectedSongUrl;
+            testAudio.onloadedmetadata = function() {
+                console.log('✅ Canción pre-cargada correctamente');
+                testAudio.src = '';
+            };
+            testAudio.onerror = function() {
+                console.warn('⚠️ Advertencia: La canción podría no cargarse correctamente');
+            };
+            setTimeout(() => {
+                testAudio.src = '';
+            }, 5000);
         }
 
         surpriseBtn.addEventListener('click', selectRandomSong);
+
+        // --- Cambiar canción (desde el reproductor) ---
+        changeSongBtn.addEventListener('click', function() {
+            selectRandomSong();
+            if (document.getElementById('escena').style.display === 'block') {
+                loadAudio();
+            }
+        });
 
         // --- ARCHIVOS (Solo imágenes) ---
         function check() { if(imgReady && audReady) { const b = document.getElementById('start-btn'); b.style.opacity="1"; b.style.pointerEvents="all"; } }
@@ -486,7 +578,6 @@
             }
             compressedImages.forEach((s, i) => document.getElementById(`img${i}`).src = s);
             vinylImg.src = compressedImages[0];
-            audio.src = selectedSongUrl;
             
             document.getElementById('setup-form').style.display = "none";
             document.getElementById('escena').style.display = "block";
@@ -494,13 +585,13 @@
             document.getElementById('btn-back').style.display = "block";
             document.getElementById('love-message').style.display = "block";
             document.getElementById('player').style.display = "block";
+            changeSongBtn.style.display = 'block';
             
             // Restaurar volumen
             audio.volume = currentVolume;
             
-            setTimeout(() => {
-                togglePlay();
-            }, 500);
+            // Cargar y reproducir audio
+            loadAudio();
         });
 
         // --- INTERACCIÓN 3D ---
@@ -510,6 +601,23 @@
         window.addEventListener('mousedown', start); window.addEventListener('touchstart', start);
         window.addEventListener('mousemove', move); window.addEventListener('touchmove', move);
         window.addEventListener('mouseup', end); window.addEventListener('touchend', end);
+
+        // --- Control de Volumen ---
+        function updateVolume(value) {
+            currentVolume = Math.max(0, Math.min(1, value));
+            audio.volume = currentVolume;
+            volumeBar.style.width = (currentVolume * 100) + '%';
+            volumeIcon.textContent = Math.round(currentVolume * 100) + '%';
+        }
+
+        volDown.addEventListener('click', () => updateVolume(currentVolume - 0.1));
+        volUp.addEventListener('click', () => updateVolume(currentVolume + 0.1));
+
+        volumeContainer.addEventListener('click', (e) => {
+            const rect = volumeContainer.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            updateVolume(x);
+        });
 
         // --- DESCARGA ---
         document.getElementById('btn-download').addEventListener('click', () => {
@@ -561,6 +669,10 @@
         .vzb:nth-child(6){animation-delay:0.15s}.vzb:nth-child(7){animation-delay:0.35s}
         @keyframes bn{0%{height:3px;opacity:0.5}100%{height:20px;opacity:1;box-shadow:0 0 10px #ff0077}}
         .st{color:rgba(255,255,255,0.5);font-size:0.6rem;text-align:center;margin-top:2px;letter-spacing:1px;font-weight:300}
+        .ae{color:#ff4444;font-size:0.6rem;text-align:center;display:none;margin-top:2px}
+        .cs{display:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:20px;font-size:0.6rem;cursor:pointer;transition:0.3s;font-family:'Montserrat',sans-serif;margin-top:2px}
+        .cs:hover{background:rgba(255,0,119,0.3);border-color:#ff0077}
+        .ls{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.1);border-top:2px solid #ff0077;border-radius:50%;animation:sp 1s linear infinite;margin:0 auto}
     </style>
 </head>
 <body>
@@ -568,7 +680,7 @@
     <div id="escena"><div id="cubo">
         <div class="cara f"><img src="${compressedImages[0]}"></div><div class="cara b"><img src="${compressedImages[1]}"></div><div class="cara r"><img src="${compressedImages[2]}"></div><div class="cara l"><img src="${compressedImages[3]}"></div><div class="cara u"><img src="${compressedImages[4]}"></div><div class="cara d"><img src="${compressedImages[5]}"></div>
     </div></div>
-    <audio id="au" loop src="${selectedSongUrl}"></audio>
+    <audio id="au" loop></audio>
     <div id="pl">
         <div class="pi">
             <div class="pt">
@@ -587,11 +699,17 @@
             </div>
             <div class="vz" id="vz"><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div><div class="vzb"></div></div>
             <div class="st" id="st">${SONG_NAMES[selectedSongIndex] || '🎵 Canción de amor'}</div>
+            <div class="ae" id="ae">⚠️ Error al cargar la canción. Intenta con otra.</div>
+            <div class="ls" id="ls"></div>
+            <button class="cs" id="cs">🔄 Cambiar canción</button>
         </div>
     </div>
     <script>
-        const c=document.getElementById('cv'),x=c.getContext('2d'),cb=document.getElementById('cubo'),au=document.getElementById('au'),pb=document.getElementById('pb'),bar=document.getElementById('bar'),pa=document.getElementById('pa'),ct=document.getElementById('ct'),dt=document.getElementById('dt'),vin=document.getElementById('vin'),vz=document.getElementById('vz'),vd=document.getElementById('vd'),vu=document.getElementById('vu'),vbb=document.getElementById('vbb'),vc=document.getElementById('vc'),vi=document.getElementById('vi');
-        let ps=[],id=false,rx=-15,ry=15,lx,ly,vx=0,vol=1;
+        const c=document.getElementById('cv'),x=c.getContext('2d'),cb=document.getElementById('cubo'),au=document.getElementById('au'),pb=document.getElementById('pb'),bar=document.getElementById('bar'),pa=document.getElementById('pa'),ct=document.getElementById('ct'),dt=document.getElementById('dt'),vin=document.getElementById('vin'),vz=document.getElementById('vz'),vd=document.getElementById('vd'),vu=document.getElementById('vu'),vbb=document.getElementById('vbb'),vc=document.getElementById('vc'),vi=document.getElementById('vi'),st=document.getElementById('st'),ae=document.getElementById('ae'),ls=document.getElementById('ls'),cs=document.getElementById('cs');
+        let ps=[],id=false,rx=-15,ry=15,lx,ly,vx=0,vol=1,loaded=false,playing=false;
+        const urls=[${SONG_URLS.map(u=>'"'+u+'"').join(',')}];
+        const names=[${SONG_NAMES.map(n=>'"'+n+'"').join(',')}];
+        let idx=${selectedSongIndex};
         function rs(){c.width=window.innerWidth;c.height=window.innerHeight}window.addEventListener('resize',rs);rs();
         class P{constructor(){this.i();this.y=Math.random()*c.height}i(){this.x=Math.random()*c.width;this.y=c.height+50;this.s=Math.random()*15+10;this.v=Math.random()*1.5+0.5;this.t=Math.random()>0.5?'❤️':'🌸';this.o=Math.random()*0.5+0.1}d(){this.x+=vx*0.4;this.y-=this.v;if(this.y<-50||this.x<-50||this.x>c.width+50)this.i();x.globalAlpha=this.o;x.font=this.s+"px serif";x.fillText(this.t,this.x,this.y)}}for(let i=0;i<100;i++)ps.push(new P());
         function fmt(s){const m=Math.floor(s/60),se=Math.floor(s%60);return m+":"+(se<10?'0'+se:se)}
@@ -601,15 +719,25 @@
             if(!au.paused){bar.style.width=(au.currentTime/au.duration)*100+"%";ct.innerText=fmt(au.currentTime)}
             requestAnimationFrame(an)
         }
-        au.addEventListener('loadedmetadata',()=>{dt.innerText=fmt(au.duration);vbb.style.width='100%';vol=1;au.volume=1;vi.textContent='100%'});
+        function loadAudio(){
+            ae.style.display='none';ls.style.display='block';loaded=false;
+            au.pause();pb.innerHTML="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg');playing=false;
+            au.src=urls[idx];au.load();
+            au.onloadedmetadata=function(){dt.innerText=fmt(au.duration);loaded=true;ls.style.display='none';ae.style.display='none';st.textContent=names[idx]||'🎵 Canción de amor';setTimeout(()=>{if(!playing){tgl();}},500)};
+            au.onerror=function(){ls.style.display='none';ae.style.display='block'};
+        }
+        function tgl(){if(!loaded){loadAudio();return}if(au.paused){au.play();pb.innerHTML="⏸";pb.classList.add('pg');vin.classList.add('sp');vz.classList.add('pg');playing=true}else{au.pause();pb.innerHTML="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg');playing=false}}
+        function selSong(){idx=Math.floor(Math.random()*urls.length);st.textContent='Cargando...';loadAudio()}
+        pb.addEventListener('click',tgl);
+        pa.addEventListener('click',(e)=>{const w=pa.clientWidth,ck=e.offsetX,d=au.duration;if(d)au.currentTime=(ck/w)*d});
+        cs.addEventListener('click',selSong);
+        au.addEventListener('ended',()=>{pb.innerHTML="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg');playing=false});
         function updVol(v){vol=Math.max(0,Math.min(1,v));au.volume=vol;vbb.style.width=(vol*100)+'%';vi.textContent=Math.round(vol*100)+'%'}
         vd.addEventListener('click',()=>updVol(vol-0.1));vu.addEventListener('click',()=>updVol(vol+0.1));
         vc.addEventListener('click',(e)=>{const r=vc.getBoundingClientRect();updVol((e.clientX-r.left)/r.width)});
-        function tgl(){if(au.paused){au.play();pb.innerText="⏸";pb.classList.add('pg');vin.classList.add('sp');vz.classList.add('pg')}else{au.pause();pb.innerText="▶";pb.classList.remove('pg');vin.classList.remove('sp');vz.classList.remove('pg')}}
-        pb.addEventListener('click',tgl);
-        pa.addEventListener('click',(e)=>{const w=pa.clientWidth,ck=e.offsetX,d=au.duration;if(d)au.currentTime=(ck/w)*d});
-        const st=(e)=>{id=true;lx=e.pageX||e.touches[0].pageX;ly=e.pageY||e.touches[0].pageY};const en=()=>{id=false};const mv=(e)=>{if(!id)return;let nx=e.pageX||e.touches[0].pageX,ny=e.pageY||e.touches[0].pageY;vx=nx-lx;ry+=vx*0.5;rx-=(ny-ly)*0.5;lx=nx;ly=ny};
-        window.addEventListener('mousedown',st);window.addEventListener('touchstart',st);window.addEventListener('mousemove',mv);window.addEventListener('touchmove',mv);window.addEventListener('mouseup',en);window.addEventListener('touchend',en);an();
+        const stt=(e)=>{id=true;lx=e.pageX||e.touches[0].pageX;ly=e.pageY||e.touches[0].pageY};const en=()=>{id=false};const mv=(e)=>{if(!id)return;let nx=e.pageX||e.touches[0].pageX,ny=e.pageY||e.touches[0].pageY;vx=nx-lx;ry+=vx*0.5;rx-=(ny-ly)*0.5;lx=nx;ly=ny};
+        window.addEventListener('mousedown',stt);window.addEventListener('touchstart',stt);window.addEventListener('mousemove',mv);window.addEventListener('touchmove',mv);window.addEventListener('mouseup',en);window.addEventListener('touchend',en);
+        cs.style.display='block';loadAudio();an();
     <\/script>
 </body>
 </html>`;
