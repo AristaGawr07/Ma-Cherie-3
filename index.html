@@ -498,7 +498,7 @@
             font-style: italic;
         }
 
-        /* ===== ESTILO PARA CUBO DEL AMOR ===== */
+        /* ===== ESTILO PARA CUBO DEL AMOR (BOTÓN) ===== */
         .cubo-link {
             display: inline-block;
             width: 100px;
@@ -617,6 +617,141 @@
             backdrop-filter: blur(5px);
             letter-spacing: 1px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== ESTILO PARA LA PÁGINA DEL CUBO (CONTENIDO) ===== */
+        .cubo-page-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            height: 100%;
+            z-index: 2;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .cubo-page-content .cubo-grande {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cuboGirarGrande 10s linear infinite;
+        }
+
+        @keyframes cuboGirarGrande {
+            0% { transform: rotateX(-25deg) rotateY(0deg); }
+            100% { transform: rotateX(-25deg) rotateY(360deg); }
+        }
+
+        .cubo-page-content .cubo-grande .cara-grande {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border: 3px solid rgba(255, 105, 180, 0.8);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: rgba(255, 105, 180, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.3);
+            left: 20px;
+            top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .cubo-page-content .cubo-grande .cara-grande::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), rgba(255, 20, 147, 0.05));
+            pointer-events: none;
+        }
+
+        .cubo-page-content .cubo-grande .cara-frontal-grande {
+            transform: translateZ(80px);
+            background: rgba(255, 105, 180, 0.25);
+        }
+
+        .cubo-page-content .cubo-grande .cara-trasera-grande {
+            transform: rotateY(180deg) translateZ(80px);
+            background: rgba(255, 20, 147, 0.25);
+        }
+
+        .cubo-page-content .cubo-grande .cara-izquierda-grande {
+            transform: rotateY(-90deg) translateZ(80px);
+            background: rgba(200, 50, 255, 0.25);
+        }
+
+        .cubo-page-content .cubo-grande .cara-derecha-grande {
+            transform: rotateY(90deg) translateZ(80px);
+            background: rgba(50, 200, 255, 0.25);
+        }
+
+        .cubo-page-content .cubo-grande .cara-superior-grande {
+            transform: rotateX(90deg) translateZ(80px);
+            background: rgba(255, 200, 50, 0.25);
+        }
+
+        .cubo-page-content .cubo-grande .cara-inferior-grande {
+            transform: rotateX(-90deg) translateZ(80px);
+            background: rgba(50, 255, 200, 0.25);
+        }
+
+        .cubo-page-content .cubo-titulo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            animation: tituloBrillo 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes tituloBrillo {
+            0% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1.05); filter: brightness(1.3); }
+        }
+
+        .cubo-page-content .cubo-descripcion {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        .cubo-page-content .cubo-corazones {
+            font-size: 2.5rem;
+            animation: latidoPuzzle 1.5s ease-in-out infinite;
+            display: flex;
+            gap: 20px;
+        }
+
+        .cubo-page-content .btn-volver {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+            margin-top: 20px;
+        }
+
+        .cubo-page-content .btn-volver:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(238, 90, 36, 0.5);
         }
 
         /* ===== PÁGINA DE PRÓXIMAMENTE ===== */
@@ -1990,6 +2125,15 @@
             .cubo .cara-derecha { transform: rotateY(90deg) translateZ(32px); }
             .cubo .cara-superior { transform: rotateX(90deg) translateZ(32px); }
             .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(32px); }
+            .cubo-page-content .cubo-grande { width: 160px; height: 160px; }
+            .cubo-page-content .cubo-grande .cara-grande { width: 130px; height: 130px; font-size: 3rem; left: 15px; top: 15px; }
+            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(65px); }
+            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(65px); }
+            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(65px); }
+            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(65px); }
+            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(65px); }
+            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(65px); }
+            .cubo-page-content .cubo-titulo { font-size: 2.5rem; }
         }
 
         @media (max-width: 768px) {
@@ -2039,6 +2183,16 @@
             .cubo .cara-superior { transform: rotateX(90deg) translateZ(28px); }
             .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(28px); }
             .cubo-texto { font-size: 0.7rem; bottom: -30px; }
+            .cubo-page-content .cubo-grande { width: 140px; height: 140px; }
+            .cubo-page-content .cubo-grande .cara-grande { width: 110px; height: 110px; font-size: 2.5rem; left: 15px; top: 15px; }
+            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(55px); }
+            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(55px); }
+            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(55px); }
+            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(55px); }
+            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(55px); }
+            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(55px); }
+            .cubo-page-content .cubo-titulo { font-size: 2rem; }
+            .cubo-page-content .cubo-descripcion { font-size: 1rem; }
             .pendiente-item { min-height: 80px; padding: 15px; }
             .pendiente-corazon { font-size: 2rem; }
             .pendiente-corazon.flor { font-size: 2.5rem; }
@@ -2078,6 +2232,17 @@
             .cubo .cara-superior { transform: rotateX(90deg) translateZ(22px); }
             .cubo .cara-inferior { transform: rotateX(-90deg) translateZ(22px); }
             .cubo-texto { font-size: 0.6rem; bottom: -25px; }
+            .cubo-page-content .cubo-grande { width: 120px; height: 120px; }
+            .cubo-page-content .cubo-grande .cara-grande { width: 90px; height: 90px; font-size: 2rem; left: 15px; top: 15px; }
+            .cubo-page-content .cubo-grande .cara-frontal-grande { transform: translateZ(45px); }
+            .cubo-page-content .cubo-grande .cara-trasera-grande { transform: rotateY(180deg) translateZ(45px); }
+            .cubo-page-content .cubo-grande .cara-izquierda-grande { transform: rotateY(-90deg) translateZ(45px); }
+            .cubo-page-content .cubo-grande .cara-derecha-grande { transform: rotateY(90deg) translateZ(45px); }
+            .cubo-page-content .cubo-grande .cara-superior-grande { transform: rotateX(90deg) translateZ(45px); }
+            .cubo-page-content .cubo-grande .cara-inferior-grande { transform: rotateX(-90deg) translateZ(45px); }
+            .cubo-page-content .cubo-titulo { font-size: 1.8rem; }
+            .cubo-page-content .cubo-descripcion { font-size: 0.9rem; }
+            .cubo-page-content .btn-volver { padding: 10px 20px; font-size: 0.9rem; }
             .pendiente-item { min-height: 70px; padding: 12px; }
             .pendiente-corazon { font-size: 1.8rem; }
             .pendiente-corazon.flor { font-size: 2rem; }
@@ -2938,7 +3103,25 @@
         }
 
         // ==========================================
-        // 11. INICIALIZAR
+        // 11. REDIRECCIÓN PARA EL CUBO DEL AMOR
+        // ==========================================
+        // Esta función maneja el clic en el enlace del Cubo del Amor
+        // y redirige a la página correspondiente
+        document.addEventListener('click', function(e) {
+            const cuboLink = e.target.closest('.cubo-link');
+            if (cuboLink) {
+                e.preventDefault();
+                // Crear una ventana o redirigir a la página del Cubo del Amor
+                // Como no tenemos un archivo separado, mostramos un modal o redirigimos
+                // a una versión embebida de la página del cubo
+                window.location.href = 'Cubo-del-Amor-❤️.html';
+                // Alternativa: mostrar un mensaje si el archivo no existe
+                // alert('🧊 Bienvenido al Cubo del Amor 🧊\n\nCrea el archivo Cubo-del-Amor-❤️.html para ver el contenido completo.');
+            }
+        });
+
+        // ==========================================
+        // 12. INICIALIZAR
         // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             updatePage();
@@ -2952,12 +3135,14 @@
                     }
                 });
             }
-        });
 
-        console.log('✨ Libro digital cargado correctamente ✨');
-        console.log(`📖 Total de páginas: ${totalPages}`);
-        console.log('🧊 Cubo del Amor agregado como subcarpeta 🧊');
-        console.log('💕 ¡Disfruta de tu libro del amor! 💕');
+            // Verificar si la página actual es la del Cubo del Amor (redirigida)
+            // Si el archivo Cubo-del-Amor-❤️.html existe, se cargará normalmente
+            console.log('✨ Libro digital cargado correctamente ✨');
+            console.log(`📖 Total de páginas: ${totalPages}`);
+            console.log('🧊 Cubo del Amor: haz clic en el cubo para ir a la página');
+            console.log('💕 ¡Disfruta de tu libro del amor! 💕');
+        });
     </script>
 
 </body>
