@@ -105,10 +105,12 @@
             overflow: hidden;
         }
 
+        /* Portada */
         .bg-portada {
             background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
         }
 
+        /* Estrellas */
         .bg-estrellas {
             background: radial-gradient(ellipse at center, #0a0015 0%, #1a0033 50%, #2d004d 100%);
         }
@@ -139,6 +141,7 @@
             100% { opacity: 1; transform: translate(-20px, -10px) scale(1.1); }
         }
 
+        /* Galaxia */
         .bg-galaxia {
             background: linear-gradient(135deg, #0c0033 0%, #1a004d 30%, #2d0066 60%, #4d0099 100%);
         }
@@ -175,6 +178,7 @@
             opacity: 0.6;
         }
 
+        /* Fuegos artificiales */
         .bg-fuegos {
             background: linear-gradient(135deg, #1a0000 0%, #2d0000 30%, #4d0000 60%, #6d0000 100%);
         }
@@ -196,6 +200,7 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
+        /* Espacio profundo */
         .bg-espacio {
             background: radial-gradient(ellipse at center, #000000 0%, #0a0015 40%, #15002a 70%, #20003d 100%);
         }
@@ -231,6 +236,7 @@
             opacity: 0.4;
         }
 
+        /* Aurora boreal */
         .bg-aurora {
             background: linear-gradient(180deg, #000033 0%, #001a4d 30%, #003366 60%, #004080 100%);
         }
@@ -252,6 +258,7 @@
             100% { transform: translate(10%, 10%) rotate(5deg) scale(1.2); }
         }
 
+        /* Atardecer romántico */
         .bg-atardecer {
             background: linear-gradient(180deg, #ff6b35 0%, #ff8c42 20%, #ffb347 40%, #ffd700 60%, #ffcc80 80%, #ffe0b2 100%);
         }
@@ -281,6 +288,7 @@
             100% { transform: translate(-20px, -20px) scale(1.2); opacity: 0.8; }
         }
 
+        /* Arcoíris */
         .bg-arcoiris {
             background: linear-gradient(135deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
             background-size: 400% 400%;
@@ -304,6 +312,7 @@
             100% { opacity: 0.7; transform: scale(1.1); }
         }
 
+        /* Próximamente */
         .bg-proximamente {
             background: linear-gradient(135deg, #1a0033 0%, #2d004d 30%, #4d0099 60%, #7b2fbe 100%);
         }
@@ -545,7 +554,7 @@
             text-align: center;
         }
 
-        /* ===== ESTILOS EXISTENTES ===== */
+        /* ===== ESTILOS EXISTENTES (MANTENIDOS) ===== */
         .heart-container {
             position: relative;
             width: 250px;
@@ -698,7 +707,7 @@
             z-index: -1;
         }
 
-        /* ===== ENLACES ===== */
+        /* ===== ENLACES EXISTENTES ===== */
         .fancy-link {
             display: inline-block;
             padding: 10px 20px;
@@ -1630,7 +1639,7 @@
             50% { transform: scale(1.2); }
         }
 
-        /* ===== ENLACE: CUBO DEL AMOR ===== */
+        /* ===== NUEVO ENLACE: CUBO DEL AMOR ===== */
         .cubo-amor-link {
             display: inline-block;
             padding: 15px 25px;
@@ -2146,7 +2155,7 @@
                 </div>
             </div>
 
-            <!-- ===== HOJA 7: LIBRO Y PRÓXIMAMENTE (CON CUBO DEL AMOR) ===== -->
+            <!-- ===== HOJA 7: LIBRO Y PRÓXIMAMENTE ===== -->
             <div class="page" id="page-7" data-index="7">
                 <div class="page-background bg-atardecer"></div>
                 <div class="page-content">
@@ -2824,11 +2833,12 @@
                     }
                 });
             }
-        });
 
-        console.log('✨ Libro digital cargado correctamente ✨');
-        console.log(`📖 Total de páginas: ${totalPages}`);
-        console.log('💕 ¡Disfruta de tu libro del amor! 💕');
+            console.log('✨ Libro digital cargado correctamente ✨');
+            console.log(`📖 Total de páginas: ${totalPages}`);
+            console.log('🎁 Cubo del Amor enlazado correctamente');
+            console.log('💕 ¡Disfruta de tu libro del amor! 💕');
+        });
     </script>
 
 </body>
