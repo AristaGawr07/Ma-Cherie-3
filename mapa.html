@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<title>Nuestro Mapa de Recuerdos 💖</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+/* ============ RESET ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f0f0f0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============ TOPBAR ============ */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #ff5f8f, #ff8fb1);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  z-index: 1000;
+  position: relative;
+  gap: 8px;
+}
+
+.topbar h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actions input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: .9rem;
+  width: 160px;
+  outline: none;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,.25);
+  color: #fff;
+  cursor: pointer;
+  font-size: .9rem;
+  transition: background .2s;
+  font-weight: 500;
+}
+
+.actions button:hover { background: rgba(255,255,255,.45); }
+.actions button.active { background: #fff; color: #e91e63; }
+
+/* ============ MAPA ============ */
+#map {
+  width: 100%;
+  height: calc(100vh - 52px);
+  height: calc(100dvh - 52px);
+}
+
+/* ============ MODAL ============ */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 12px;
+  backdrop-filter: blur(3px);
+}
+
+.modal.hidden { display: none; }
+
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,.3);
+  animation: pop .2s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+  color: #e91e63;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+}
+
+.modal-content label {
+  display: block;
+  font-size: .85rem;
+  color: #444;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="date"],
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: .95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border .2s;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus { border-color: #e91e63; }
+
+.modal-content textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.modal-content input[type="color"] {
+  width: 60px;
+  height: 36px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #999;
+  line-height: 1;
+  user-select: none;
+}
+.close:hover { color: #e91e63; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  background: #e91e63;
+  color: #fff;
+  transition: transform .15s;
+}
+.modal-actions button:hover { transform: scale(1.03); }
+.modal-actions button.danger { background: #d33; }
+
+/* ============ PREVIEW FOTOS ============ */
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.preview img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #eee;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.preview img:hover { transform: scale(1.05); border-color: #e91e63; }
+
+/* ============ MARCADORES ============ */
+.custom-marker { background: transparent; border: none; }
+
+.marker-pin {
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,.4);
+  border: 2px solid #fff;
+  transition: transform .2s;
+}
+.marker-pin:hover { transform: rotate(-45deg) scale(1.15); }
+
+.marker-pin span {
+  transform: rotate(45deg);
+  font-size: 16px;
+}
+
+/* ============ VIEWER ============ */
+.viewer-content { max-width: 520px; }
+#viewerTitle { color: #e91e63; margin-bottom: 6px; }
+#viewerFecha { color: #888; font-size: .85rem; margin-bottom: 10px; }
+#viewerNota {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  color: #333;
+}
+#btnEdit {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #e91e63;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 1rem;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px) {
+  .topbar h1 { font-size: .95rem; }
+  .actions input[type="text"] { width: 110px; }
+  .actions button { padding: 5px 8px; font-size: .8rem; }
+  .modal-content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>🗺️ Nuestro Mapa de Recuerdos</h1>
+  <div class="actions">
+    <input type="text" id="searchInput" placeholder="Buscar lugar..." />
+    <button id="btnSearch">🔍</button>
+    <button id="btnAddMode" title="Añadir marcador">➕ Añadir</button>
+    <button id="btnExport" title="Exportar">⬇️</button>
+    <button id="btnImport" title="Importar">⬆️</button>
+    <input type="file" id="importFile" accept=".json" hidden />
+  </div>
+</header>
+
+<div id="map"></div>
+
+<!-- Modal crear/editar -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2 id="modalTitle">Nuevo Recuerdo</h2>
+
+    <label>Título</label>
+    <input type="text" id="titulo" placeholder="Ej: Nuestra primera cita" />
+
+    <label>Fecha</label>
+    <input type="date" id="fecha" />
+
+    <label>Categoría</label>
+    <select id="categoria">
+      <option value="cita">💕 Cita</option>
+      <option value="viaje">✈️ Viaje</option>
+      <option value="aniversario">🎉 Aniversario</option>
+      <option value="cumple">🎂 Cumpleaños</option>
+      <option value="especial">⭐ Momento especial</option>
+      <option value="otro">📍 Otro</option>
+    </select>
+
+    <label>Color del marcador</label>
+    <input type="color" id="color" value="#e91e63" />
+
+    <label>Icono / Emoji</label>
+    <input type="text" id="emoji" placeholder="💖" maxlength="4" />
+
+    <label>Nota</label>
+    <textarea id="nota" placeholder="Escribe aquí tus recuerdos..."></textarea>
+
+    <label>Fotos</label>
+    <input type="file" id="fotos" accept="image/*" multiple />
+    <div id="previewFotos" class="preview"></div>
+
+    <div class="modal-actions">
+      <button id="btnSave">💾 Guardar</button>
+      <button id="btnDelete" class="danger hidden">🗑️ Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Visor -->
+<div id="viewer" class="modal hidden">
+  <div class="modal-content viewer-content">
+    <span class="close" id="closeViewer">&times;</span>
+    <h2 id="viewerTitle"></h2>
+    <p id="viewerFecha"></p>
+    <p id="viewerNota"></p>
+    <div id="viewerFotos" class="preview"></div>
+    <button id="btnEdit">✏️ Editar</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ======================
+   CONFIGURACIÓN
+====================== */
+const STORAGE_KEY = 'mapaRecuerdos_v1';
+let map;
+let markers = {};
+let addingMode = false;
+let tempMarker = null;
+let editingId = null;
+let pendingFotos = [];
+
+/* ======================
+   INICIALIZAR MAPA
+====================== */
+function initMap() {
+  map = L.map('map', {
+    worldCopyJump: true,
+    minZoom: 2,
+    maxZoom: 19,
+    zoomControl: true,
+  }).setView([20, 0], 2);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 19,
+  }).addTo(map);
+
+  map.setMaxBounds([[-85, -180], [85, 180]]);
+
+  map.on('click', (e) => {
+    if (!addingMode) return;
+    editingId = null;
+    pendingFotos = [];
+    tempMarker = e.latlng;
+    openModal();
+    toggleAddMode(false);
+  });
+
+  cargarMarcadores();
+}
+
+/* ======================
+   MODO AÑADIR
+====================== */
+function toggleAddMode(force) {
+  addingMode = (typeof force === 'boolean') ? force : !addingMode;
+  const btn = document.getElementById('btnAddMode');
+  btn.textContent = addingMode ? '❌ Cancelar' : '➕ Añadir';
+  btn.classList.toggle('active', addingMode);
+  document.getElementById('map').style.cursor = addingMode ? 'crosshair' : '';
+}
+
+document.getElementById('btnAddMode').addEventListener('click', () => toggleAddMode());
+
+/* ======================
+   MODAL
+====================== */
+const modal = document.getElementById('modal');
+const viewer = document.getElementById('viewer');
+
+function openModal(data = null) {
+  document.getElementById('modalTitle').textContent = data ? 'Editar Recuerdo' : 'Nuevo Recuerdo';
+  document.getElementById('titulo').value = data?.titulo || '';
+  document.getElementById('fecha').value = data?.fecha || new Date().toISOString().slice(0,10);
+  document.getElementById('categoria').value = data?.categoria || 'cita';
+  document.getElementById('color').value = data?.color || '#e91e63';
+  document.getElementById('emoji').value = data?.emoji || '💖';
+  document.getElementById('nota').value = data?.nota || '';
+  pendingFotos = data?.fotos ? [...data.fotos] : [];
+  renderPreview();
+  document.getElementById('btnDelete').classList.toggle('hidden', !data);
+  modal.classList.remove('hidden');
+}
+
+function closeModal() {
+  modal.classList.add('hidden');
+  editingId = null;
+  tempMarker = null;
+}
+
+document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('closeViewer').addEventListener('click', () => viewer.classList.add('hidden'));
+
+/* ======================
+   FOTOS
+====================== */
+document.getElementById('fotos').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files);
+  for (const f of files) {
+    const b64 = await fileToBase64(f);
+    pendingFotos.push(b64);
+  }
+  renderPreview();
+  e.target.value = '';
+});
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function renderPreview() {
+  const cont = document.getElementById('previewFotos');
+  cont.innerHTML = '';
+  pendingFotos.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.title = 'Clic para eliminar';
+    img.onclick = () => {
+      pendingFotos.splice(i, 1);
+      renderPreview();
+    };
+    cont.appendChild(img);
+  });
+}
+
+/* ======================
+   GUARDAR
+====================== */
+document.getElementById('btnSave').addEventListener('click', () => {
+  const data = {
+    id: editingId || 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+    titulo: document.getElementById('titulo').value.trim() || 'Sin título',
+    fecha: document.getElementById('fecha').value,
+    categoria: document.getElementById('categoria').value,
+    color: document.getElementById('color').value,
+    emoji: document.getElementById('emoji').value || '📍',
+    nota: document.getElementById('nota').value,
+    fotos: pendingFotos,
+    lat: editingId ? markers[editingId].data.lat : tempMarker.lat,
+    lng: editingId ? markers[editingId].data.lng : tempMarker.lng,
+  };
+
+  guardarMarcador(data);
+  closeModal();
+});
+
+function guardarMarcador(data) {
+  const all = getStoredData();
+  const idx = all.findIndex(m => m.id === data.id);
+  if (idx >= 0) all[idx] = data;
+  else all.push(data);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  pintarMarcador(data, true);
+}
+
+/* ======================
+   ELIMINAR
+====================== */
+document.getElementById('btnDelete').addEventListener('click', () => {
+  if (!editingId) return;
+  if (!confirm('¿Seguro que quieres eliminar este recuerdo?')) return;
+  const all = getStoredData().filter(m => m.id !== editingId);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  if (markers[editingId]) {
+    map.removeLayer(markers[editingId].marker);
+    delete markers[editingId];
+  }
+  closeModal();
+});
+
+/* ======================
+   PINTAR MARCADOR
+====================== */
+function pintarMarcador(data, center = false) {
+  if (markers[data.id]) {
+    map.removeLayer(markers[data.id].marker);
+  }
+
+  const iconHtml = `
+    <div class="marker-pin" style="background:${data.color}">
+      <span>${data.emoji}</span>
+    </div>`;
+  const icon = L.divIcon({
+    html: iconHtml,
+    className: 'custom-marker',
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -34],
+  });
+
+  const marker = L.marker([data.lat, data.lng], { icon }).addTo(map);
+  marker.on('click', () => abrirViewer(data.id));
+  markers[data.id] = { marker, data };
+
+  if (center) map.setView([data.lat, data.lng], Math.max(map.getZoom(), 8));
+}
+
+/* ======================
+   VIEWER
+====================== */
+function abrirViewer(id) {
+  const m = markers[id];
+  if (!m) return;
+  const d = m.data;
+
+  document.getElementById('viewerTitle').textContent = `${d.emoji} ${d.titulo}`;
+  document.getElementById('viewerFecha').textContent = d.fecha ? formatearFecha(d.fecha) : '';
+  document.getElementById('viewerNota').textContent = d.nota || '';
+  const cont = document.getElementById('viewerFotos');
+  cont.innerHTML = '';
+  (d.fotos || []).forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.onclick = () => window.open(src, '_blank');
+    cont.appendChild(img);
+  });
+
+  document.getElementById('btnEdit').onclick = () => {
+    viewer.classList.add('hidden');
+    editingId = id;
+    openModal(d);
+  };
+
+  viewer.classList.remove('hidden');
+}
+
+function formatearFecha(f) {
+  try {
+    const d = new Date(f + 'T00:00:00');
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  } catch { return f; }
+}
+
+/* ======================
+   ALMACENAMIENTO
+====================== */
+function getStoredData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function cargarMarcadores() {
+  getStoredData().forEach(m => pintarMarcador(m));
+}
+
+/* ======================
+   BUSCAR
+====================== */
+document.getElementById('btnSearch').addEventListener('click', buscar);
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') buscar();
+});
+
+async function buscar() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    if (data.length > 0) {
+      const { lat, lon, display_name } = data[0];
+      map.setView([parseFloat(lat), parseFloat(lon)], 10);
+      L.popup().setLatLng([lat, lon]).setContent(display_name).openOn(map);
+    } else alert('No se encontró el lugar.');
+  } catch { alert('Error al buscar.'); }
+}
+
+/* ======================
+   EXPORTAR / IMPORTAR
+====================== */
+document.getElementById('btnExport').addEventListener('click', () => {
+  const data = getStoredData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `recuerdos_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+});
+
+document.getElementById('btnImport').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+
+document.getElementById('importFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const text = await f.text();
+    const imported = JSON.parse(text);
+    if (!Array.isArray(imported)) throw new Error('Formato inválido');
+    const actual = getStoredData();
+    const ids = new Set(actual.map(m => m.id));
+    let nuevos = 0;
+    imported.forEach(m => {
+      if (!ids.has(m.id)) {
+        actual.push(m);
+        pintarMarcador(m);
+        nuevos++;
+      }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(actual));
+    alert(`Importados ${nuevos} recuerdos nuevos.`);
+  } catch (err) {
+    alert('Error al importar: ' + err.message);
+  }
+  e.target.value = '';
+});
+
+/* ======================
+   INICIO
+====================== */
+window.addEventListener('DOMContentLoaded', initMap);
+</script>
+</body>
+</html>
