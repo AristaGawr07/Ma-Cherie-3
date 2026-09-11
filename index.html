@@ -1705,6 +1705,76 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
+        /* ===== ENLACE: MAPA DE MÉXICO ===== */
+        .mapa-mexico-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            animation: flotarMapa 3s ease-in-out infinite;
+            position: relative;
+            padding: 10px;
+        }
+
+        .mapa-mexico-link .mapa-svg {
+            width: 90px;
+            height: 60px;
+            filter: drop-shadow(0 4px 8px rgba(0, 100, 0, 0.4));
+            transition: all 0.4s ease;
+        }
+
+        .mapa-mexico-link .mapa-svg path {
+            fill: url(#gradienteMexico);
+            stroke: #fff;
+            stroke-width: 2;
+            transition: all 0.4s ease;
+        }
+
+        .mapa-mexico-link .mapa-texto {
+            margin-top: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 13px;
+            font-weight: bold;
+            color: #006847;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3px 10px;
+            border-radius: 15px;
+            letter-spacing: 1px;
+            border: 1px solid #006847;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .mapa-mexico-link:hover {
+            transform: scale(1.15) translateY(-5px);
+            animation: none;
+        }
+
+        .mapa-mexico-link:hover .mapa-svg {
+            filter: drop-shadow(0 8px 20px rgba(0, 100, 0, 0.7));
+        }
+
+        .mapa-mexico-link:hover .mapa-svg path {
+            fill: url(#gradienteMexicoHover);
+            stroke: #ffcc00;
+            stroke-width: 2.5;
+        }
+
+        .mapa-mexico-link:hover .mapa-texto {
+            background: #006847;
+            color: #fff;
+            border-color: #ffcc00;
+            box-shadow: 0 0 15px rgba(0, 104, 71, 0.5);
+        }
+
+        @keyframes flotarMapa {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
         /* ===== ANIMACIONES BASE ===== */
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
@@ -1939,6 +2009,8 @@
             .cubo-amor-link { font-size: 13px; padding: 10px 16px; min-width: 100px; }
             .cubo-amor-link::before { font-size: 14px; margin-right: 5px; }
             .cubo-amor-link::after { font-size: 14px; margin-left: 5px; }
+            .mapa-mexico-link .mapa-svg { width: 70px; height: 48px; }
+            .mapa-mexico-link .mapa-texto { font-size: 11px; padding: 2px 8px; }
         }
 
         @media (max-width: 480px) {
@@ -1972,6 +2044,8 @@
             .cubo-amor-link { font-size: 11px; padding: 8px 12px; min-width: 80px; }
             .cubo-amor-link::before { font-size: 12px; margin-right: 4px; }
             .cubo-amor-link::after { font-size: 12px; margin-left: 4px; }
+            .mapa-mexico-link .mapa-svg { width: 55px; height: 38px; }
+            .mapa-mexico-link .mapa-texto { font-size: 9px; padding: 2px 6px; }
         }
     </style>
 </head>
@@ -2171,12 +2245,37 @@
                                 <span class="texto-cubo">Cubo del Amor</span>
                             </a>
                         </div>
+                        <!-- NUEVO BOTÓN: MAPA DE MÉXICO -->
                         <div class="link-wrapper">
-                            <div class="pendiente-item">
-                                <span class="pendiente-corazon flor">♥</span>
-                                <span class="pendiente-texto">PENDIENTE</span>
-                                <span class="pendiente-subtexto">Próximamente...</span>
-                            </div>
+                            <a href="mapa.html" class="mapa-mexico-link" title="Mapa de México">
+                                <svg class="mapa-svg" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="gradienteMexico" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#006847;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#ffffff;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#ce1126;stop-opacity:1" />
+                                        </linearGradient>
+                                        <linearGradient id="gradienteMexicoHover" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00a86b;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#ffe600;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#ff2a2a;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Silueta simplificada de México -->
+                                    <path d="M 30 15 
+                                             C 35 10, 45 8, 55 10 
+                                             C 65 12, 75 15, 80 20 
+                                             C 85 25, 82 30, 78 33 
+                                             C 75 35, 70 34, 68 38 
+                                             C 65 42, 68 48, 65 52 
+                                             C 62 56, 55 58, 50 62 
+                                             C 45 65, 38 68, 32 65 
+                                             C 26 62, 22 58, 20 52 
+                                             C 18 46, 15 40, 18 34 
+                                             C 20 28, 25 20, 30 15 Z" />
+                                </svg>
+                                <span class="mapa-texto">MAPA DE MÉXICO</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -2837,6 +2936,7 @@
             console.log('✨ Libro digital cargado correctamente ✨');
             console.log('📖 Total de páginas:', totalPages);
             console.log('🎁 Cubo del Amor enlazado correctamente');
+            console.log('🗺️ Mapa de México agregado en Hoja 7');
             console.log('💕 ¡Disfruta de tu libro del amor! 💕');
         });
     </script>
