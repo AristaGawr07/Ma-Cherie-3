@@ -381,6 +381,41 @@
             opacity: 0.5;
         }
 
+        /* Selva */
+        .bg-selva {
+            background: linear-gradient(180deg, #4CAF50 0%, #2E7D32 40%, #1B5E20 70%, #0D3D0D 100%);
+        }
+        .bg-selva::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 0, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 75% 35%, rgba(200, 255, 200, 0.2) 0%, transparent 35%),
+                radial-gradient(circle at 50% 80%, rgba(0, 50, 0, 0.4) 0%, transparent 45%);
+            animation: selvaAnim 6s ease-in-out infinite alternate;
+        }
+        @keyframes selvaAnim {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.08); }
+        }
+        .bg-selva::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 15% 25%, #90EE90, transparent),
+                radial-gradient(2px 2px at 35% 65%, #90EE90, transparent),
+                radial-gradient(2px 2px at 55% 15%, #fff, transparent),
+                radial-gradient(2px 2px at 75% 85%, #fff, transparent),
+                radial-gradient(2px 2px at 95% 45%, #90EE90, transparent);
+            background-size: 220px 220px;
+            animation: twinkle 5s ease-in-out infinite alternate;
+            opacity: 0.4;
+        }
+
         /* ===== CONTENIDO DE LAS PÁGINAS ===== */
         .page-content {
             position: relative;
@@ -1833,7 +1868,6 @@
             gap: 2px;
         }
 
-        /* Sol */
         .zoo-link .zoo-sol {
             position: absolute;
             top: 0;
@@ -1851,7 +1885,6 @@
             100% { transform: scale(1.15); box-shadow: 0 0 25px rgba(255, 215, 0, 1); }
         }
 
-        /* Nubes */
         .zoo-link .zoo-nube {
             position: absolute;
             background: white;
@@ -1917,7 +1950,6 @@
             100% { transform: translateX(0); }
         }
 
-        /* Árbol */
         .zoo-link .zoo-arbol {
             position: absolute;
             bottom: 22px;
@@ -1941,7 +1973,6 @@
             border-radius: 2px;
         }
 
-        /* León */
         .zoo-link .zoo-leon {
             position: relative;
             width: 40px;
@@ -2031,7 +2062,6 @@
             border-radius: 0 0 50% 50%;
         }
 
-        /* Cuerpo del león */
         .zoo-link .leon-cuerpo {
             position: absolute;
             bottom: 0;
@@ -2044,7 +2074,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Cola del león */
         .zoo-link .leon-cola {
             position: absolute;
             bottom: 8px;
@@ -2062,7 +2091,6 @@
             50% { transform: rotate(15deg); }
         }
 
-        /* Texto del zoo */
         .zoo-link .zoo-texto {
             margin-top: 8px;
             font-family: 'Georgia', serif;
@@ -2104,7 +2132,6 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* Huellas animadas alrededor */
         .zoo-link .huella {
             position: absolute;
             font-size: 10px;
@@ -2244,7 +2271,6 @@
             50% { opacity: 1; transform: scale(1.5); }
         }
 
-        /* Huella flotante al hacer click */
         .huella-flotante {
             position: fixed;
             font-size: 24px;
@@ -2615,15 +2641,20 @@
                 </div>
             </div>
 
-            <!-- ===== HOJA 7: LIBRO, MAPA Y ZOO ===== -->
+            <!-- ===== HOJA 7: LIBRO Y MAPA ===== -->
             <div class="page" id="page-7" data-index="7">
                 <div class="page-background bg-atardecer"></div>
                 <div class="page-content">
-                    <h2 class="page-title" style="color:#5d4037; text-shadow:none;">📖 Libro, Mapa y Zoo 📖</h2>
+                    <h2 class="page-title" style="color:#5d4037; text-shadow:none;">📖 Libro y Mapa 📖</h2>
                     <div class="links-grid">
                         <div class="link-wrapper">
                             <a href="Libro-del-Amor.html" class="libroA-simple" style="display:flex; align-items:center; justify-content:center; width:55px; height:55px; background:#8B4513; border-radius:5px; border-left:8px solid #A0522D; text-decoration:none;">
                                 <span style="color:white; font-size:11px; font-weight:bold; background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px;">❤️</span>
+                            </a>
+                        </div>
+                        <div class="link-wrapper">
+                            <a href="Cubo-del-Amor.html" class="cubo-amor-link">
+                                <span class="texto-cubo">Cubo del Amor</span>
                             </a>
                         </div>
                         <div class="link-wrapper">
@@ -2656,22 +2687,26 @@
                                 <span class="mapa-texto">MAPA DE MÉXICO</span>
                             </a>
                         </div>
-                        <!-- NUEVO BOTÓN: ZOO / ÁLBUM -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== HOJA 8: ZOO · ÁLBUM ===== -->
+            <div class="page" id="page-8" data-index="8">
+                <div class="page-background bg-selva"></div>
+                <div class="page-content">
+                    <h2 class="page-title">🦁 Zoo · Álbum 🦁</h2>
+                    <div class="links-grid" style="grid-template-columns: 1fr; max-width: 400px;">
                         <div class="link-wrapper">
                             <a href="zoo.html" class="zoo-link" title="Álbum del Zoo">
                                 <div class="zoo-escena">
-                                    <!-- Sol -->
                                     <div class="zoo-sol"></div>
-                                    <!-- Nubes -->
                                     <div class="zoo-nube nube-1"></div>
                                     <div class="zoo-nube nube-2"></div>
-                                    <!-- Árbol -->
                                     <div class="zoo-arbol"></div>
-                                    <!-- Huellas -->
                                     <div class="huella huella-1">🐾</div>
                                     <div class="huella huella-2">🐾</div>
                                     <div class="huella huella-3">🐾</div>
-                                    <!-- León -->
                                     <div class="zoo-leon">
                                         <div class="leon-melena"></div>
                                         <div class="leon-cabeza">
@@ -2693,24 +2728,40 @@
                 </div>
             </div>
 
-            <!-- ===== HOJA 8: PRÓXIMAMENTE ===== -->
-            <div class="page" id="page-8" data-index="8">
+            <!-- ===== HOJA 9: PRÓXIMAMENTE CON ESPACIOS VACÍOS ===== -->
+            <div class="page" id="page-9" data-index="9">
                 <div class="page-background bg-proximamente"></div>
                 <div class="page-content">
-                    <div class="proximamente-content">
-                        <div class="proximamente-corazones">💕</div>
-                        <div class="proximamente-title">✨ Próximamente ✨</div>
-                        <div class="proximamente-sub">
-                            Nuevas aventuras te esperan<br>
-                            <span style="font-size: 0.8em; opacity: 0.7;">Más amor, más magia, más momentos especiales</span>
+                    <h2 class="page-title">✨ Próximamente ✨</h2>
+                    <div class="links-grid">
+                        <div class="link-wrapper">
+                            <div class="pendiente-item">
+                                <span class="pendiente-corazon">💖</span>
+                                <span class="pendiente-texto">PENDIENTE</span>
+                                <span class="pendiente-subtexto">Próximamente...</span>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 20px; font-size: 2.5rem; animation: latidoPuzzle 1.5s ease-in-out infinite;">
-                            <span>💖</span>
-                            <span style="animation-delay: 0.3s;">💗</span>
-                            <span style="animation-delay: 0.6s;">💕</span>
+                        <div class="link-wrapper">
+                            <div class="proximamente-content" style="height: auto;">
+                                <div class="proximamente-corazones">💕</div>
+                                <div class="proximamente-title" style="font-size: 2rem;">✨ Próximamente ✨</div>
+                                <div class="proximamente-sub" style="font-size: 1rem;">
+                                    Nuevas aventuras te esperan<br>
+                                    <span style="font-size: 0.8em; opacity: 0.7;">Más amor, más magia, más momentos especiales</span>
+                                </div>
+                                <div style="display: flex; gap: 15px; font-size: 1.8rem; animation: latidoPuzzle 1.5s ease-in-out infinite;">
+                                    <span>💖</span>
+                                    <span style="animation-delay: 0.3s;">💗</span>
+                                    <span style="animation-delay: 0.6s;">💕</span>
+                                </div>
+                            </div>
                         </div>
-                        <div style="margin-top: 20px; color: rgba(255,255,255,0.5); font-size: 0.9rem; letter-spacing: 2px;">
-                            ❤️ Hasta pronto ❤️
+                        <div class="link-wrapper">
+                            <div class="pendiente-item">
+                                <span class="pendiente-corazon flor">♥</span>
+                                <span class="pendiente-texto">PENDIENTE</span>
+                                <span class="pendiente-subtexto">Próximamente...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2722,7 +2773,7 @@
     <!-- ===== NAVEGACIÓN ===== -->
     <div class="nav-controls">
         <button class="nav-btn" id="prevPage" disabled>◀ Anterior</button>
-        <span class="page-indicator" id="pageIndicator">1 / 9</span>
+        <span class="page-indicator" id="pageIndicator">1 / 10</span>
         <button class="nav-btn" id="nextPage">Siguiente ▶</button>
     </div>
 
@@ -3359,7 +3410,7 @@
                 const canvas = document.getElementById('heartsCanvas');
                 if (canvas) {}
             }
-            if (pageIndex === 8) {}
+            if (pageIndex === 9) {}
         }
 
         // ==========================================
@@ -3382,7 +3433,8 @@
             console.log('📖 Total de páginas:', totalPages);
             console.log('🎁 Cubo del Amor enlazado correctamente');
             console.log('🗺️ Mapa de México agregado en Hoja 7');
-            console.log('🦁 Zoo · Álbum agregado en Hoja 7');
+            console.log('🦁 Zoo · Álbum agregado en Hoja 8');
+            console.log('✨ Hoja 9: Próximamente con espacios vacíos');
             console.log('💕 ¡Disfruta de tu libro del amor! 💕');
         });
     </script>
