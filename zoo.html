@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestro Zoológico 🦁</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --verde-selva: #2e7d32;
+    --verde-claro: #81c784;
+    --cafe: #5d4037;
+    --arena: #fff8e1;
+    --amarillo-sol: #ffd54f;
+  }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #a5d6a7 0%, #c8e6c9 40%, #fff8e1 100%);
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Hojas flotando */
+  .fondo-decoracion {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .hoja {
+    position: absolute; font-size: 2rem; opacity: 0.35;
+    animation: caerHoja 14s linear infinite;
+  }
+  .hoja:nth-child(1) { left: 5%; animation-delay: 0s; }
+  .hoja:nth-child(2) { left: 22%; animation-delay: 3s; }
+  .hoja:nth-child(3) { left: 45%; animation-delay: 6s; }
+  .hoja:nth-child(4) { left: 68%; animation-delay: 2s; }
+  .hoja:nth-child(5) { left: 88%; animation-delay: 9s; }
+  @keyframes caerHoja {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+  }
+
+  .album-container {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 950px; margin: 0 auto;
+  }
+
+  .album-header { text-align: center; margin-bottom: 20px; }
+  .album-header h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 3rem;
+    color: var(--verde-selva);
+    text-shadow: 3px 3px 0 var(--amarillo-sol);
+    margin-bottom: 5px;
+  }
+  .subtitulo { color: var(--cafe); font-size: 1rem; font-weight: 600; }
+  .estado-sync {
+    display: inline-block; margin-top: 10px;
+    padding: 4px 14px; background: rgba(255,255,255,0.85);
+    border-radius: 20px; font-size: 0.8rem;
+    color: var(--verde-selva); font-weight: 600;
+    border: 2px solid var(--verde-claro);
+  }
+  .estado-sync.online::before { content: "🟢 "; }
+  .estado-sync.offline::before { content: "🔴 "; }
+
+  /* Libro */
+  .libro {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; perspective: 2000px;
+  }
+  .pagina-contenedor {
+    width: 100%; max-width: 720px; height: 560px;
+    position: relative; transform-style: preserve-3d;
+  }
+
+  /* Página base */
+  .pagina {
+    position: absolute; inset: 0;
+    border-radius: 16px; padding: 26px 30px;
+    display: flex; flex-direction: column; align-items: center;
+    backface-visibility: hidden;
+    transform-origin: left center;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s;
+    overflow-y: auto;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18), inset 0 0 30px rgba(255,255,255,0.3);
+    border: 3px solid rgba(255,255,255,0.6);
+  }
+
+  .pagina.saliendo-derecha { transform: rotateY(-180deg); opacity: 0; }
+  .pagina.saliendo-izquierda { transform: rotateY(180deg); opacity: 0; }
+  .pagina.entrando-derecha { animation: entrarDer 0.7s cubic-bezier(0.4,0,0.2,1); }
+  .pagina.entrando-izquierda { animation: entrarIzq 0.7s cubic-bezier(0.4,0,0.2,1); }
+  @keyframes entrarDer {
+    from { transform: rotateY(-180deg); opacity: 0; }
+    to { transform: rotateY(0); opacity: 1; }
+  }
+  @keyframes entrarIzq {
+    from { transform: rotateY(180deg); opacity: 0; }
+    to { transform: rotateY(0); opacity: 1; }
+  }
+
+  /* Temas */
+  .pagina.tema-selva {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(129,199,132,0.25) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(46,125,50,0.15) 0%, transparent 40%),
+      linear-gradient(160deg, #f1f8e9, #fff8e1);
+  }
+  .pagina.tema-sabana {
+    background:
+      radial-gradient(circle at 85% 15%, rgba(255,213,79,0.55) 0%, transparent 45%),
+      linear-gradient(180deg, #fff3e0 0%, #ffe0b2 60%, #ffcc80 100%);
+  }
+  .pagina.tema-sabana::after {
+    content: ""; position: absolute;
+    bottom: 0; left: 0; right: 0; height: 90px;
+    background: radial-gradient(ellipse at bottom, #bf8f5e 0%, transparent 70%);
+    pointer-events: none; border-radius: 0 0 16px 16px;
+  }
+  .pagina.tema-oceano {
+    background:
+      radial-gradient(circle at 30% 70%, rgba(255,255,255,0.5) 0%, transparent 30%),
+      radial-gradient(circle at 70% 40%, rgba(255,255,255,0.35) 0%, transparent 25%),
+      linear-gradient(180deg, #b3e5fc 0%, #4fc3f7 60%, #0288d1 100%);
+    color: #fff;
+  }
+  .pagina.tema-oceano .nombre-animal,
+  .pagina.tema-oceano .descripcion-animal,
+  .pagina.tema-oceano .fotos-vacio { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.25); }
+
+  .pagina.tema-noche {
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.9) 1px, transparent 2px),
+      radial-gradient(circle at 45% 60%, rgba(255,255,255,0.8) 1px, transparent 2px),
+      radial-gradient(circle at 75% 15%, rgba(255,255,255,0.9) 1.5px, transparent 2.5px),
+      radial-gradient(circle at 88% 75%, rgba(255,255,255,0.7) 1px, transparent 2px),
+      linear-gradient(180deg, #1a237e 0%, #311b92 60%, #4527a0 100%);
+    color: #fff;
+  }
+  .pagina.tema-noche .nombre-animal,
+  .pagina.tema-noche .descripcion-animal,
+  .pagina.tema-noche .fotos-vacio { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+  .pagina.tema-bosque {
+    background:
+      repeating-linear-gradient(90deg, rgba(46,125,50,0.08) 0 30px, transparent 30px 60px),
+      linear-gradient(180deg, #dcedc8 0%, #c5e1a5 50%, #aed581 100%);
+  }
+  .pagina.tema-polar {
+    background:
+      radial-gradient(circle at 50% 100%, rgba(255,255,255,0.9) 0%, transparent 60%),
+      linear-gradient(180deg, #e1f5fe 0%, #b3e5fc 100%);
+  }
+  .pagina.tema-jardin {
+    background:
+      radial-gradient(circle at 10% 90%, rgba(255,138,101,0.35) 0%, transparent 25%),
+      radial-gradient(circle at 90% 10%, rgba(255,213,79,0.35) 0%, transparent 25%),
+      linear-gradient(135deg, #fff9c4, #f8bbd0);
+  }
+
+  /* Decoraciones dentro de cada página */
+  .pagina .deco {
+    position: absolute; font-size: 1.8rem;
+    opacity: 0.55; pointer-events: none;
+  }
+  .pagina .deco.d1 { top: 12px; right: 16px; }
+  .pagina .deco.d2 { bottom: 12px; left: 16px; }
+  .pagina .deco.d3 { top: 40%; right: 10px; font-size: 1.4rem; }
+  .pagina .deco.d4 { bottom: 30%; left: 8px; font-size: 1.4rem; }
+
+  /* Contenido */
+  .emoji-animal {
+    font-size: 5.5rem; margin-bottom: 6px;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
+    animation: flotar 3s ease-in-out infinite;
+    z-index: 2;
+  }
+  @keyframes flotar {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.03); }
+  }
+
+  .nombre-animal {
+    font-family: 'Caveat', cursive;
+    font-size: 2.6rem; color: var(--verde-selva);
+    margin-bottom: 4px; text-align: center;
+    line-height: 1; z-index: 2;
+  }
+
+  .descripcion-animal {
+    font-size: 0.95rem; color: var(--cafe);
+    text-align: center; margin-bottom: 16px;
+    font-style: italic; max-width: 90%; z-index: 2;
+  }
+
+  .fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px; width: 100%; margin-bottom: 14px; z-index: 2;
+  }
+
+  .foto-item {
+    position: relative; aspect-ratio: 1;
+    border-radius: 12px; overflow: hidden;
+    cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: #eee;
+  }
+  .foto-item:hover {
+    transform: scale(1.06) rotate(-2deg);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+  }
+  .foto-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto-fecha {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: #fff; font-size: 0.68rem;
+    padding: 8px 4px 4px; text-align: center; font-weight: 600;
+  }
+
+  .fotos-vacio {
+    width: 100%; text-align: center; padding: 20px;
+    color: var(--cafe); font-style: italic;
+    opacity: 0.7; font-size: 0.9rem;
+  }
+
+  .btn-agregar {
+    background: linear-gradient(135deg, var(--verde-claro), var(--verde-selva));
+    color: #fff; border: none;
+    padding: 11px 26px; border-radius: 30px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    box-shadow: 0 5px 15px rgba(46,125,50,0.4);
+    transition: all 0.3s; margin-top: auto; z-index: 2;
+  }
+  .btn-agregar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46,125,50,0.55);
+  }
+  .btn-agregar:active { transform: translateY(0); }
+  .btn-agregar:disabled { opacity: 0.6; cursor: wait; }
+
+  .nav-btn {
+    background: #fff; border: 3px solid var(--verde-claro);
+    color: var(--verde-selva);
+    width: 52px; height: 52px; border-radius: 50%;
+    font-size: 1.3rem; cursor: pointer;
+    transition: all 0.3s; flex-shrink: 0;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.15);
+  }
+  .nav-btn:hover:not(:disabled) {
+    background: var(--verde-selva); color: #fff;
+    transform: scale(1.1);
+  }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .indicador {
+    text-align: center; margin-top: 18px;
+    color: var(--verde-selva);
+    font-weight: 700; font-size: 1rem;
+  }
+
+  .album-footer {
+    text-align: center; margin-top: 15px;
+    color: var(--cafe);
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem; opacity: 0.75;
+  }
+
+  /* Modal */
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 1000;
+    justify-content: center; align-items: center; padding: 20px;
+  }
+  .modal.activo { display: flex; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-contenido {
+    background: #fff; padding: 20px; border-radius: 18px;
+    max-width: 92%; max-height: 92vh;
+    position: relative; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .modal-contenido img {
+    max-width: 100%; max-height: 65vh;
+    border-radius: 12px; display: block; margin: 0 auto;
+  }
+  .modal-contenido p {
+    margin-top: 12px; color: var(--verde-selva);
+    font-weight: 700; font-size: 1.05rem;
+  }
+  .cerrar {
+    position: absolute; top: 5px; right: 18px;
+    font-size: 2.2rem; color: var(--verde-selva);
+    cursor: pointer; font-weight: bold; line-height: 1;
+  }
+  .btn-eliminar {
+    margin-top: 12px; background: #e57373; color: #fff;
+    border: none; padding: 8px 20px; border-radius: 20px;
+    cursor: pointer; font-family: 'Fredoka', sans-serif;
+    font-weight: 600; transition: background 0.3s;
+  }
+  .btn-eliminar:hover { background: #c62828; }
+
+  /* Loading */
+  .loading {
+    position: fixed; inset: 0;
+    background: rgba(255,248,225,0.95);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    z-index: 2000; transition: opacity 0.4s;
+  }
+  .loading.oculto { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 50px; height: 50px;
+    border: 5px solid var(--verde-claro);
+    border-top-color: var(--verde-selva);
+    border-radius: 50%;
+    animation: girar 0.9s linear infinite;
+    margin-bottom: 15px;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  .loading p { color: var(--verde-selva); font-weight: 600; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .album-header h1 { font-size: 2rem; }
+    .pagina-contenedor { height: 600px; }
+    .pagina { padding: 20px 16px; }
+    .emoji-animal { font-size: 4rem; }
+    .nombre-animal { font-size: 2rem; }
+    .nav-btn { width: 42px; height: 42px; font-size: 1rem; }
+    .libro { gap: 6px; }
+    .fotos-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fondo-decoracion">
+  <span class="hoja">🌿</span>
+  <span class="hoja">🍃</span>
+  <span class="hoja">🌱</span>
+  <span class="hoja">🌿</span>
+  <span class="hoja">🍃</span>
+</div>
+
+<main class="album-container">
+  <header class="album-header">
+    <h1>🦁 Nuestro Zoológico 🐘</h1>
+    <p class="subtitulo">Los animales que hemos conocido juntos</p>
+    <div class="estado-sync" id="estadoSync">Conectando...</div>
+  </header>
+
+  <div class="libro">
+    <button class="nav-btn prev" id="prevBtn" aria-label="Anterior">❮</button>
+    <div class="pagina-contenedor" id="paginaContenedor"></div>
+    <button class="nav-btn next" id="nextBtn" aria-label="Siguiente">❯</button>
+  </div>
+
+  <div class="indicador"><span id="contadorPagina">1 / 1</span></div>
+
+  <footer class="album-footer"><p>Hecho con cariño 💜</p></footer>
+</main>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-contenido">
+    <span class="cerrar" id="cerrarModal">&times;</span>
+    <img id="modalImg" src="" alt="Foto ampliada">
+    <p id="modalInfo"></p>
+    <button class="btn-eliminar" id="btnEliminar">🗑️ Eliminar foto</button>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p>Cargando nuestro zoológico...</p>
+</div>
+
+<script type="module">
+  // ============================================================
+  // 🔥 CONFIGURA AQUÍ TUS CREDENCIALES DE FIREBASE
+  // ============================================================
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_PROYECTO.firebaseapp.com",
+    projectId: "TU_PROYECTO",
+    storageBucket: "TU_PROYECTO.appspot.com",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+  // ============================================================
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, doc, setDoc,
+    onSnapshot, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ====== ANIMALES CON TEMAS ======
+  const animales = [
+    { emoji: "🐘", nombre: "Elefante", descripcion: "El más grande y noble", tema: "selva", decos: ["🌴","🌿","🍃","🌱"] },
+    { emoji: "🦁", nombre: "León", descripcion: "Rey de la sabana", tema: "sabana", decos: ["☀️","🌾","🦒","🌅"] },
+    { emoji: "🐬", nombre: "Delfín", descripcion: "Libre entre las olas", tema: "oceano", decos: ["🌊","🐠","🫧","🐚"] },
+    { emoji: "🦉", nombre: "Búho", descripcion: "Sabio de la noche", tema: "noche", decos: ["🌙","⭐","✨","🌟"] },
+    { emoji: "🦊", nombre: "Zorro", descripcion: "Astuto del bosque", tema: "bosque", decos: ["🍂","🌲","🍁","🌰"] },
+    { emoji: "🐧", nombre: "Pingüino", descripcion: "Aventurero del hielo", tema: "polar", decos: ["❄️","🧊","🌨️","⛄"] },
+    { emoji: "🦋", nombre: "Mariposa", descripcion: "Ligera y colorida", tema: "jardin", decos: ["🌸","🌺","🌷","🌻"] },
+    { emoji: "🐯", nombre: "Tigre", descripcion: "Con energía salvaje", tema: "selva", decos: ["🌴","🐾","🌿","🍃"] },
+    { emoji: "🐢", nombre: "Tortuga", descripcion: "Sin prisa, sin pausa", tema: "oceano", decos: ["🌊","🐠","🐚","🫧"] },
+    { emoji: "🦜", nombre: "Loro", descripcion: "El más parlanchín", tema: "selva", decos: ["🌴","🌺","🍃","🌿"] },
+    { emoji: "🐼", nombre: "Panda", descripcion: "Tranquilo y tierno", tema: "bosque", decos: ["🎋","🌿","🍃","🌱"] },
+    { emoji: "🦩", nombre: "Flamenco", descripcion: "Elegante en el agua", tema: "jardin", decos: ["🌸","🌺","💧","🌷"] }
+  ];
+
+  // ====== INIT ======
+  let app, db;
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  } catch (e) {
+    console.error("Firebase no configurado:", e);
+    document.getElementById('estadoSync').textContent = "Falta configurar Firebase";
+    document.getElementById('estadoSync').className = "estado-sync offline";
+  }
+  const COLECCION = "album_zoo";
+
+  // ====== ESTADO ======
+  let paginaActual = 0;
+  let animando = false;
+  let datosAnimales = {};
+  let fotoModalActual = null;
+
+  const contenedor = document.getElementById('paginaContenedor');
+  const contadorPagina = document.getElementById('contadorPagina');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const estadoSync = document.getElementById('estadoSync');
+  const loading = document.getElementById('loading');
+
+  // ====== FIRESTORE EN TIEMPO REAL ======
+  if (db) {
+    const colRef = collection(db, COLECCION);
+    onSnapshot(colRef, (snapshot) => {
+      datosAnimales = {};
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        datosAnimales[data.indice] = data.fotos || [];
+      });
+      estadoSync.textContent = "Sincronizado";
+      estadoSync.className = "estado-sync online";
+      loading.classList.add('oculto');
+      renderizarPagina(paginaActual);
+    }, (error) => {
+      console.error("Error Firestore:", error);
+      estadoSync.textContent = "Sin conexión";
+      estadoSync.className = "estado-sync offline";
+      loading.classList.add('oculto');
+    });
+  } else {
+    loading.classList.add('oculto');
+  }
+
+  // ====== CREAR PÁGINA ======
+  function crearPagina(indice) {
+    const animal = animales[indice];
+    const fotos = datosAnimales[indice] || [];
+
+    const pagina = document.createElement('div');
+    pagina.className = `pagina tema-${animal.tema}`;
+
+    const decosHTML = animal.decos.map((d, i) =>
+      `<span class="deco d${i + 1}">${d}</span>`
+    ).join('');
+
+    const fotosHTML = fotos.length
+      ? fotos.map(f => `
+          <div class="foto-item" data-id="${f.id}" data-src="${f.src}" data-info="${animal.nombre} · ${f.fecha}">
+            <img src="${f.src}" alt="${animal.nombre}">
+            <div class="foto-fecha">${f.fecha}</div>
+          </div>
+        `).join('')
+      : `<div class="fotos-vacio">Aún no hay fotos de este momento 🌿</div>`;
+
+    pagina.innerHTML = `
+      ${decosHTML}
+      <div class="emoji-animal">${animal.emoji}</div>
+      <h2 class="nombre-animal">${animal.nombre}</h2>
+      <p class="descripcion-animal">${animal.descripcion}</p>
+      <div class="fotos-grid">${fotosHTML}</div>
+      <button class="btn-agregar" data-indice="${indice}">📷 Agregar foto</button>
+    `;
+
+    // Botón agregar foto
+    pagina.querySelector('.btn-agregar').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (ev) => {
+        const file = ev.target.files[0];
+        if (!file) return;
+        btn.disabled = true;
+        btn.textContent = "⏳ Subiendo...";
+        try {
+          const dataUrl = await comprimirImagen(file, 800, 0.75);
+          await agregarFoto(indice, dataUrl);
+          btn.textContent = "✅ ¡Listo!";
+        } catch (err) {
+          console.error(err);
+          btn.textContent = "❌ Error";
+        }
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "📷 Agregar foto";
+        }, 1500);
+      };
+      input.click();
+    });
+
+    // Click en foto para ampliar
+    pagina.querySelectorAll('.foto-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.getElementById('modalImg').src = item.dataset.src;
+        document.getElementById('modalInfo').textContent = item.dataset.info;
+        fotoModalActual = { id: item.dataset.id, indice };
+        document.getElementById('modal').classList.add('activo');
+      });
+    });
+
+    return pagina;
+  }
+
+  // ====== COMPRIMIR IMAGEN ======
+  function comprimirImagen(file, maxWidth, calidad) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          if (width > maxWidth) {
+            height = (maxWidth / width) * height;
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', calidad));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ====== AGREGAR FOTO ======
+  async function agregarFoto(indice, dataUrl) {
+    if (!db) { alert("Firebase no está configurado"); return; }
+    const docRef = doc(db, COLECCION, `animal_${indice}`);
+    const actuales = datosAnimales[indice] || [];
+    const nueva = {
+      id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+      src: dataUrl,
+      fecha: new Date().toLocaleDateString('es-ES', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      })
+    };
+    await setDoc(docRef, {
+      indice,
+      fotos: [...actuales, nueva],
+      actualizado: serverTimestamp()
+    });
+  }
+
+  // ====== ELIMINAR FOTO ======
+  async function eliminarFoto(indice, fotoId) {
+    if (!db) return;
+    const docRef = doc(db, COLECCION, `animal_${indice}`);
+    const actuales = datosAnimales[indice] || [];
+    const nuevas = actuales.filter(f => f.id !== fotoId);
+    await setDoc(docRef, {
+      indice,
+      fotos: nuevas,
+      actualizado: serverTimestamp()
+    });
+  }
+
+  // ====== RENDER ======
+  function renderizarPagina(indice, direccion = null) {
+    contenedor.innerHTML = '';
+    const nuevaPagina = crearPagina(indice);
+    contenedor.appendChild(nuevaPagina);
+
+    if (direccion === 'next') nuevaPagina.classList.add('entrando-derecha');
+    else if (direccion === 'prev') nuevaPagina.classList.add('entrando-izquierda');
+
+    contadorPagina.textContent = `${indice + 1} / ${animales.length}`;
+    prevBtn.disabled = indice === 0;
+    nextBtn.disabled = indice === animales.length - 1;
+  }
+
+  // ====== NAVEGACIÓN ======
+  function irSiguiente() {
+    if (animando || paginaActual >= animales.length - 1) return;
+    animando = true;
+    const vieja = contenedor.querySelector('.pagina');
+    vieja.classList.add('saliendo-derecha');
+    setTimeout(() => {
+      paginaActual++;
+      renderizarPagina(paginaActual, 'next');
+      animando = false;
+    }, 700);
+  }
+
+  function irAnterior() {
+    if (animando || paginaActual <= 0) return;
+    animando = true;
+    const vieja = contenedor.querySelector('.pagina');
+    vieja.classList.add('saliendo-izquierda');
+    setTimeout(() => {
+      paginaActual--;
+      renderizarPagina(paginaActual, 'prev');
+      animando = false;
+    }, 700);
+  }
+
+  nextBtn.addEventListener('click', irSiguiente);
+  prevBtn.addEventListener('click', irAnterior);
+
+  // Swipe táctil
+  let touchStartX = 0;
+  contenedor.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  contenedor.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (diff < -50) irSiguiente();
+    if (diff > 50) irAnterior();
+  });
+
+  // Teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') irSiguiente();
+    if (e.key === 'ArrowLeft') irAnterior();
+    if (e.key === 'Escape') {
+      document.getElementById('modal').classList.remove('activo');
+      fotoModalActual = null;
+    }
+  });
+
+  // Modal
+  document.getElementById('cerrarModal').addEventListener('click', () => {
+    document.getElementById('modal').classList.remove('activo');
+    fotoModalActual = null;
+  });
+  document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target.id === 'modal') {
+      e.target.classList.remove('activo');
+      fotoModalActual = null;
+    }
+  });
+
+  // Eliminar foto
+  document.getElementById('btnEliminar').addEventListener('click', async () => {
+    if (!fotoModalActual) return;
+    if (!confirm("¿Eliminar esta foto?")) return;
+    await eliminarFoto(fotoModalActual.indice, fotoModalActual.id);
+    document.getElementById('modal').classList.remove('activo');
+    fotoModalActual = null;
+  });
+
+  // ====== INICIALIZAR ======
+  renderizarPagina(0);
+</script>
+</body>
+</html>
