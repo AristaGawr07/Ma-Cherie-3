@@ -346,6 +346,41 @@
             opacity: 0.6;
         }
 
+        /* Selva / Zoo */
+        .bg-zoo {
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 40%, #228B22 70%, #006400 100%);
+        }
+        .bg-zoo::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 0, 0.3) 0%, transparent 25%),
+                radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 50% 80%, rgba(0, 100, 0, 0.3) 0%, transparent 40%);
+            animation: zooAnim 5s ease-in-out infinite alternate;
+        }
+        @keyframes zooAnim {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+        .bg-zoo::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(3px 3px at 10% 20%, #FFD700, transparent),
+                radial-gradient(3px 3px at 30% 60%, #FFD700, transparent),
+                radial-gradient(2px 2px at 50% 10%, #fff, transparent),
+                radial-gradient(2px 2px at 70% 80%, #fff, transparent),
+                radial-gradient(3px 3px at 90% 40%, #FFD700, transparent);
+            background-size: 250px 250px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+            opacity: 0.5;
+        }
+
         /* ===== CONTENIDO DE LAS PÁGINAS ===== */
         .page-content {
             position: relative;
@@ -1775,6 +1810,331 @@
             50% { transform: translateY(-8px); }
         }
 
+        /* ===== ENLACE: ZOO / ÁLBUM ===== */
+        .zoo-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            animation: flotarZoo 3.5s ease-in-out infinite;
+            position: relative;
+            padding: 10px;
+        }
+
+        .zoo-link .zoo-escena {
+            position: relative;
+            width: 110px;
+            height: 80px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        /* Sol */
+        .zoo-link .zoo-sol {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            width: 22px;
+            height: 22px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            animation: solZoo 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes solZoo {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
+            100% { transform: scale(1.15); box-shadow: 0 0 25px rgba(255, 215, 0, 1); }
+        }
+
+        /* Nubes */
+        .zoo-link .zoo-nube {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            opacity: 0.9;
+        }
+
+        .zoo-link .zoo-nube::before,
+        .zoo-link .zoo-nube::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .zoo-link .nube-1 {
+            top: 5px;
+            left: 5px;
+            width: 28px;
+            height: 10px;
+            animation: nubeMover 6s linear infinite;
+        }
+
+        .zoo-link .nube-1::before {
+            width: 12px;
+            height: 12px;
+            top: -6px;
+            left: 4px;
+        }
+
+        .zoo-link .nube-1::after {
+            width: 10px;
+            height: 10px;
+            top: -4px;
+            left: 14px;
+        }
+
+        .zoo-link .nube-2 {
+            top: 15px;
+            left: 60px;
+            width: 22px;
+            height: 8px;
+            animation: nubeMover 8s linear infinite 2s;
+        }
+
+        .zoo-link .nube-2::before {
+            width: 10px;
+            height: 10px;
+            top: -5px;
+            left: 3px;
+        }
+
+        .zoo-link .nube-2::after {
+            width: 8px;
+            height: 8px;
+            top: -3px;
+            left: 11px;
+        }
+
+        @keyframes nubeMover {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Árbol */
+        .zoo-link .zoo-arbol {
+            position: absolute;
+            bottom: 22px;
+            left: 8px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 25px solid #228B22;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+        }
+
+        .zoo-link .zoo-arbol::after {
+            content: '';
+            position: absolute;
+            bottom: -28px;
+            left: -4px;
+            width: 8px;
+            height: 10px;
+            background: #8B4513;
+            border-radius: 2px;
+        }
+
+        /* León */
+        .zoo-link .zoo-leon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            z-index: 2;
+        }
+
+        .zoo-link .leon-cabeza {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 26px;
+            background: radial-gradient(circle at 50% 50%, #F4A460, #D2691E);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .zoo-link .leon-melena {
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 34px;
+            background: radial-gradient(circle, #FF8C00, #CC5500);
+            border-radius: 50%;
+            z-index: -1;
+            animation: melenaPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes melenaPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+        }
+
+        .zoo-link .leon-oreja {
+            position: absolute;
+            top: 2px;
+            width: 8px;
+            height: 8px;
+            background: #D2691E;
+            border-radius: 50%;
+        }
+
+        .zoo-link .leon-oreja.izq { left: 6px; }
+        .zoo-link .leon-oreja.der { right: 6px; }
+
+        .zoo-link .leon-ojo {
+            position: absolute;
+            top: 10px;
+            width: 4px;
+            height: 4px;
+            background: #000;
+            border-radius: 50%;
+            animation: parpadearOjo 3s ease-in-out infinite;
+        }
+
+        .zoo-link .leon-ojo.izq { left: 10px; }
+        .zoo-link .leon-ojo.der { right: 10px; }
+
+        @keyframes parpadearOjo {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        .zoo-link .leon-nariz {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 4px;
+            background: #8B4513;
+            border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+        }
+
+        .zoo-link .leon-boca {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 5px;
+            border-bottom: 2px solid #8B4513;
+            border-radius: 0 0 50% 50%;
+        }
+
+        /* Cuerpo del león */
+        .zoo-link .leon-cuerpo {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 18px;
+            background: linear-gradient(135deg, #F4A460, #D2691E);
+            border-radius: 40% 40% 30% 30%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cola del león */
+        .zoo-link .leon-cola {
+            position: absolute;
+            bottom: 8px;
+            right: 2px;
+            width: 14px;
+            height: 3px;
+            background: #D2691E;
+            border-radius: 3px;
+            transform-origin: left center;
+            animation: colaMover 2s ease-in-out infinite;
+        }
+
+        @keyframes colaMover {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        /* Texto del zoo */
+        .zoo-link .zoo-texto {
+            margin-top: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 13px;
+            font-weight: bold;
+            color: #8B4513;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3px 10px;
+            border-radius: 15px;
+            letter-spacing: 1px;
+            border: 1px solid #228B22;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .zoo-link:hover {
+            transform: scale(1.15) translateY(-5px);
+            animation: none;
+        }
+
+        .zoo-link:hover .leon-melena {
+            animation: melenaPulse 0.5s ease-in-out infinite;
+        }
+
+        .zoo-link:hover .leon-cola {
+            animation: colaMover 0.8s ease-in-out infinite;
+        }
+
+        .zoo-link:hover .zoo-texto {
+            background: #228B22;
+            color: #fff;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(34, 139, 34, 0.5);
+        }
+
+        @keyframes flotarZoo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Huellas animadas alrededor */
+        .zoo-link .huella {
+            position: absolute;
+            font-size: 10px;
+            opacity: 0;
+            animation: huellaAparecer 3s ease-in-out infinite;
+        }
+
+        .zoo-link .huella-1 {
+            top: 20%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .zoo-link .huella-2 {
+            top: 60%;
+            right: 5%;
+            animation-delay: 1s;
+        }
+
+        .zoo-link .huella-3 {
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        @keyframes huellaAparecer {
+            0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+            50% { opacity: 0.7; transform: scale(1) rotate(15deg); }
+        }
+
         /* ===== ANIMACIONES BASE ===== */
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
@@ -1884,6 +2244,20 @@
             50% { opacity: 1; transform: scale(1.5); }
         }
 
+        /* Huella flotante al hacer click */
+        .huella-flotante {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 2000;
+            animation: huellaFlotanteAnim 1.2s ease-out forwards;
+        }
+
+        @keyframes huellaFlotanteAnim {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
+            100% { opacity: 0; transform: translate(calc(var(--hx) * 60px), calc(var(--hy) * 60px)) scale(1.5) rotate(30deg); }
+        }
+
         /* ===== IMÁGENES EXPANDIBLES ===== */
         .image-container {
             position: fixed;
@@ -1937,167 +2311,6 @@
             transform: rotate(90deg);
         }
 
-        /* ===== BOTÓN ZOOLÓGICO FLOTANTE ===== */
-        .zoo-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 25px;
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #a5d6a7 0%, #66bb6a 50%, #2e7d32 100%);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 999;
-            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.5),
-                        0 0 0 6px rgba(255, 255, 255, 0.35),
-                        0 0 0 12px rgba(255, 213, 79, 0.25);
-            border: 3px solid #fff;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-decoration: none;
-            animation: zooFloat 3s ease-in-out infinite;
-            overflow: visible;
-        }
-
-        .zoo-btn::before {
-            content: '';
-            position: absolute;
-            inset: -12px;
-            border-radius: 50%;
-            border: 2px dashed rgba(255, 213, 79, 0.7);
-            animation: zooRotar 12s linear infinite;
-            pointer-events: none;
-        }
-
-        .zoo-btn::after {
-            content: '🌿';
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 20px;
-            animation: hojaMover 2s ease-in-out infinite;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-        }
-
-        .zoo-btn .zoo-emoji {
-            font-size: 38px;
-            line-height: 1;
-            filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
-            animation: zooBrincar 1.6s ease-in-out infinite;
-            transition: transform 0.3s;
-        }
-
-        .zoo-btn .zoo-texto {
-            font-family: 'Georgia', serif;
-            font-size: 10px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 1.5px;
-            margin-top: 2px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            text-transform: uppercase;
-        }
-
-        .zoo-btn:hover {
-            transform: scale(1.15) translateY(-6px);
-            box-shadow: 0 15px 40px rgba(46, 125, 50, 0.7),
-                        0 0 0 8px rgba(255, 255, 255, 0.5),
-                        0 0 0 16px rgba(255, 213, 79, 0.4);
-            background: linear-gradient(135deg, #c5e1a5 0%, #81c784 50%, #43a047 100%);
-        }
-
-        .zoo-btn:hover .zoo-emoji {
-            animation: zooBrincar 0.6s ease-in-out infinite;
-            transform: scale(1.2) rotate(-10deg);
-        }
-
-        .zoo-btn:active {
-            transform: scale(1.05) translateY(0);
-        }
-
-        @keyframes zooFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes zooBrincar {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-4px) scale(1.1); }
-        }
-
-        @keyframes zooRotar {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes hojaMover {
-            0%, 100% { transform: rotate(-15deg) translateY(0); }
-            50% { transform: rotate(15deg) translateY(-4px); }
-        }
-
-        /* Tooltip del botón zoo */
-        .zoo-btn .zoo-tooltip {
-            position: absolute;
-            right: 110%;
-            top: 50%;
-            transform: translateY(-50%) scale(0.8);
-            background: rgba(46, 125, 50, 0.95);
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            border: 2px solid #ffd54f;
-        }
-
-        .zoo-btn .zoo-tooltip::after {
-            content: '';
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 6px solid transparent;
-            border-left-color: rgba(46, 125, 50, 0.95);
-        }
-
-        .zoo-btn:hover .zoo-tooltip {
-            opacity: 1;
-            transform: translateY(-50%) scale(1);
-        }
-
-        .zoo-btn.entrando {
-            animation: zooEntrada 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-                       zooFloat 3s ease-in-out 1s infinite;
-        }
-
-        @keyframes zooEntrada {
-            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        .zoo-particula {
-            position: fixed;
-            pointer-events: none;
-            z-index: 998;
-            font-size: 20px;
-            opacity: 0;
-            animation: zooParticulaAnim 1.5s ease-out forwards;
-        }
-
-        @keyframes zooParticulaAnim {
-            0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
-            20% { opacity: 1; }
-            100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(1.2) rotate(var(--pr)); }
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .book { width: 98%; height: 85vh; max-height: 700px; }
@@ -2122,6 +2335,7 @@
             .artemis-11, .rompecabeza, .saturno-a { transform: scale(0.8); }
             .artemis-11:hover, .rompecabeza:hover, .saturno-a:hover { transform: scale(0.9); }
             .cubo-amor-link { font-size: 14px; padding: 12px 20px; min-width: 120px; }
+            .zoo-link .zoo-escena { width: 95px; height: 70px; }
         }
 
         @media (max-width: 768px) {
@@ -2172,15 +2386,11 @@
             .cubo-amor-link::after { font-size: 14px; margin-left: 5px; }
             .mapa-mexico-link .mapa-svg { width: 70px; height: 48px; }
             .mapa-mexico-link .mapa-texto { font-size: 11px; padding: 2px 8px; }
-            .zoo-btn {
-                width: 75px;
-                height: 75px;
-                bottom: 85px;
-                right: 15px;
-            }
-            .zoo-btn .zoo-emoji { font-size: 30px; }
-            .zoo-btn .zoo-texto { font-size: 8px; }
-            .zoo-btn .zoo-tooltip { display: none; }
+            .zoo-link .zoo-escena { width: 80px; height: 60px; }
+            .zoo-link .zoo-texto { font-size: 11px; padding: 2px 8px; }
+            .zoo-link .leon-cabeza { width: 22px; height: 20px; }
+            .zoo-link .leon-melena { width: 28px; height: 26px; }
+            .zoo-link .leon-cuerpo { width: 24px; height: 14px; }
         }
 
         @media (max-width: 480px) {
@@ -2216,14 +2426,12 @@
             .cubo-amor-link::after { font-size: 12px; margin-left: 4px; }
             .mapa-mexico-link .mapa-svg { width: 55px; height: 38px; }
             .mapa-mexico-link .mapa-texto { font-size: 9px; padding: 2px 6px; }
-            .zoo-btn {
-                width: 65px;
-                height: 65px;
-                bottom: 75px;
-                right: 12px;
-            }
-            .zoo-btn .zoo-emoji { font-size: 26px; }
-            .zoo-btn .zoo-texto { font-size: 7px; letter-spacing: 1px; }
+            .zoo-link .zoo-escena { width: 65px; height: 50px; }
+            .zoo-link .zoo-texto { font-size: 9px; padding: 2px 6px; }
+            .zoo-link .leon-cabeza { width: 18px; height: 16px; }
+            .zoo-link .leon-melena { width: 22px; height: 20px; }
+            .zoo-link .leon-cuerpo { width: 20px; height: 12px; }
+            .zoo-link .zoo-sol { width: 16px; height: 16px; }
         }
     </style>
 </head>
@@ -2407,23 +2615,17 @@
                 </div>
             </div>
 
-            <!-- ===== HOJA 7: LIBRO Y PRÓXIMAMENTE ===== -->
+            <!-- ===== HOJA 7: LIBRO, MAPA Y ZOO ===== -->
             <div class="page" id="page-7" data-index="7">
                 <div class="page-background bg-atardecer"></div>
                 <div class="page-content">
-                    <h2 class="page-title" style="color:#5d4037; text-shadow:none;">📖 Libro y más... 📖</h2>
+                    <h2 class="page-title" style="color:#5d4037; text-shadow:none;">📖 Libro, Mapa y Zoo 📖</h2>
                     <div class="links-grid">
                         <div class="link-wrapper">
                             <a href="Libro-del-Amor.html" class="libroA-simple" style="display:flex; align-items:center; justify-content:center; width:55px; height:55px; background:#8B4513; border-radius:5px; border-left:8px solid #A0522D; text-decoration:none;">
                                 <span style="color:white; font-size:11px; font-weight:bold; background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px;">❤️</span>
                             </a>
                         </div>
-                        <div class="link-wrapper">
-                            <a href="Cubo-del-Amor.html" class="cubo-amor-link">
-                                <span class="texto-cubo">Cubo del Amor</span>
-                            </a>
-                        </div>
-                        <!-- NUEVO BOTÓN: MAPA DE MÉXICO -->
                         <div class="link-wrapper">
                             <a href="mapa.html" class="mapa-mexico-link" title="Mapa de México">
                                 <svg class="mapa-svg" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
@@ -2439,7 +2641,6 @@
                                             <stop offset="100%" style="stop-color:#ff2a2a;stop-opacity:1" />
                                         </linearGradient>
                                     </defs>
-                                    <!-- Silueta simplificada de México -->
                                     <path d="M 30 15 
                                              C 35 10, 45 8, 55 10 
                                              C 65 12, 75 15, 80 20 
@@ -2453,6 +2654,39 @@
                                              C 20 28, 25 20, 30 15 Z" />
                                 </svg>
                                 <span class="mapa-texto">MAPA DE MÉXICO</span>
+                            </a>
+                        </div>
+                        <!-- NUEVO BOTÓN: ZOO / ÁLBUM -->
+                        <div class="link-wrapper">
+                            <a href="zoo.html" class="zoo-link" title="Álbum del Zoo">
+                                <div class="zoo-escena">
+                                    <!-- Sol -->
+                                    <div class="zoo-sol"></div>
+                                    <!-- Nubes -->
+                                    <div class="zoo-nube nube-1"></div>
+                                    <div class="zoo-nube nube-2"></div>
+                                    <!-- Árbol -->
+                                    <div class="zoo-arbol"></div>
+                                    <!-- Huellas -->
+                                    <div class="huella huella-1">🐾</div>
+                                    <div class="huella huella-2">🐾</div>
+                                    <div class="huella huella-3">🐾</div>
+                                    <!-- León -->
+                                    <div class="zoo-leon">
+                                        <div class="leon-melena"></div>
+                                        <div class="leon-cabeza">
+                                            <div class="leon-oreja izq"></div>
+                                            <div class="leon-oreja der"></div>
+                                            <div class="leon-ojo izq"></div>
+                                            <div class="leon-ojo der"></div>
+                                            <div class="leon-nariz"></div>
+                                            <div class="leon-boca"></div>
+                                        </div>
+                                        <div class="leon-cuerpo"></div>
+                                        <div class="leon-cola"></div>
+                                    </div>
+                                </div>
+                                <span class="zoo-texto">ZOO · ÁLBUM</span>
                             </a>
                         </div>
                     </div>
@@ -2491,13 +2725,6 @@
         <span class="page-indicator" id="pageIndicator">1 / 9</span>
         <button class="nav-btn" id="nextPage">Siguiente ▶</button>
     </div>
-
-    <!-- ===== BOTÓN ZOOLÓGICO FLOTANTE ===== -->
-    <a href="zoo.html" class="zoo-btn entrando" id="zooBtn" title="Nuestro Zoológico 🦁">
-        <span class="zoo-tooltip">🦁 Nuestro Zoológico</span>
-        <span class="zoo-emoji">🦁</span>
-        <span class="zoo-texto">Zoo</span>
-    </a>
 
     <!-- ===== IMÁGENES EXPANDIBLES ===== -->
     <div class="image-container" id="imageContainer">
@@ -3092,7 +3319,40 @@
         });
 
         // ==========================================
-        // 10. FUNCIONES PARA ANIMACIONES DE PÁGINA
+        // 10. HUELLAS FLOTANTES DEL ZOO
+        // ==========================================
+        function crearHuellasZoo() {
+            const zoo = document.querySelector('.zoo-link');
+            if (!zoo) return;
+
+            const huellasEmojis = ['🐾', '🦁', '🐘', '🦒', '🐒', '🦓', '🐆'];
+
+            zoo.addEventListener('click', function(e) {
+                for (let i = 0; i < 8; i++) {
+                    const huella = document.createElement('div');
+                    huella.className = 'huella-flotante';
+                    huella.textContent = huellasEmojis[Math.floor(Math.random() * huellasEmojis.length)];
+
+                    const angulo = Math.random() * Math.PI * 2;
+                    const distancia = 0.5 + Math.random() * 1.5;
+
+                    huella.style.left = e.clientX + 'px';
+                    huella.style.top = e.clientY + 'px';
+                    huella.style.setProperty('--hx', Math.cos(angulo) * distancia);
+                    huella.style.setProperty('--hy', Math.sin(angulo) * distancia);
+                    huella.style.fontSize = (16 + Math.random() * 14) + 'px';
+
+                    document.body.appendChild(huella);
+
+                    setTimeout(() => huella.remove(), 1200);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', crearHuellasZoo);
+
+        // ==========================================
+        // 11. FUNCIONES PARA ANIMACIONES DE PÁGINA
         // ==========================================
         function triggerPageAnimations(pageIndex) {
             if (pageIndex === 2) {
@@ -3101,46 +3361,6 @@
             }
             if (pageIndex === 8) {}
         }
-
-        // ==========================================
-        // 11. BOTÓN ZOOLÓGICO CON PARTÍCULAS
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const zooBtn = document.getElementById('zooBtn');
-            if (!zooBtn) return;
-
-            const animalitos = ['🐘', '🦁', '🐬', '🦉', '🦊', '🐧', '🦋', '🐯', '🐢', '🦜', '🐼', '🦩'];
-
-            // Partículas al pasar el mouse
-            zooBtn.addEventListener('mouseenter', function() {
-                for (let i = 0; i < 6; i++) {
-                    const particula = document.createElement('div');
-                    particula.className = 'zoo-particula';
-                    particula.textContent = animalitos[Math.floor(Math.random() * animalitos.length)];
-
-                    const rect = zooBtn.getBoundingClientRect();
-                    const angle = (Math.PI * 2 * i) / 6 + Math.random() * 0.5;
-                    const distancia = 60 + Math.random() * 40;
-
-                    particula.style.left = (rect.left + rect.width / 2) + 'px';
-                    particula.style.top = (rect.top + rect.height / 2) + 'px';
-                    particula.style.setProperty('--px', Math.cos(angle) * distancia + 'px');
-                    particula.style.setProperty('--py', Math.sin(angle) * distancia + 'px');
-                    particula.style.setProperty('--pr', (Math.random() * 360 - 180) + 'deg');
-
-                    document.body.appendChild(particula);
-                    setTimeout(() => particula.remove(), 1500);
-                }
-            });
-
-            // Click: pequeño brinco antes de ir
-            zooBtn.addEventListener('click', function(e) {
-                zooBtn.style.animation = 'none';
-                setTimeout(() => {
-                    zooBtn.style.animation = 'zooFloat 3s ease-in-out infinite';
-                }, 300);
-            });
-        });
 
         // ==========================================
         // 12. INICIALIZAR
@@ -3162,7 +3382,7 @@
             console.log('📖 Total de páginas:', totalPages);
             console.log('🎁 Cubo del Amor enlazado correctamente');
             console.log('🗺️ Mapa de México agregado en Hoja 7');
-            console.log('🦁 Botón del Zoo agregado y enlazando a zoo.html');
+            console.log('🦁 Zoo · Álbum agregado en Hoja 7');
             console.log('💕 ¡Disfruta de tu libro del amor! 💕');
         });
     </script>
